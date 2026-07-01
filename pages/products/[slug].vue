@@ -68,15 +68,23 @@ const tiers = computed(() => {
 })
 
 const galleryImageFallback = ['/images/blog/blog-2.jpg', '/images/blog/blog-1.jpg', '/images/blog/blog-3.jpg', '/images/hero-1.jpg', '/images/hero-2.jpg']
+// Each tab = one group; `images` holds every uploaded image (browsed in the lightbox).
 const gallery = computed(() => {
   const g = api.value.gallery
-  if (!g?.length) return galleryFallback
-  return g.map((grp: any, i: number) => ({
-    name: grp.name,
-    label: grp.images?.[0]?.caption || grp.name,
-    image: galleryImageFallback[i % galleryImageFallback.length],
-    paths: galleryFallback[i % galleryFallback.length].paths,
-  }))
+  if (!g?.length) {
+    return galleryFallback.map((t: any) => ({ name: t.name, label: t.label, paths: t.paths, images: [{ image: t.image, caption: t.label, alt: t.name }] }))
+  }
+  return g.map((grp: any, i: number) => {
+    const imgs = grp.images?.length
+      ? grp.images
+      : [{ image: galleryImageFallback[i % galleryImageFallback.length], caption: grp.name, alt: grp.name }]
+    return {
+      name: grp.name,
+      label: imgs[0]?.caption || grp.name,
+      paths: galleryFallback[i % galleryFallback.length].paths,
+      images: imgs,
+    }
+  })
 })
 
 const docList = computed(() => {
@@ -269,6 +277,41 @@ const reviewsList = computed(() => (api.value.reviews || []).map((r: any) => ({
 })))
 
 const activeTab = ref(gallery.value[0]?.name || 'Website')
+
+// ---- Gallery lightbox (browse a group's images with arrows / swipe / keyboard) ----
+const lightboxOpen = ref(false)
+const lightboxImages = ref<any[]>([])
+const lightboxIndex = ref(0)
+
+function openLightbox(group: any, index = 0) {
+  lightboxImages.value = group.images || []
+  lightboxIndex.value = index
+  lightboxOpen.value = true
+}
+function closeLightbox() { lightboxOpen.value = false }
+function nextImage() { if (lightboxImages.value.length) lightboxIndex.value = (lightboxIndex.value + 1) % lightboxImages.value.length }
+function prevImage() { if (lightboxImages.value.length) lightboxIndex.value = (lightboxIndex.value - 1 + lightboxImages.value.length) % lightboxImages.value.length }
+
+function onGalleryKey(e: KeyboardEvent) {
+  if (!lightboxOpen.value) return
+  if (e.key === 'Escape') closeLightbox()
+  else if (e.key === 'ArrowRight') nextImage()
+  else if (e.key === 'ArrowLeft') prevImage()
+}
+let touchStartX = 0
+function onTouchStart(e: TouchEvent) { touchStartX = e.changedTouches[0].clientX }
+function onTouchEnd(e: TouchEvent) {
+  const dx = e.changedTouches[0].clientX - touchStartX
+  if (Math.abs(dx) > 40) (dx < 0 ? nextImage() : prevImage())
+}
+watch(lightboxOpen, (open) => {
+  if (import.meta.client) document.body.style.overflow = open ? 'hidden' : ''
+})
+onMounted(() => window.addEventListener('keydown', onGalleryKey))
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', onGalleryKey)
+  if (import.meta.client) document.body.style.overflow = ''
+})
 const { addItem } = useCart()
 </script>
 
@@ -349,7 +392,7 @@ const { addItem } = useCart()
           </ul>
         </section>
 
-        <section class="rounded-2xl border border-gray-100 border-l-4 border-l-brand-500 p-5 shadow-sm">
+        <!-- <section class="rounded-2xl border border-gray-100 border-l-4 border-l-brand-500 p-5 shadow-sm">
           <h2 class="flex items-center gap-2 font-display text-base font-bold text-ink-900">
             <svg class="h-5 w-5 text-brand-600" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3 4.5 6v5c0 4.5 3 7.5 7.5 9 4.5-1.5 7.5-4.5 7.5-9V6L12 3Z" /></svg>
             Product Info
@@ -360,7 +403,7 @@ const { addItem } = useCart()
               <dd class="font-bold text-ink-900">{{ row.value }}</dd>
             </div>
           </dl>
-        </section>
+        </section> -->
       </aside>
 
       <!-- Main -->
@@ -384,8 +427,19 @@ const { addItem } = useCart()
           </div>
           <div class="relative mt-4 aspect-[16/9] overflow-hidden rounded-2xl bg-ink-900">
             <div v-for="tab in gallery" v-show="activeTab === tab.name" :key="tab.name" class="absolute inset-0">
-              <NuxtImg :src="tab.image" :alt="`${product.name} — ${tab.name} screenshot`" width="900" height="506" sizes="100vw lg:820px" format="webp" loading="lazy" class="h-full w-full object-cover opacity-90" />
-              <span class="absolute bottom-4 left-4 font-display font-bold text-white drop-shadow">{{ tab.label }}</span>
+              <button type="button" class="group/gal relative block h-full w-full" :aria-label="`View ${tab.name} screenshots`" @click="openLightbox(tab, 0)">
+                <img :src="tab.images[0].image" :alt="tab.images[0].alt || `${product.name} — ${tab.name} screenshot`" loading="lazy" class="h-full w-full object-cover opacity-90 transition duration-300 group-hover/gal:scale-[1.02] group-hover/gal:opacity-100">
+                <span class="absolute bottom-4 left-4 font-display font-bold text-white drop-shadow">{{ tab.label }}</span>
+                <span v-if="tab.images.length > 1" class="absolute right-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-black/50 px-3 py-1 text-xs font-semibold text-white backdrop-blur">
+                  <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" /><path d="M3 15l5-5 4 4 3-3 6 6" /></svg>
+                  {{ tab.images.length }} screenshots
+                </span>
+                <span class="pointer-events-none absolute inset-0 grid place-items-center bg-black/0 transition group-hover/gal:bg-black/25">
+                  <span class="grid h-14 w-14 place-items-center rounded-full bg-white/90 opacity-0 shadow-lg transition group-hover/gal:opacity-100">
+                    <svg class="h-6 w-6 text-ink-900" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" /><path stroke-linecap="round" d="m21 21-4.3-4.3M11 8v6M8 11h6" /></svg>
+                  </span>
+                </span>
+              </button>
             </div>
           </div>
         </section>
@@ -403,26 +457,6 @@ const { addItem } = useCart()
               <span class="font-display text-base font-bold">{{ card.title }}</span>
               <span class="text-xs text-white/80">{{ card.subtitle }}</span>
             </a>
-          </div>
-        </section>
-
-        <!-- Powerful Features -->
-        <section aria-labelledby="features-h" class="text-center">
-          <h2 id="features-h" class="font-display text-3xl font-extrabold text-ink-900">Powerful Features</h2>
-          <p class="mt-2 text-gray-600">Everything you need to run a successful multi-vendor marketplace</p>
-          <div class="mt-8 grid gap-5 text-left sm:grid-cols-2 lg:grid-cols-3">
-            <article v-for="f in featureList" :key="f.title" class="rounded-2xl border border-gray-100 border-t-4 p-6 shadow-sm" :class="f.top">
-              <div class="flex items-start gap-3">
-                <span class="grid h-11 w-11 shrink-0 place-items-center rounded-xl" :class="f.icon" aria-hidden="true">
-                  <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path v-for="d in f.paths" :key="d" stroke-linecap="round" stroke-linejoin="round" :d="d" /></svg>
-                </span>
-                <div>
-                  <h3 class="font-display text-base font-bold text-ink-900">{{ f.title }}</h3>
-                  <p class="text-xs font-semibold" :class="f.subText">{{ f.subtitle }}</p>
-                </div>
-              </div>
-              <p class="mt-3 text-sm text-gray-600">{{ f.desc }}</p>
-            </article>
           </div>
         </section>
 
@@ -461,8 +495,28 @@ const { addItem } = useCart()
           <p class="mt-8 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 rounded-2xl border border-blue-100 bg-blue-50/70 px-6 py-5 text-center text-sm text-gray-600">
             <strong class="text-ink-900">30-Day Money Back Guarantee</strong>
             <span class="text-gray-300" aria-hidden="true">•</span> Lifetime Updates Included
-            <span class="text-gray-300" aria-hidden="true">•</span> Free Installation Support
+            <!-- <span class="text-gray-300" aria-hidden="true">•</span> Free Installation Support -->
           </p>
+        </section>
+
+        <!-- Powerful Features -->
+        <section aria-labelledby="features-h" class="text-center">
+          <h2 id="features-h" class="font-display text-3xl font-extrabold text-ink-900">Powerful Features</h2>
+          <p class="mt-2 text-gray-600">Everything you need to run a successful multi-vendor marketplace</p>
+          <div class="mt-8 grid gap-5 text-left sm:grid-cols-2 lg:grid-cols-3">
+            <article v-for="f in featureList" :key="f.title" class="rounded-2xl border border-gray-100 border-t-4 p-6 shadow-sm" :class="f.top">
+              <div class="flex items-start gap-3">
+                <span class="grid h-11 w-11 shrink-0 place-items-center rounded-xl" :class="f.icon" aria-hidden="true">
+                  <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path v-for="d in f.paths" :key="d" stroke-linecap="round" stroke-linejoin="round" :d="d" /></svg>
+                </span>
+                <div>
+                  <h3 class="font-display text-base font-bold text-ink-900">{{ f.title }}</h3>
+                  <p class="text-xs font-semibold" :class="f.subText">{{ f.subtitle }}</p>
+                </div>
+              </div>
+              <p class="mt-3 text-sm text-gray-600">{{ f.desc }}</p>
+            </article>
+          </div>
         </section>
 
         <!-- Documentation & Resources -->
@@ -590,5 +644,51 @@ const { addItem } = useCart()
         </section>
       </div>
     </div>
+
+    <!-- Gallery lightbox -->
+    <Teleport to="body">
+      <Transition name="lb">
+        <div
+          v-if="lightboxOpen"
+          class="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm"
+          role="dialog"
+          aria-modal="true"
+          @click.self="closeLightbox"
+          @touchstart.passive="onTouchStart"
+          @touchend.passive="onTouchEnd"
+        >
+          <button type="button" class="absolute right-4 top-4 grid h-11 w-11 place-items-center rounded-full bg-white/10 text-white transition hover:bg-white/20" aria-label="Close" @click="closeLightbox">
+            <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M6 6l12 12M18 6 6 18" /></svg>
+          </button>
+
+          <button v-if="lightboxImages.length > 1" type="button" class="absolute left-2 top-1/2 grid h-12 w-12 -translate-y-1/2 place-items-center rounded-full bg-white/10 text-white transition hover:bg-white/20 sm:left-6" aria-label="Previous" @click="prevImage">
+            <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m15 18-6-6 6-6" /></svg>
+          </button>
+
+          <figure class="flex max-h-full max-w-full flex-col items-center">
+            <img :src="lightboxImages[lightboxIndex]?.image" :alt="lightboxImages[lightboxIndex]?.alt || 'Screenshot'" class="max-h-[82vh] max-w-[92vw] rounded-xl object-contain shadow-2xl">
+            <figcaption class="mt-4 flex flex-col items-center gap-2 text-center text-white">
+              <p v-if="lightboxImages[lightboxIndex]?.caption" class="max-w-lg text-sm text-white/90">{{ lightboxImages[lightboxIndex].caption }}</p>
+              <span class="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold">{{ lightboxIndex + 1 }} / {{ lightboxImages.length }}</span>
+            </figcaption>
+          </figure>
+
+          <button v-if="lightboxImages.length > 1" type="button" class="absolute right-2 top-1/2 grid h-12 w-12 -translate-y-1/2 place-items-center rounded-full bg-white/10 text-white transition hover:bg-white/20 sm:right-6" aria-label="Next" @click="nextImage">
+            <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m9 6 6 6-6 6" /></svg>
+          </button>
+        </div>
+      </Transition>
+    </Teleport>
   </article>
 </template>
+
+<style scoped>
+.lb-enter-active,
+.lb-leave-active {
+  transition: opacity 0.2s ease;
+}
+.lb-enter-from,
+.lb-leave-to {
+  opacity: 0;
+}
+</style>

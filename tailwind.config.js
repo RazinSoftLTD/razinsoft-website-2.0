@@ -31,6 +31,16 @@ export default {
           800: '#111827',
           700: '#1f2937',
         },
+        // Design tokens matching the RazinSoft reference (Insights/Blog).
+        primary: {
+          DEFAULT: '#3382e8',
+          foreground: '#ffffff',
+        },
+        foreground: '#252525',
+        'muted-foreground': '#717182',
+        muted: '#ececf0',
+        border: '#e4e4e7',
+        background: '#ffffff',
       },
     },
   },

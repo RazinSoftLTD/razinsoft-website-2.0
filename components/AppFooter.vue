@@ -1,18 +1,18 @@
 <script setup lang="ts">
 const company = [
-  { label: 'About Us', to: '/#why' },
-  { label: 'Contact Us', to: 'mailto:info@razinsoft.com' },
-  { label: 'Career & Positions', to: '/#company' },
-  { label: 'Privacy Policy', to: '/#company' },
-  { label: 'Refund Policy', to: '/#company' },
-  { label: 'Installation Policy', to: '/#company' },
+  { label: 'About Us', to: '/about-us' },
+  { label: 'Contact Us', to: '/contact-us' },
+  { label: 'Career & Positions', to: '/careers' },
+  { label: 'Privacy Policy', to: '/privacy-policy' },
+  { label: 'Refund Policy', to: '/refund-policy' },
+  { label: 'Installation Policy', to: '/installation-policy' },
 ]
 const quick = [
   { label: 'Login', to: '/login' },
   { label: 'Products', to: '/products' },
   { label: 'Services', to: '/#services' },
-  { label: 'Blogs', to: '/#blog' },
-  { label: 'Get Support', to: 'mailto:info@razinsoft.com' },
+  { label: 'Blogs', to: '/blog' },
+  { label: 'Get Support', to: '/support' },
 ]
 const socials = [
   { label: 'RazinSoft on Facebook', href: 'https://facebook.com/razinsoft', path: 'M14 9h3V5h-3a4 4 0 0 0-4 4v2H7v4h3v6h4v-6h3l1-4h-4V9a1 1 0 0 1 1-1Z' },
@@ -65,11 +65,6 @@ const partners = ['Partner 1', 'Partner 2', 'Partner 3']
             <NuxtLink :to="i.to" class="text-gray-400 hover:text-white">{{ i.label }}</NuxtLink>
           </li>
         </ul>
-        <a href="/admin" class="mt-5 inline-flex items-center gap-2 rounded-lg border border-white/15 px-3 py-2 text-sm font-medium text-gray-200 hover:bg-white/5 hover:text-white">
-          <svg class="h-4 w-4 text-brand-400" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3 4.5 6v5c0 4.5 3 7.5 7.5 9 4.5-1.5 7.5-4.5 7.5-9V6L12 3Z" /></svg>
-          Go to Admin
-          <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5h5v5M19 5l-8 8M19 14v5H5V5h5" /></svg>
-        </a>
       </nav>
 
       <!-- Quick Links -->
@@ -163,9 +158,9 @@ const partners = ['Partner 1', 'Partner 2', 'Partner 3']
       <div class="container-page flex flex-col items-center justify-between gap-3 py-5 text-xs text-gray-400 sm:flex-row">
         <p>© 2026 RazinSoft. All rights reserved.</p>
         <div class="flex gap-5">
-          <NuxtLink to="/#company" class="hover:text-white">Terms of Service</NuxtLink>
-          <NuxtLink to="/#company" class="hover:text-white">Privacy Policy</NuxtLink>
-          <NuxtLink to="/#company" class="hover:text-white">Cookie Policy</NuxtLink>
+          <NuxtLink to="/refund-policy" class="hover:text-white">Refund Policy</NuxtLink>
+          <NuxtLink to="/privacy-policy" class="hover:text-white">Privacy Policy</NuxtLink>
+          <NuxtLink to="/installation-policy" class="hover:text-white">Installation Policy</NuxtLink>
         </div>
       </div>
     </div>

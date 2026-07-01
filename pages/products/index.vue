@@ -27,10 +27,36 @@ const sorts = [
 ]
 
 const { addItem } = useCart()
+const route = useRoute()
+const router = useRouter()
 const view = ref<'grid' | 'list'>('grid')
-const sort = ref('best')
-const category = ref('All Categories')
-const search = ref('')
+
+// Restore filter state from the URL so reload / share / deep-link (e.g. /products?sort=free) keeps it.
+const initialSort = (route.query.sort as string) || (route.query.free ? 'free' : 'best')
+const sort = ref(sorts.some((s) => s.key === initialSort) ? initialSort : 'best')
+const category = ref((route.query.category as string) || 'All Categories')
+const search = ref((route.query.q as string) || '')
+
+// Mirror the current filters back into the URL (replace = no extra history entry).
+watch([sort, category, search], ([s, c, q]) => {
+  const query: Record<string, string> = {}
+  if (s && s !== 'best') query.sort = s
+  if (c && c !== 'All Categories') query.category = c
+  if (q) query.q = q
+  router.replace({ query })
+})
+
+// Sync the other way too: navigating to /products?sort=free while already on the page
+// (e.g. the top-nav "Free Product" link) updates the active tab. Guards avoid a loop.
+watch(() => route.query, (q) => {
+  const s = (q.sort as string) || (q.free ? 'free' : 'best')
+  const nextSort = sorts.some((x) => x.key === s) ? s : 'best'
+  if (nextSort !== sort.value) sort.value = nextSort
+  const c = (q.category as string) || 'All Categories'
+  if (c !== category.value) category.value = c
+  const qq = (q.q as string) || ''
+  if (qq !== search.value) search.value = qq
+})
 
 const filtered = computed(() => {
   let list = [...(products.value ?? [])]

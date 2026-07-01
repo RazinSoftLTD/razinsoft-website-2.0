@@ -54,9 +54,20 @@ export default defineNuxtConfig({
     '/': { prerender: true },
     '/login': { prerender: true },
     '/register': { prerender: true },
+    '/contact-us': { prerender: true },
+    '/about-us': { prerender: true },
+    '/careers': { prerender: true },
+    '/life': { prerender: true },
+    '/support': { prerender: true },
+    '/privacy-policy': { prerender: true },
+    '/refund-policy': { prerender: true },
+    '/installation-policy': { prerender: true },
     // Catalogue: SSR on demand so the API feeds content + SEO (no prerender of live data).
     '/products': { prerender: false },
     '/products/**': { prerender: false },
+    // Insights / blog: SSR on demand so articles come live from the API.
+    '/blog': { prerender: false },
+    '/blog/**': { prerender: false },
     // Auth-gated, per-user pages: client-rendered (token lives in a cookie).
     '/dashboard': { ssr: false },
     '/dashboard/**': { ssr: false },

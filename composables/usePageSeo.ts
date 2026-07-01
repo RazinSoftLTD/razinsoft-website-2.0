@@ -15,7 +15,7 @@ export function usePageSeo(meta: PageSeo) {
   const siteUrl = useRuntimeConfig().public.siteUrl as string
   const base = siteUrl.replace(/\/$/, '')
   const canonical = base + route.path
-  const image = base + (meta.image ?? '/images/hero-team.jpg')
+  const image = base + (meta.image ?? '/images/razinsoft-home-og-image.webp')
 
   useSeoMeta({
     title: meta.title,

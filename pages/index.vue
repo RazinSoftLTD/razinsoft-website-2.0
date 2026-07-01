@@ -37,12 +37,26 @@ const testimonials = [
   { quote: 'The LMS is remarkably feature-complete. SCORM compliance out of the box, live classrooms that actually work, and support tickets answered within the hour.', name: 'Carlos Mendez', role: 'Head of Digital, EduFocus', initials: 'CM', avatar: 'bg-emerald-600' },
   { quote: 'We migrated our news portal to RazinSoft CMS and page load times dropped by 40%. The editorial workflow alone saves our team two hours every publish cycle.', name: 'Sarah Okonkwo', role: 'Founder, PressMatrix', initials: 'SO', avatar: 'bg-orange-500' },
 ]
+// Duplicated set for a seamless infinite marquee (loops at -50%).
+const reviewsLoop = [...testimonials, ...testimonials, ...testimonials, ...testimonials]
 
-const posts = [
-  { title: 'Ecommerce Suite 3.0: Introducing AI-Powered Inventory Forecasting', excerpt: 'The latest major release brings machine-learning demand predictions, automated reorder triggers, and a redesigned supplier portal.', author: 'Mehedi Hassan', date: 'June 18, 2025', read: '5 min read', tag: 'Product Update', tagTone: 'bg-blue-100 text-blue-700', image: '/images/blog/blog-1.jpg' },
-  { title: 'Setting Up a Multi-Tenant LMS in Under 30 Minutes', excerpt: "A step-by-step walkthrough from account creation to publishing your first course using RazinSoft's LMS starter template.", author: 'Fatima Al-Zahra', date: 'June 10, 2025', read: '8 min read', tag: 'Tutorial', tagTone: 'bg-emerald-100 text-emerald-700', image: '/images/blog/blog-2.jpg' },
-  { title: 'RazinSoft Crosses 50,000 Active Users Across 40 Countries', excerpt: "We reflect on the growth milestones, the product decisions that drove them, and what's coming next for our global customer base.", author: 'RazinSoft Team', date: 'May 28, 2025', read: '4 min read', tag: 'Company', tagTone: 'bg-purple-100 text-purple-700', image: '/images/blog/blog-3.jpg' },
-]
+// Latest published articles for the "Insights & updates" teaser (from the API).
+const { $api } = useNuxtApp()
+const { data: articlesRes } = await useAsyncData('home-articles', () => $api<any>('/articles'))
+const tagTones = ['bg-blue-100 text-blue-700', 'bg-emerald-100 text-emerald-700', 'bg-purple-100 text-purple-700', 'bg-orange-100 text-orange-700', 'bg-rose-100 text-rose-700']
+const posts = computed(() =>
+  (articlesRes.value?.data ?? []).slice(0, 3).map((a: any, i: number) => ({
+    slug: a.slug,
+    title: a.title,
+    excerpt: a.excerpt,
+    author: a.author,
+    date: a.date,
+    read: a.readTime,
+    tag: a.category,
+    tagTone: tagTones[i % tagTones.length],
+    image: a.image,
+  })),
+)
 </script>
 
 <template>
@@ -93,6 +107,9 @@ const posts = [
       </div>
     </div>
   </section>
+
+  <!-- ============ TRUSTED-BY LOGOS ============ -->
+  <TrustedLogos />
 
   <!-- ============ PRODUCTS ============ -->
   <section id="products" class="scroll-mt-20 bg-gray-50 py-20">
@@ -169,71 +186,91 @@ const posts = [
     </div>
 
     <div class="mt-12 grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
-      <article v-for="s in services" :key="s.title">
-        <div class="grid h-12 w-12 place-items-center rounded-xl" :class="s.tone" aria-hidden="true">
+      <article v-for="s in services" :key="s.title" class="group flex gap-4">
+        <div class="mt-0.5 grid h-12 w-12 shrink-0 place-items-center rounded-xl transition-transform duration-200 group-hover:scale-110" :class="s.tone" aria-hidden="true">
           <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path v-for="d in s.paths" :key="d" stroke-linecap="round" stroke-linejoin="round" :d="d" /></svg>
         </div>
-        <h3 class="mt-4 font-display text-lg font-bold text-ink-900">{{ s.title }}</h3>
-        <p class="mt-2 text-sm leading-relaxed text-gray-600">{{ s.desc }}</p>
+        <div>
+          <h3 class="font-display text-lg font-bold text-ink-900 transition-colors group-hover:text-brand-600">{{ s.title }}</h3>
+          <p class="mt-2 text-sm leading-relaxed text-gray-600">{{ s.desc }}</p>
+        </div>
       </article>
     </div>
   </section>
 
   <!-- ============ TESTIMONIALS ============ -->
-  <section class="bg-gray-50 py-20">
+  <section class="overflow-hidden bg-gray-50 py-20">
     <div class="container-page">
       <div class="text-center">
         <p class="text-xs font-bold uppercase tracking-widest text-brand-600">Customer Stories</p>
         <h2 class="mt-2 font-display text-4xl font-extrabold text-ink-900">Trusted by teams worldwide.</h2>
       </div>
-      <div class="mt-12 grid gap-6 lg:grid-cols-3">
-        <figure v-for="(t, i) in testimonials" :key="t.name" class="flex flex-col rounded-2xl border p-7 shadow-sm" :class="i === 1 ? 'border-brand-200 bg-brand-50/60' : 'border-gray-100 bg-white'">
-          <div class="flex gap-1 text-amber-400" aria-hidden="true">
-            <svg v-for="n in 5" :key="n" class="h-5 w-5 fill-current" viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.3 5.9.9-4.2 4.1 1 5.8L10 15l-5.3 2.6 1-5.8L1.5 7.7l5.9-.9z" /></svg>
-          </div>
-          <blockquote class="mt-4 flex-1 text-[15px] leading-relaxed text-ink-700">"{{ t.quote }}"</blockquote>
-          <figcaption class="mt-6 flex items-center gap-3 border-t border-gray-200/70 pt-5">
-            <span class="grid h-10 w-10 place-items-center rounded-full text-sm font-bold text-white" :class="t.avatar" aria-hidden="true">{{ t.initials }}</span>
-            <span>
-              <span class="block font-semibold text-ink-900">{{ t.name }}</span>
-              <span class="block text-sm text-gray-500">{{ t.role }}</span>
-            </span>
-          </figcaption>
-        </figure>
-      </div>
-      <div class="mt-8 flex justify-center gap-2" aria-hidden="true">
-        <span class="h-2 w-2 rounded-full bg-gray-300" /><span class="h-2 w-6 rounded-full bg-brand-600" /><span class="h-2 w-2 rounded-full bg-gray-300" />
-      </div>
+    </div>
+
+    <!-- Infinite left→right marquee -->
+    <div class="marquee mt-12">
+      <ul class="marquee-track">
+        <li v-for="(t, i) in reviewsLoop" :key="i" class="w-[300px] shrink-0 sm:w-[380px]">
+          <figure class="flex h-full flex-col rounded-2xl border border-gray-100 bg-white p-7 shadow-sm">
+            <div class="flex gap-1 text-amber-400" aria-hidden="true">
+              <svg v-for="n in 5" :key="n" class="h-5 w-5 fill-current" viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.3 5.9.9-4.2 4.1 1 5.8L10 15l-5.3 2.6 1-5.8L1.5 7.7l5.9-.9z" /></svg>
+            </div>
+            <blockquote class="mt-4 flex-1 text-[15px] leading-relaxed text-ink-700">"{{ t.quote }}"</blockquote>
+            <figcaption class="mt-6 flex items-center gap-3 border-t border-gray-200/70 pt-5">
+              <span class="grid h-10 w-10 place-items-center rounded-full text-sm font-bold text-white" :class="t.avatar" aria-hidden="true">{{ t.initials }}</span>
+              <span>
+                <span class="block font-semibold text-ink-900">{{ t.name }}</span>
+                <span class="block text-sm text-gray-500">{{ t.role }}</span>
+              </span>
+            </figcaption>
+          </figure>
+        </li>
+      </ul>
     </div>
   </section>
 
-  <!-- ============ BLOG ============ -->
-  <section id="blog" class="container-page scroll-mt-20 py-20">
-    <div class="flex flex-wrap items-end justify-between gap-4">
-      <div>
-        <p class="text-xs font-bold uppercase tracking-widest text-brand-600">From the Blog</p>
-        <h2 class="mt-2 font-display text-4xl font-extrabold text-ink-900">Insights &amp; updates.</h2>
+  <!-- ============ BLOG / INSIGHTS ============ -->
+  <section id="blog" class="scroll-mt-20 bg-[#f8fafc] py-20">
+    <div class="container-page">
+      <div class="mb-12 flex items-end justify-between">
+        <div>
+          <p class="mb-3 text-xs font-bold uppercase tracking-widest text-primary">From the Blog</p>
+          <h2 class="text-3xl font-extrabold leading-tight text-foreground lg:text-4xl">Insights &amp; updates.</h2>
+        </div>
+        <NuxtLink to="/blog" class="hidden items-center gap-1.5 text-sm font-semibold text-primary hover:underline md:flex">View all posts
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6" /></svg>
+        </NuxtLink>
       </div>
-      <NuxtLink to="/#blog" class="inline-flex items-center gap-1 text-sm font-semibold text-brand-600 hover:text-brand-700">View all posts
-        <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m9 6 6 6-6 6" /></svg>
-      </NuxtLink>
-    </div>
 
-    <div class="mt-10 grid gap-6 md:grid-cols-3">
-      <article v-for="post in posts" :key="post.title" class="group flex flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition hover:shadow-md">
-        <div class="relative">
-          <NuxtImg :src="post.image" :alt="post.title" width="600" height="340" sizes="100vw md:400px" format="webp" loading="lazy" class="aspect-[16/9] w-full bg-gray-100 object-cover" />
-          <span class="absolute left-3 top-3 rounded-md px-2.5 py-1 text-[11px] font-bold" :class="post.tagTone">{{ post.tag }}</span>
-        </div>
-        <div class="flex flex-1 flex-col p-5">
-          <h3 class="font-display text-lg font-bold leading-snug text-ink-900 group-hover:text-brand-700">{{ post.title }}</h3>
-          <p class="mt-2 flex-1 text-sm text-gray-600">{{ post.excerpt }}</p>
-          <div class="mt-5 flex items-center justify-between border-t border-gray-100 pt-4 text-xs text-gray-500">
-            <span class="font-medium text-ink-700">{{ post.author }}</span>
-            <span>{{ post.date }} · {{ post.read }}</span>
+      <div class="grid gap-6 md:grid-cols-3">
+        <NuxtLink
+          v-for="post in posts"
+          :key="post.slug"
+          :to="`/blog/${post.slug}`"
+          class="group flex cursor-pointer flex-col overflow-hidden rounded-2xl border border-border/60 bg-white transition-all duration-300 hover:border-primary/20 hover:shadow-lg"
+        >
+          <div class="relative overflow-hidden bg-muted">
+            <img :src="post.image" :alt="post.title" class="h-44 w-full object-cover transition-transform duration-500 group-hover:scale-105">
+            <div class="absolute left-3 top-3">
+              <span class="rounded-full px-2.5 py-1 text-[10px] font-bold" :class="post.tagTone">{{ post.tag }}</span>
+            </div>
           </div>
-        </div>
-      </article>
+          <div class="flex flex-1 flex-col gap-3 p-5">
+            <h3 class="line-clamp-2 text-sm font-bold leading-snug text-foreground transition-colors group-hover:text-primary">{{ post.title }}</h3>
+            <p class="line-clamp-3 flex-1 text-xs leading-relaxed text-muted-foreground">{{ post.excerpt }}</p>
+            <div class="flex items-center justify-between border-t border-border/40 pt-3 text-[11px] text-muted-foreground">
+              <span>{{ post.author }}</span>
+              <div class="flex items-center gap-2"><span>{{ post.date }}</span><span>·</span><span>{{ post.read }}</span></div>
+            </div>
+          </div>
+        </NuxtLink>
+      </div>
+
+      <div class="mt-8 flex justify-center md:hidden">
+        <NuxtLink to="/blog" class="flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline">View all posts
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6" /></svg>
+        </NuxtLink>
+      </div>
     </div>
   </section>
 
@@ -249,7 +286,7 @@ const posts = [
         Join 50,000+ businesses already running on RazinSoft. Free 14-day trial. No credit card needed.
       </p>
       <div class="mt-8 flex flex-wrap justify-center gap-3">
-        <NuxtLink to="/#products" class="btn bg-brand-600 text-white shadow-lg shadow-brand-600/20 hover:bg-brand-700">Get started free
+        <NuxtLink to="/products?sort=free" class="btn bg-brand-600 text-white shadow-lg shadow-brand-600/20 hover:bg-brand-700">Get started free
           <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6" /></svg>
         </NuxtLink>
         <NuxtLink to="/#company" class="btn border border-white/25 bg-white/5 text-white hover:bg-white/10">Sign in to dashboard</NuxtLink>
@@ -257,3 +294,37 @@ const posts = [
     </div>
   </section>
 </template>
+
+<style scoped>
+.marquee {
+  /* Fade the cards in/out at the edges. */
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  padding-block: 0.5rem;
+  animation: marquee-ltr 45s linear infinite;
+}
+/* Uniform trailing margin (incl. last card) keeps the -50% loop seamless. */
+.marquee-track > li {
+  margin-right: 1.5rem;
+}
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+@keyframes marquee-ltr {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+  }
+}
+</style>
