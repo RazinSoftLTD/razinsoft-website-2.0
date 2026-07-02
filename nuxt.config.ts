@@ -60,7 +60,9 @@ export default defineNuxtConfig({
   // Static marketing pages prerender; data- and auth-driven pages render live (SSR/SPA)
   // so they reflect the API instead of baking stale data at build time.
   routeRules: {
-    '/': { prerender: true },
+    // Home shows LIVE product + blog data from the API — SWR (not prerender) so it stays
+    // fresh after admin edits instead of baking stale data at build time.
+    '/': { swr: 300 },
     '/login': { prerender: true },
     '/register': { prerender: true },
     '/contact-us': { prerender: true },
@@ -104,7 +106,7 @@ export default defineNuxtConfig({
 
   nitro: {
     // Only crawl-prerender the static marketing routes; don't bake live API data.
-    prerender: { crawlLinks: false, routes: ['/', '/login', '/register'], failOnError: false },
+    prerender: { crawlLinks: false, routes: ['/login', '/register'], failOnError: false },
     // Brotli + gzip precompressed assets. Improves: Performance (smaller transfer).
     compressPublicAssets: { gzip: true, brotli: true },
   },
