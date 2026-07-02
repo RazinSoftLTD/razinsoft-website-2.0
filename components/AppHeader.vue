@@ -39,7 +39,8 @@ onMounted(() => {
     <div class="container-page flex h-16 items-center justify-between gap-4">
       <NuxtLink to="/" class="flex shrink-0 items-center gap-2" aria-label="RazinSoft home">
         <span class="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-brand-400 to-brand-700 font-display text-lg font-extrabold text-white" aria-hidden="true">R</span>
-        <span class="font-display text-xl font-extrabold tracking-tight text-ink-900">RazinSoft</span>
+        <!-- Brand text hides on ultra-narrow phones (<360px) so the header never overflows. -->
+        <span class="font-display text-xl font-extrabold tracking-tight text-ink-900 max-[359px]:hidden">RazinSoft</span>
       </NuxtLink>
 
       <nav class="hidden items-center gap-1 lg:flex" aria-label="Primary">

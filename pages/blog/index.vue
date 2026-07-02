@@ -92,7 +92,7 @@ const showFeatured = computed(() => featured.value && activeCategory.value === '
     <div class="container mx-auto px-6 py-12">
       <div class="grid gap-8 lg:grid-cols-12">
         <!-- Sidebar -->
-        <aside class="lg:col-span-3">
+        <aside class="min-w-0 lg:col-span-3">
           <div class="sticky top-6 space-y-6">
             <div class="rounded-xl border border-border bg-white p-6">
               <h3 class="mb-4 flex items-center gap-2 font-bold text-foreground">
@@ -151,7 +151,7 @@ const showFeatured = computed(() => featured.value && activeCategory.value === '
         </aside>
 
         <!-- Main -->
-        <main class="lg:col-span-9">
+        <main class="min-w-0 lg:col-span-9">
           <!-- Featured -->
           <div v-if="showFeatured && featured" class="mb-12">
             <div class="mb-4 flex items-center gap-2">
