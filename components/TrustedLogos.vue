@@ -36,7 +36,7 @@ const loop = computed(() => [...props.logos, ...props.logos, ...props.logos, ...
       <ul class="logo-track">
         <li v-for="(logo, i) in loop" :key="i">
           <div class="grid h-20 w-44 place-items-center rounded-xl border border-gray-100 bg-white px-6 shadow-sm">
-            <img v-if="logo.image" :src="logo.image" :alt="logo.name" class="max-h-10 max-w-full object-contain">
+            <img v-if="logo.image" :src="logo.image" :alt="logo.name" width="128" height="40" loading="lazy" decoding="async" class="max-h-10 max-w-full object-contain">
             <span v-else class="text-center font-display text-sm font-extrabold uppercase tracking-wide text-gray-400">{{ logo.name }}</span>
           </div>
         </li>

@@ -436,7 +436,7 @@ const { addItem } = useCart()
           <div class="relative mt-4 aspect-[16/9] overflow-hidden rounded-2xl bg-ink-900">
             <div v-for="tab in gallery" v-show="activeTab === tab.name" :key="tab.name" class="absolute inset-0">
               <button type="button" class="group/gal relative block h-full w-full" :aria-label="`View ${tab.name} screenshots`" @click="openLightbox(tab, 0)">
-                <img :src="tab.images[0].image" :alt="tab.images[0].alt || `${product.name} — ${tab.name} screenshot`" loading="lazy" class="h-full w-full object-cover opacity-90 transition duration-300 group-hover/gal:scale-[1.02] group-hover/gal:opacity-100">
+                <NuxtImg :src="tab.images[0].image" :alt="tab.images[0].alt || `${product.name} — ${tab.name} screenshot`" width="640" height="420" sizes="100vw sm:50vw lg:420px" format="webp" loading="lazy" class="h-full w-full object-cover opacity-90 transition duration-300 group-hover/gal:scale-[1.02] group-hover/gal:opacity-100" />
                 <span class="absolute bottom-4 left-4 font-display font-bold text-white drop-shadow">{{ tab.label }}</span>
                 <span v-if="tab.images.length > 1" class="absolute right-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-black/50 px-3 py-1 text-xs font-semibold text-white backdrop-blur">
                   <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" /><path d="M3 15l5-5 4 4 3-3 6 6" /></svg>

@@ -160,7 +160,7 @@ const open = reactive<Record<string, boolean>>({ company: false, quick: false })
           <div class="mt-3 flex flex-wrap items-center gap-2">
             <span class="rounded-md bg-white px-3 py-1.5 text-sm font-bold italic"><span class="text-[#003087]">Pay</span><span class="text-[#0070e0]">Pal</span></span>
             <span class="rounded-md bg-white px-3 py-1.5 text-sm font-extrabold italic tracking-tight text-[#1434CB]">VISA</span>
-            <span class="flex items-center rounded-md bg-white px-3 py-2" aria-label="Mastercard"><span class="h-4 w-4 rounded-full bg-[#EB001B]" /><span class="-ml-1.5 h-4 w-4 rounded-full bg-[#F79E1B]/90" /></span>
+            <span role="img" class="flex items-center rounded-md bg-white px-3 py-2" aria-label="Mastercard"><span class="h-4 w-4 rounded-full bg-[#EB001B]" /><span class="-ml-1.5 h-4 w-4 rounded-full bg-[#F79E1B]/90" /></span>
             <span class="rounded-md bg-white px-3 py-1.5 text-[11px] font-bold text-[#016FD0]">AMERICAN EXPRESS</span>
             <span class="rounded-md bg-white px-3 py-1.5 text-sm font-bold text-ink-900">DISC<span class="text-[#FF6000]">OVER</span></span>
           </div>

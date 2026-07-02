@@ -249,7 +249,7 @@ const posts = computed(() =>
           class="group flex cursor-pointer flex-col overflow-hidden rounded-2xl border border-border/60 bg-white transition-all duration-300 hover:border-primary/20 hover:shadow-lg"
         >
           <div class="relative overflow-hidden bg-muted">
-            <img :src="post.image" :alt="post.title" class="h-44 w-full object-cover transition-transform duration-500 group-hover:scale-105">
+            <NuxtImg :src="post.image" :alt="post.title" width="600" height="400" sizes="100vw sm:50vw lg:384px" format="webp" loading="lazy" class="h-44 w-full object-cover transition-transform duration-500 group-hover:scale-105" />
             <div class="absolute left-3 top-3">
               <span class="rounded-full px-2.5 py-1 text-[10px] font-bold" :class="post.tagTone">{{ post.tag }}</span>
             </div>
