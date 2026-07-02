@@ -23,8 +23,7 @@ const isActive = (to: string) => to === '/dashboard' && route.path === '/dashboa
       :class="open ? 'translate-x-0' : '-translate-x-full'"
     >
       <NuxtLink to="/" class="flex h-16 items-center gap-2 border-b border-gray-100 px-6">
-        <span class="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-brand-400 to-brand-700 font-display text-lg font-extrabold text-white" aria-hidden="true">R</span>
-        <span class="font-display text-xl font-extrabold text-ink-900">RazinSoft</span>
+        <img src="/images/Razinsoft-logo.webp" alt="RazinSoft" width="1772" height="384" class="h-8 w-auto">
       </NuxtLink>
 
       <nav class="flex-1 space-y-1 overflow-y-auto p-4" aria-label="Dashboard">

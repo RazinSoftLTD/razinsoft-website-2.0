@@ -11,8 +11,8 @@ const points = [
     <div class="pointer-events-none absolute inset-0 opacity-[0.06]" aria-hidden="true" style="background-image: linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px); background-size: 56px 56px;" />
 
     <NuxtLink to="/" class="relative flex items-center gap-2">
-      <span class="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-brand-400 to-brand-700 font-display text-lg font-extrabold text-white" aria-hidden="true">R</span>
-      <span class="font-display text-xl font-extrabold">RazinSoft</span>
+      <!-- White-inverted brand logo for the dark aside. -->
+      <img src="/images/Razinsoft-logo.webp" alt="RazinSoft" width="1772" height="384" class="h-9 w-auto brightness-0 invert">
     </NuxtLink>
 
     <div class="relative">

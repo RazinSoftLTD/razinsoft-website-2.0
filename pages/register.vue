@@ -61,8 +61,7 @@ const field = 'h-11 w-full rounded-lg border border-gray-200 bg-white pl-10 text
     <main class="flex items-center justify-center px-5 py-10 sm:px-8">
       <div class="w-full max-w-md">
         <NuxtLink to="/" class="mb-8 flex items-center gap-2 lg:hidden">
-          <span class="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-brand-400 to-brand-700 font-display text-lg font-extrabold text-white" aria-hidden="true">R</span>
-          <span class="font-display text-xl font-extrabold text-ink-900">RazinSoft</span>
+          <img src="/images/Razinsoft-logo.webp" alt="RazinSoft" width="1772" height="384" class="h-8 w-auto">
         </NuxtLink>
 
         <h1 class="font-display text-3xl font-extrabold text-ink-900">Create your account</h1>

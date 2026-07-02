@@ -165,7 +165,7 @@ export default defineNuxtConfig({
         { name: 'theme-color', content: '#2563eb' },
       ],
       link: [
-        { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
+        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
         // Warm up the connection to the API/storage host early → faster image + data fetch (LCP).
         ...(apiOrigin ? [{ rel: 'preconnect', href: apiOrigin, crossorigin: '' as const }, { rel: 'dns-prefetch', href: apiOrigin }] : []),
       ],

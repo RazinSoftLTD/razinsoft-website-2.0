@@ -37,10 +37,8 @@ const open = reactive<Record<string, boolean>>({ company: false, quick: false })
     <div class="container-page grid gap-10 py-14 lg:grid-cols-12">
       <!-- Brand -->
       <div class="lg:col-span-3">
-        <div class="flex items-center gap-2">
-          <span class="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-brand-400 to-brand-700 font-display text-lg font-extrabold text-white" aria-hidden="true">R</span>
-          <span class="font-display text-xl font-extrabold text-white">RazinSoft</span>
-        </div>
+        <!-- White-inverted brand logo for the dark footer. -->
+        <img src="/images/Razinsoft-logo.webp" alt="RazinSoft" width="1772" height="384" loading="lazy" class="h-9 w-auto brightness-0 invert">
         <p class="mt-4 max-w-xs text-sm leading-relaxed text-gray-400">
           Elevate Your Business with Innovative Web, App, and Software Solutions. Partner for Excellence in Tech.
         </p>

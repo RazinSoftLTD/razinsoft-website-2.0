@@ -18,7 +18,7 @@ useSchemaOrg([
   defineOrganization({
     name: 'RazinSoft',
     url: siteUrl,
-    logo: `${siteUrl}/favicon.svg`,
+    logo: `${siteUrl}/images/Razinsoft-logo.webp`,
     sameAs: [
       'https://github.com/razinsoft',
       'https://www.linkedin.com/company/razinsoft',
