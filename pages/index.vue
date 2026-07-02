@@ -4,9 +4,9 @@ const { data: allProducts } = await useProducts()
 const products = computed(() => (allProducts.value ?? []).slice(0, 8))
 
 usePageSeo({
-  title: 'Scalable Software Solutions for Growing Businesses',
+  title: 'RazinSoft | Custom Software Development & Ready-Made Business Solutions',
   description:
-    'RazinSoft builds enterprise-ready eCommerce, LMS, POS and SaaS products for startups and growing businesses — with rapid deployment, enterprise security and 24/7 support.',
+    'RazinSoft delivers custom software development, SaaS platforms, and ready-made eCommerce, LMS, POS & ride-sharing scripts — trusted in 25+ countries. Book a free consultation.',
 })
 useSchemaOrg([defineWebPage({ '@type': 'CollectionPage' })])
 
@@ -17,25 +17,28 @@ const reviews = [
 ]
 
 const whyFeatures = [
-  { title: 'Rapid Deployment', desc: 'Get your platform live in days, not months. Our pre-built modules and guided setup cut time-to-market dramatically.', paths: ['m13 2-8 12h6l-2 8 8-12h-6l2-8Z'] },
-  { title: 'Enterprise Security', desc: 'Bank-grade encryption, SOC 2-ready infrastructure, and automated security patches on every plan.', paths: ['M12 2.5l7.5 3v5.25c0 5.02-3.43 8.06-7.5 9.5-4.07-1.44-7.5-4.48-7.5-9.5V5.5l7.5-3Z', 'm9 12 2 2 4-4'] },
-  { title: '24/7 Expert Support', desc: 'Dedicated engineers available around the clock via live chat, phone, and a priority ticket system.', paths: ['M4 13a8 8 0 0 1 16 0v5a2 2 0 0 1-2 2h-1v-6h3M4 13v5a2 2 0 0 0 2 2h1v-6H4'] },
-  { title: 'Global Infrastructure', desc: 'Distributed across 12 data centres worldwide. Sub-50ms latency for users in any region.', paths: ['M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Z', 'M12 3c2.5 2.5 2.5 15 0 18M12 3c-2.5 2.5-2.5 15 0 18M3.5 9h17M3.5 15h17'] },
+  { title: 'Rapid Deployment', desc: 'Launch production-ready software quickly with pre-built modules, optimized workflows, and expert implementation support.', paths: ['m13 2-8 12h6l-2 8 8-12h-6l2-8Z'] },
+  { title: 'Enterprise Security', desc: 'Protect your business with secure architecture, encrypted data handling, and reliability standards built into every solution.', paths: ['M12 2.5l7.5 3v5.25c0 5.02-3.43 8.06-7.5 9.5-4.07-1.44-7.5-4.48-7.5-9.5V5.5l7.5-3Z', 'm9 12 2 2 4-4'] },
+  { title: '24/7 Expert Support', desc: 'Work with experienced engineers who provide fast responses, technical guidance, and long-term support when you need it.', paths: ['M4 13a8 8 0 0 1 16 0v5a2 2 0 0 1-2 2h-1v-6h3M4 13v5a2 2 0 0 0 2 2h1v-6H4'] },
+  { title: 'Global Infrastructure', desc: 'Built for growing businesses with high-performance infrastructure that scales smoothly as users, orders, and traffic increase.', paths: ['M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Z', 'M12 3c2.5 2.5 2.5 15 0 18M12 3c-2.5 2.5-2.5 15 0 18M3.5 9h17M3.5 15h17'] },
 ]
 
 const services = [
-  { title: 'Custom Software Development', desc: 'Build modern web applications, mobile apps, and enterprise designs that perform at scale, look stunning, and give users a better experience.', tone: 'bg-blue-50 text-blue-600', paths: ['M9 12h6m-6 4h6M8 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h6.6a1 1 0 0 1 .7.3l5.4 5.4a1 1 0 0 1 .3.7V19a2 2 0 0 1-2 2h-1'] },
-  { title: 'eCommerce Development', desc: 'Create fast, secure, and conversion-focused eCommerce platforms designed to deliver a smooth shopping experience for your customers.', tone: 'bg-emerald-50 text-emerald-600', paths: ['M3 6h17l-1.4 12a2 2 0 0 1-2 1.7H6.4a2 2 0 0 1-2-1.7L3 6Z', 'M8 6a4 4 0 1 1 8 0'] },
-  { title: 'AI & SaaS Development', desc: 'Build smart SaaS platforms, AI features, and automation systems that help businesses work faster, serve customers better, and grow.', tone: 'bg-purple-50 text-purple-600', paths: ['m13 2-8 12h6l-2 8 8-12h-6l2-8Z'] },
-  { title: 'Cloud & DevOps Solutions', desc: 'Improve speed, security, and scalability with reliable cloud infrastructure and efficient DevOps management solutions.', tone: 'bg-amber-50 text-amber-600', paths: ['M7 18a4 4 0 0 1-.5-7.97A6 6 0 0 1 18 9a4.5 4.5 0 0 1-.5 9H7Z'] },
-  { title: 'Marketing & Creative Solutions', desc: 'Grow your brand with complete digital marketing solutions, including SEO, media marketing, paid ads, and creative graphic design.', tone: 'bg-rose-50 text-rose-600', paths: ['M3 17l6-6 4 4 7-7', 'M16 8h5v5'] },
-  { title: 'Maintenance & Support', desc: 'Keep your platform secure and user-friendly with simple clean design through regular fixes, updates, and reliable technical support.', tone: 'bg-teal-50 text-teal-600', paths: ['M4 13a8 8 0 0 1 16 0v5a2 2 0 0 1-2 2h-1v-6h3M4 13v5a2 2 0 0 0 2 2h1v-6H4'] },
+  { title: 'Custom Software Development', desc: 'Scalable custom software built around your unique business needs - secure, reliable, and ready for growth.', tone: 'bg-blue-50 text-blue-600', paths: ['M9 12h6m-6 4h6M8 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h6.6a1 1 0 0 1 .7.3l5.4 5.4a1 1 0 0 1 .3.7V19a2 2 0 0 1-2 2h-1'] },
+  { title: 'eCommerce Development', desc: 'Conversion-focused eCommerce platforms designed to increase sales and deliver exceptional customer experiences.', tone: 'bg-emerald-50 text-emerald-600', paths: ['M3 6h17l-1.4 12a2 2 0 0 1-2 1.7H6.4a2 2 0 0 1-2-1.7L3 6Z', 'M8 6a4 4 0 1 1 8 0'] },
+  { title: 'AI & SaaS Development', desc: 'Smart software powered by AI and automation to improve efficiency, decision-making, and business performance.', tone: 'bg-purple-50 text-purple-600', paths: ['m13 2-8 12h6l-2 8 8-12h-6l2-8Z'] },
+  { title: 'Cloud & DevOps Solutions', desc: 'Modern cloud infrastructure and DevOps practices for faster deployments, stronger security, and reliable performance.', tone: 'bg-amber-50 text-amber-600', paths: ['M7 18a4 4 0 0 1-.5-7.97A6 6 0 0 1 18 9a4.5 4.5 0 0 1-.5 9H7Z'] },
+  { title: 'Marketing & Creative Solutions', desc: 'Data-driven marketing and creative strategies that increase visibility, generate leads, and strengthen your brand.', tone: 'bg-rose-50 text-rose-600', paths: ['M3 17l6-6 4 4 7-7', 'M16 8h5v5'] },
+  { title: 'Maintenance & Support', desc: 'Reliable monitoring, regular updates, and expert technical support to keep your business running smoothly.', tone: 'bg-teal-50 text-teal-600', paths: ['M4 13a8 8 0 0 1 16 0v5a2 2 0 0 1-2 2h-1v-6h3M4 13v5a2 2 0 0 0 2 2h1v-6H4'] },
 ]
 
 const testimonials = [
-  { quote: "RazinSoft's ecommerce suite cut our development time by 70%. The multi-vendor setup was live in three days and the analytics dashboard is genuinely excellent.", name: 'Aisha Rahman', role: 'CTO, NovaTrade Ltd', initials: 'AR', avatar: 'bg-blue-600' },
-  { quote: 'The LMS is remarkably feature-complete. SCORM compliance out of the box, live classrooms that actually work, and support tickets answered within the hour.', name: 'Carlos Mendez', role: 'Head of Digital, EduFocus', initials: 'CM', avatar: 'bg-emerald-600' },
-  { quote: 'We migrated our news portal to RazinSoft CMS and page load times dropped by 40%. The editorial workflow alone saves our team two hours every publish cycle.', name: 'Sarah Okonkwo', role: 'Founder, PressMatrix', initials: 'SO', avatar: 'bg-orange-500' },
+  { quote: "ReadyRide helped us launch much faster than building everything from scratch. The apps run smoothly, and the admin panel is easy to manage.", name: 'Araf khan', role: 'CTO, MetroRide Technologies', initials: 'AK', avatar: 'bg-blue-600' },
+  { quote: 'We wanted an eCommerce solution that could be launched quickly. The setup was straightforward, and the platform has been a great fit for our business.', name: 'Pedro van', role: 'HR Manager, NovaCart Commerce', initials: 'PV', avatar: 'bg-emerald-600' },
+  { quote: "The software has been reliable, and the support team is responsive whenever we need help. It's a solution we can depend on every day.", name: 'David Müller', role: 'Founder, RetailHub Stores', initials: 'DM', avatar: 'bg-orange-500' },
+  { quote: "ReadyLMS gave us most of the features we needed from day one. The platform is easy to use, and both instructors and students adapted quickly.", name: 'Pradip kulkarni', role: 'SEO, SkillBridge Academy', initials: 'PK', avatar: 'bg-orange-500' },
+  { quote: "The platform made our laundry operations much easier to manage. Order tracking is smoother, and daily tasks take less time than before.", name: 'Michael Carter', role: 'SEO, FreshFold Laundry Services', initials: 'MC', avatar: 'bg-orange-500' },
+  { quote: "We needed a system to manage properties, tenants, and payments in one place. The platform was easy to use, and the support team was always helpful when needed.", name: 'Thomas Becker', role: 'AM, UrbanSpace Management', initials: 'MC', avatar: 'bg-orange-500' },
 ]
 // Duplicated set for a seamless infinite marquee (loops at -50%).
 const reviewsLoop = [...testimonials, ...testimonials, ...testimonials, ...testimonials]
@@ -66,15 +69,12 @@ const posts = computed(() =>
       <h1 class="font-display text-5xl font-extrabold leading-[1.05] tracking-tight text-ink-900 sm:text-6xl">
         Scalable
         <span class="block w-fit text-brand-600 underline decoration-brand-600/40 decoration-4 underline-offset-4">Software Solutions</span>
-        for Growing Businesses
       </h1>
       <p class="mt-6 max-w-lg text-lg leading-relaxed text-gray-600">
-        RazinSoft empowers startups and businesses with scalable digital solutions, combining modern
-        development technologies, strategic thinking, and industry-focused expertise to drive long-term
-        business growth.
+        RazinSoft builds ready and custom software solutions for eCommerce, LMS, POS, transportation, and more  — trusted by 25+ countries. 
       </p>
       <NuxtLink to="/#products" class="btn-dark mt-8 uppercase tracking-wide">
-        Book a free call
+        Book a Free Consultation
         <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6" /></svg>
       </NuxtLink>
 
@@ -92,14 +92,14 @@ const posts = computed(() =>
     <!-- Two overlapping image cards with floating stat badges -->
     <div class="relative mx-auto w-full max-w-md lg:max-w-none">
       <div class="relative ml-auto w-[82%]">
-        <NuxtImg src="/images/hero-1.jpg" alt="RazinSoft engineers working together" width="520" height="360" sizes="100vw lg:520px" format="webp" loading="eager" fetchpriority="high" preload class="aspect-[13/9] w-full rounded-3xl bg-gray-100 object-cover shadow-xl" />
+        <NuxtImg src="/images/razinsoft-team-focus-hero-image.webp" alt="The RazinSoft team is dedicated to working" width="520" height="360" sizes="100vw lg:520px" format="webp" loading="eager" fetchpriority="high" preload class="aspect-[13/9] w-full rounded-3xl bg-gray-100 object-cover shadow-xl" />
         <div class="absolute left-4 top-4 rounded-2xl bg-white/95 px-4 py-2.5 shadow-lg backdrop-blur">
           <p class="font-display text-2xl font-extrabold text-ink-900">35+</p>
           <p class="text-xs text-gray-500">Tech Professionals</p>
         </div>
       </div>
       <div class="relative -mt-14 w-[72%]">
-        <NuxtImg src="/images/hero-2.jpg" alt="RazinSoft team in a planning meeting" width="420" height="300" sizes="100vw lg:420px" format="webp" loading="eager" class="aspect-[7/5] w-full rounded-3xl border-4 border-white bg-gray-100 object-cover shadow-xl" />
+        <NuxtImg src="/images/razinsoft-resolving-issue-together.webp" alt="RazinSoft team is resolving their issues together" width="420" height="300" sizes="100vw lg:420px" format="webp" loading="eager" class="aspect-[7/5] w-full rounded-3xl border-4 border-white bg-gray-100 object-cover shadow-xl" />
         <div class="absolute left-4 top-4 rounded-2xl bg-white/95 px-4 py-2.5 shadow-lg backdrop-blur">
           <p class="font-display text-2xl font-extrabold text-ink-900">25+</p>
           <p class="text-xs text-gray-500">Countries Served</p>
@@ -118,7 +118,7 @@ const posts = computed(() =>
         <div>
           <p class="text-xs font-bold uppercase tracking-widest text-brand-600">Our Products</p>
           <h2 class="mt-2 font-display text-4xl font-extrabold text-ink-900">Explore Our Products</h2>
-          <p class="mt-2 text-gray-600">Enterprise-ready software built for startups and growing businesses.</p>
+          <p class="mt-2 text-gray-600">Ready-to-Deploy Software Solutions for growing businesses.</p>
         </div>
         <NuxtLink to="/products" class="btn-outline">View All
           <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m9 6 6 6-6 6" /></svg>
@@ -141,7 +141,7 @@ const posts = computed(() =>
   <section id="why" class="container-page scroll-mt-20 py-20">
     <div class="grid items-center gap-12 lg:grid-cols-2">
       <div class="relative">
-        <NuxtImg src="/images/why-office.jpg" alt="RazinSoft team collaborating in the office" width="600" height="460" sizes="100vw lg:600px" format="webp" loading="lazy" class="aspect-[4/3] w-full rounded-3xl bg-gray-100 object-cover shadow-lg" />
+        <NuxtImg src="/images/RazinSoft-production-team.webp" alt="RazinSoft team collaborating in the office" width="600" height="460" sizes="100vw lg:600px" format="webp" loading="lazy" class="aspect-[4/3] w-full rounded-3xl bg-gray-100 object-cover shadow-lg" />
         <div class="absolute -bottom-6 right-4 rounded-2xl bg-white px-5 py-3 shadow-xl ring-1 ring-gray-100 sm:right-8">
           <p class="flex items-center gap-2 text-sm font-semibold text-emerald-600"><span class="h-2 w-2 rounded-full bg-emerald-500" aria-hidden="true" />Live Support Active</p>
           <p class="mt-1 text-xs text-gray-500">Average response time</p>
@@ -152,11 +152,10 @@ const posts = computed(() =>
       <div>
         <p class="text-xs font-bold uppercase tracking-widest text-brand-600">Why RazinSoft</p>
         <h2 class="mt-2 font-display text-4xl font-extrabold leading-tight text-ink-900">
-          Built for businesses that can't afford to slow down.
+          Your Trusted Technology Partner for Affordable, High-Quality Software 
         </h2>
         <p class="mt-4 text-gray-600">
-          Every product we ship is the result of real client feedback, rigorous testing, and a team
-          obsessed with reliability. We don't just sell software — we partner in your success.
+          Built from real client feedback. Tested for reliability. Backed by experts. We don't just deliver software; we become your technology partner for long-term growth. 
         </p>
         <div class="mt-8 grid gap-4 sm:grid-cols-2">
           <article v-for="f in whyFeatures" :key="f.title" class="rounded-2xl border border-gray-100 p-5 shadow-sm">
@@ -177,7 +176,7 @@ const posts = computed(() =>
       <div>
         <p class="text-xs font-bold uppercase tracking-widest text-brand-600">Our Service</p>
         <h2 class="mt-2 max-w-2xl font-display text-4xl font-extrabold leading-tight text-ink-900">
-          Innovative Software Services Designed to Simplify Operations
+          Innovative Software Services Designed to Power Business Growth 
         </h2>
       </div>
       <NuxtLink to="/#services" class="btn-outline">All Services
@@ -283,10 +282,10 @@ const posts = computed(() =>
         Ready to build something <span class="text-brand-400">great?</span>
       </h2>
       <p class="mx-auto mt-5 max-w-xl text-gray-300">
-        Join 50,000+ businesses already running on RazinSoft. Free 14-day trial. No credit card needed.
+        Join 3,000+ businesses already running on RazinSoft. Book a free consultation today.
       </p>
       <div class="mt-8 flex flex-wrap justify-center gap-3">
-        <NuxtLink to="/products?sort=free" class="btn bg-brand-600 text-white shadow-lg shadow-brand-600/20 hover:bg-brand-700">Get started free
+        <NuxtLink to="/products?sort=free" class="btn bg-brand-600 text-white shadow-lg shadow-brand-600/20 hover:bg-brand-700">Book a Free Consultation
           <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6" /></svg>
         </NuxtLink>
         <NuxtLink to="/#company" class="btn border border-white/25 bg-white/5 text-white hover:bg-white/10">Sign in to dashboard</NuxtLink>

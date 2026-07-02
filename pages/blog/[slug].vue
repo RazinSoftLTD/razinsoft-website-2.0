@@ -41,6 +41,26 @@ useSeoMeta({
 })
 useHead({ link: [{ rel: 'canonical', href: () => canonical.value }] })
 
+// Article / BlogPosting structured data for rich results.
+useSchemaOrg([
+  defineArticle({
+    '@type': 'BlogPosting',
+    headline: () => article.value.title,
+    description: () => metaDesc.value,
+    image: () => ogImage.value,
+    datePublished: () => article.value.date_iso || undefined,
+    author: () => (article.value.author ? { '@type': 'Person', name: article.value.author } : { '@type': 'Organization', name: 'RazinSoft' }),
+    articleSection: () => article.value.category || undefined,
+  }),
+  defineBreadcrumb({
+    itemListElement: [
+      { name: 'Home', item: '/' },
+      { name: 'Blog', item: '/blog' },
+      { name: () => article.value.title, item: () => canonical.value },
+    ],
+  }),
+])
+
 const saved = ref(false)
 const shareOpen = ref(false)
 const helpful = ref<boolean | null>(null)

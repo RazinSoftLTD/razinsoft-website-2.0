@@ -14,6 +14,15 @@ const apiImageHost = (() => {
 })()
 const imageDomains = [...new Set([apiImageHost, '127.0.0.1', 'localhost'])]
 
+// Full origin of the API/storage host — used to preconnect (cuts image/API connection latency).
+const apiOrigin = (() => {
+  try {
+    return new URL(apiBase).origin
+  } catch {
+    return ''
+  }
+})()
+
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
   devtools: { enabled: true },
@@ -62,12 +71,16 @@ export default defineNuxtConfig({
     '/privacy-policy': { prerender: true },
     '/refund-policy': { prerender: true },
     '/installation-policy': { prerender: true },
-    // Catalogue: SSR on demand so the API feeds content + SEO (no prerender of live data).
-    '/products': { prerender: false },
-    '/products/**': { prerender: false },
-    // Insights / blog: SSR on demand so articles come live from the API.
-    '/blog': { prerender: false },
-    '/blog/**': { prerender: false },
+    '/terms-and-conditions': { prerender: true },
+    '/service-policy': { prerender: true },
+    '/support-policy': { prerender: true },
+    // Catalogue: SSR + stale-while-revalidate cache. Crawlers still get full server-rendered
+    // HTML (SEO-safe) but repeat visitors get it instantly from cache; revalidated in background.
+    '/products': { swr: 180 },
+    '/products/**': { swr: 300 },
+    // Insights / blog: SWR cache (articles change rarely).
+    '/blog': { swr: 180 },
+    '/blog/**': { swr: 600 },
     // Auth-gated, per-user pages: client-rendered (token lives in a cookie).
     '/dashboard': { ssr: false },
     '/dashboard/**': { ssr: false },
@@ -77,6 +90,16 @@ export default defineNuxtConfig({
     '/_nuxt/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } },
     '/images/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } },
     '/_fonts/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } },
+    // Security headers on every response. Improves: Best Practices (Lighthouse) + hardening.
+    '/**': {
+      headers: {
+        'X-Content-Type-Options': 'nosniff',
+        'X-Frame-Options': 'SAMEORIGIN',
+        'Referrer-Policy': 'strict-origin-when-cross-origin',
+        'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), browsing-topics=()',
+        'X-DNS-Prefetch-Control': 'on',
+      },
+    },
   },
 
   nitro: {
@@ -112,10 +135,25 @@ export default defineNuxtConfig({
   },
 
   // ---- SEO modules ----
-  sitemap: { autoLastmod: true },
+  sitemap: {
+    autoLastmod: true,
+    // Pull dynamic product + blog URLs from the API so every detail page is indexable.
+    sources: ['/api/__sitemap__/urls'],
+    // Always regenerate from the live API — never serve a stale/empty cached sitemap.
+    cacheMaxAgeSeconds: 0,
+    runtimeCacheStorage: false,
+    // Plain XML (no styled HTML view) — like a standard sitemap.
+    xsl: false,
+    // Give every URL a changefreq + priority.
+    defaults: { changefreq: 'weekly', priority: 0.7 },
+    // Trim unused image/video/news namespaces for a clean <urlset>.
+    discoverImages: false,
+    discoverVideos: false,
+  },
   robots: {
-    // Allow everything; the module appends the Sitemap directive automatically.
     allow: '/',
+    // Keep private / transactional pages out of crawl budget (also noindex-tagged in-page).
+    disallow: ['/dashboard', '/checkout', '/cart', '/payment'],
   },
 
   app: {
@@ -126,7 +164,11 @@ export default defineNuxtConfig({
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
         { name: 'theme-color', content: '#2563eb' },
       ],
-      link: [{ rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }],
+      link: [
+        { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
+        // Warm up the connection to the API/storage host early → faster image + data fetch (LCP).
+        ...(apiOrigin ? [{ rel: 'preconnect', href: apiOrigin, crossorigin: '' as const }, { rel: 'dns-prefetch', href: apiOrigin }] : []),
+      ],
     },
   },
 })

@@ -13,48 +13,62 @@ const stats = [
 ]
 
 const doWork = [
-  { title: 'Ready-Made Products', desc: 'eCommerce, LMS, POS, grocery, ride-sharing and more — production-ready platforms you can launch in days.', tone: 'bg-blue-50 text-blue-600', paths: ['M3 7l9-4 9 4-9 4-9-4Zm0 0v10l9 4 9-4V7M12 11v8'] },
-  { title: 'Custom Software', desc: 'Tailored web applications, mobile apps and enterprise systems built around your unique business processes.', tone: 'bg-purple-50 text-purple-600', paths: ['M9 12h6m-6 4h6M8 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h6.6a1 1 0 0 1 .7.3l5.4 5.4a1 1 0 0 1 .3.7V19a2 2 0 0 1-2 2h-1'] },
-  { title: 'AI & SaaS Platforms', desc: 'Smart SaaS products, AI features and automation that help businesses work faster and serve customers better.', tone: 'bg-emerald-50 text-emerald-600', paths: ['M12 3v4m0 10v4M3 12h4m10 0h4M6 6l2.5 2.5M15.5 15.5 18 18M18 6l-2.5 2.5M8.5 15.5 6 18'] },
-  { title: 'Maintenance & Support', desc: 'We keep platforms secure, updated and fast with reliable maintenance and 24/7 technical support.', tone: 'bg-orange-50 text-orange-600', paths: ['M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.6 2.6-2-2 2.6-2.6Z'] },
+  { title: 'Ready-Made Products', desc: 'Launch faster with production-ready software built from years of industry experience and continuous improvements.', tone: 'bg-blue-50 text-blue-600', paths: ['M3 7l9-4 9 4-9 4-9-4Zm0 0v10l9 4 9-4V7M12 11v8'] },
+  { title: 'Custom Software Development', desc: 'Scalable custom software built around your unique business needs - secure, reliable, and ready for growth.', tone: 'bg-purple-50 text-purple-600', paths: ['M9 12h6m-6 4h6M8 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h6.6a1 1 0 0 1 .7.3l5.4 5.4a1 1 0 0 1 .3.7V19a2 2 0 0 1-2 2h-1'] },
+  { title: 'AI & SaaS Development', desc: 'Smart software powered by AI and automation to improve efficiency, decision-making, and business performance.', tone: 'bg-emerald-50 text-emerald-600', paths: ['M12 3v4m0 10v4M3 12h4m10 0h4M6 6l2.5 2.5M15.5 15.5 18 18M18 6l-2.5 2.5M8.5 15.5 6 18'] },
+  { title: 'Maintenance & Support', desc: 'Reliable monitoring, regular updates, and expert technical support to keep your business running smoothly.', tone: 'bg-orange-50 text-orange-600', paths: ['M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.6 2.6-2-2 2.6-2.6Z'] },
 ]
 
-// Leadership — featured as distinct personalities.
+// Real group photo used for the story + meetup shots (bound dynamically so a
+// missing file never breaks the production build).
+const groupPhoto = '/images/team/group-image-fast.webp'
+
+// Leadership — featured as distinct personalities. Photos live in /public/images/team/LeaderShip.
 const leaders = [
   {
-    name: 'Shofikul Islam',
+    name: 'Mohammad Shofikul Islam',
     role: 'Founder & CEO',
-    photo: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=520&h=620&fit=crop&auto=format',
+    photo: '/images/team/LeaderShip/mohammad-shofikul-islam.webp',
     quote: 'We don’t just sell software — we partner in our clients’ success. Every product we ship is a promise to help a business grow.',
     accent: 'text-brand-600',
     linkedin: 'https://linkedin.com/company/razinsoft',
   },
   {
-    name: 'Joynal Abedin',
+    name: 'Md Joynal Abedin',
     role: 'Co-Founder & CTO',
-    photo: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=520&h=620&fit=crop&auto=format',
+    photo: '/images/team/LeaderShip/md-joynal-abedin.webp',
     quote: 'Great engineering is invisible — it just works, at any scale. We obsess over reliability so our customers never have to.',
     accent: 'text-emerald-600',
     linkedin: 'https://linkedin.com/company/razinsoft',
   },
 ]
 
-// The wider team (shown under the meetup photo).
+// The wider team (shown under the meetup photo). Photos are the real member files in
+// /public/images/team — names match the filenames. Designations are placeholders to refine.
 const team = [
-  { name: 'Farhana Akter', role: 'Manager (HR & Admin)', photo: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=360&h=360&fit=crop&auto=format' },
-  { name: 'Tanvir Ahmed', role: 'Business Development', photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=360&h=360&fit=crop&auto=format' },
-  { name: 'Sabbir Rahman', role: 'DevOps Engineer', photo: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=360&h=360&fit=crop&auto=format' },
-  { name: 'Nusrat Jahan', role: 'Software Engineer', photo: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=360&h=360&fit=crop&auto=format' },
-  { name: 'Ariful Islam', role: 'Software Engineer', photo: 'https://images.unsplash.com/photo-1519345182560-3f2917c472ef?w=360&h=360&fit=crop&auto=format' },
-  { name: 'Mitu Rahman', role: 'Product Designer', photo: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=360&h=360&fit=crop&auto=format' },
-  { name: 'Jahid Hasan', role: 'QA Engineer', photo: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=360&h=360&fit=crop&auto=format' },
-  { name: 'Sadia Noor', role: 'Support Specialist', photo: 'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=360&h=360&fit=crop&auto=format' },
+  { name: 'Abdullah Hossain', role: 'Team Member', photo: '/images/team/abdullah-hossain.webp' },
+  { name: 'Ahmed All Muzahed', role: 'Team Member', photo: '/images/team/ahmed-all-muzahed.webp' },
+  { name: 'Jannatun Nesa Jolly', role: 'Team Member', photo: '/images/team/jannatun-nesa-jolly.webp' },
+  { name: 'Jobeda Khatun', role: 'Team Member', photo: '/images/team/jobeda-khatun.webp' },
+  { name: 'Lamiya Akter Liza', role: 'Team Member', photo: '/images/team/lamiya-akter-liza.webp' },
+  { name: 'Leaya Sultana', role: 'Team Member', photo: '/images/team/leaya-sultana.webp' },
+  { name: 'Md Emon Mia', role: 'Team Member', photo: '/images/team/md-emon-mia.webp' },
+  { name: 'Md Nizam Uddin', role: 'Team Member', photo: '/images/team/md-nizam-uddin.webp' },
+  { name: 'Md Sohag Sheikh', role: 'Team Member', photo: '/images/team/md-sohag-sheikh.webp' },
+  { name: 'Md. Sabbir Sarker', role: 'Team Member', photo: '/images/team/md-sabbir-sarker.webp' },
+  { name: 'Mijanur Rahman', role: 'Team Member', photo: '/images/team/mijanur-rahman.webp' },
+  { name: 'Nayeem Islam', role: 'Team Member', photo: '/images/team/nayeem-islam.webp' },
+  { name: 'Raihan Sikdar', role: 'Team Member', photo: '/images/team/raihan-sikdar.webp' },
+  { name: 'Rifat Hasan', role: 'Team Member', photo: '/images/team/rifat-hasan.webp' },
+  { name: 'S.M Arifuzzaman', role: 'Team Member', photo: '/images/team/s-m-arifuzzaman.webp' },
+  { name: 'Sabrina Ferdous Reza', role: 'Team Member', photo: '/images/team/sabrina-ferdous-reza.webp' },
+  { name: 'Sohan Biswas', role: 'Team Member', photo: '/images/team/sohan-biswas.webp' },
 ]
 
 const values = [
-  { title: 'Client-First', desc: 'Every product decision starts with a real client problem — we partner in your success, not just sell software.', paths: ['M20.8 8.6a5.5 5.5 0 0 0-9-1.8 5.5 5.5 0 0 0-9 1.8c0 3.6 4 6.9 9 10.4 5-3.5 9-6.8 9-10.4Z'] },
-  { title: 'Reliability', desc: 'Bank-grade security, rigorous testing and stable releases so your business never has to slow down.', paths: ['M12 3 4.5 6v5c0 4.5 3 7.5 7.5 9 4.5-1.5 7.5-4.5 7.5-9V6L12 3Z', 'm9.5 12 1.8 1.8L15 10'] },
-  { title: 'Innovation', desc: 'We keep improving with modern tech and the latest trends so your platform stays ahead of the curve.', paths: ['M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.1v.2h6v-.2c0-.8.4-1.6 1-2.1A7 7 0 0 0 12 2Z'] },
+  { title: 'Client-First', desc: "Every decision begins with understanding our clients' goals and delivering solutions that create real business value.", paths: ['M20.8 8.6a5.5 5.5 0 0 0-9-1.8 5.5 5.5 0 0 0-9 1.8c0 3.6 4 6.9 9 10.4 5-3.5 9-6.8 9-10.4Z'] },
+  { title: 'Quality Without Compromise', desc: 'From design to deployment, we maintain high standards to ensure every solution is secure, reliable, and built to last.', paths: ['M12 3 4.5 6v5c0 4.5 3 7.5 7.5 9 4.5-1.5 7.5-4.5 7.5-9V6L12 3Z', 'm9.5 12 1.8 1.8L15 10'] },
+  { title: 'Continuous Innovation', desc: 'Technology evolves every day, and so do we. We embrace new ideas to build smarter, faster, and more impactful software.', paths: ['M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.1v.2h6v-.2c0-.8.4-1.6 1-2.1A7 7 0 0 0 12 2Z'] },
 ]
 
 const offices = [
@@ -71,10 +85,10 @@ const offices = [
       <div class="container-page relative py-16 lg:py-24">
         <p class="text-xs font-bold uppercase tracking-widest text-brand-600">About RazinSoft</p>
         <h1 class="mt-3 max-w-3xl font-display text-4xl font-extrabold leading-tight text-ink-900 sm:text-5xl">
-          We’re a team of builders behind <span class="text-brand-600">software that scales</span>
+          Your Trusted Partner for <span class="text-brand-600">Building Smarter Businesses.</span>
         </h1>
         <p class="mt-5 max-w-2xl text-lg leading-relaxed text-gray-600">
-          RazinSoft helps startups, SMEs and enterprises build custom software, web & mobile apps and SaaS products. Behind every product is a passionate team obsessed with quality, reliability and our customers’ growth.
+          At RazinSoft, we help startups, SMEs, and enterprises turn ideas into reliable digital products. From ready-made business software to fully custom web, mobile, AI, and SaaS solutions, we build technology that solves real business challenges and supports long-term growth.
         </p>
         <div class="mt-8 flex flex-wrap gap-3">
           <NuxtLink to="/products" class="btn bg-brand-600 text-white hover:bg-brand-700">Explore products
@@ -100,7 +114,7 @@ const offices = [
       <div class="grid items-center gap-12 lg:grid-cols-2">
         <div class="relative">
           <div class="overflow-hidden rounded-2xl bg-gray-100 shadow-xl">
-            <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=760&h=520&fit=crop&auto=format" alt="RazinSoft team collaborating" class="h-80 w-full object-cover">
+            <img src="/images/our-mission.webp" alt="The RazinSoft team collaborating" class="h-80 w-full object-cover" loading="lazy" decoding="async">
           </div>
           <div class="absolute -bottom-6 -right-4 max-w-[220px] rounded-2xl border border-gray-100 bg-white px-5 py-4 shadow-xl">
             <p class="font-display text-2xl font-extrabold text-ink-900">Since 2016</p>
@@ -143,13 +157,13 @@ const offices = [
     <section class="container-page py-20">
       <div class="text-center">
         <p class="text-xs font-bold uppercase tracking-widest text-brand-600">Leadership</p>
-        <h2 class="mt-2 font-display text-3xl font-extrabold text-ink-900 lg:text-4xl">Meet the founders driving our vision</h2>
-        <p class="mx-auto mt-3 max-w-xl text-gray-600">The two minds who set the direction — and the standards — for everything we build.</p>
+        <h2 class="mt-2 font-display text-3xl font-extrabold text-ink-900 lg:text-4xl">Meet the People Driving Our Vision</h2>
+        <p class="mx-auto mt-3 max-w-xl text-gray-600">Our leadership team combines vision, innovation, and technology to shape the future of our company. </p>
       </div>
       <div class="mx-auto mt-12 grid max-w-4xl gap-6 md:grid-cols-2">
         <article v-for="l in leaders" :key="l.name" class="group overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-sm transition hover:shadow-xl">
           <div class="relative aspect-[4/3] overflow-hidden bg-gray-100">
-            <img :src="l.photo" :alt="l.name" class="h-full w-full object-cover transition duration-500 group-hover:scale-105">
+            <img :src="l.photo" :alt="l.name" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" decoding="async">
             <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-transparent" />
             <div class="absolute bottom-4 left-5 text-white">
               <p class="font-display text-2xl font-extrabold drop-shadow">{{ l.name }}</p>
@@ -173,13 +187,13 @@ const offices = [
       <div class="container-page">
         <div class="text-center">
           <p class="text-xs font-bold uppercase tracking-widest text-brand-600">Our Team</p>
-          <h2 class="mt-2 font-display text-3xl font-extrabold text-ink-900 lg:text-4xl">One team, one mission</h2>
-          <p class="mx-auto mt-3 max-w-xl text-gray-600">Engineers, designers and problem-solvers who show up for each other — and for our customers — every single day.</p>
+          <h2 class="mt-2 font-display text-3xl font-extrabold text-ink-900 lg:text-4xl">One team, One mission</h2>
+          <p class="mx-auto mt-3 max-w-xl text-gray-600">A passionate team of experts committed to building reliable software and delivering exceptional customer experiences.</p>
         </div>
 
         <!-- Full-team meetup photo -->
         <div class="relative mt-12 overflow-hidden rounded-3xl shadow-xl">
-          <img src="https://images.unsplash.com/photo-1543269865-cbf427effbad?w=1280&h=560&fit=crop&auto=format" alt="The RazinSoft team together at a meetup" class="h-[280px] w-full object-cover sm:h-[380px]">
+          <img :src="groupPhoto" alt="The RazinSoft team together at a meetup" class="h-[280px] w-full object-cover sm:h-[380px]" loading="lazy" decoding="async">
           <div class="absolute inset-0 bg-gradient-to-t from-ink-900/70 via-ink-900/10 to-transparent" />
           <div class="absolute bottom-0 left-0 right-0 flex flex-wrap items-end justify-between gap-4 p-6 sm:p-8">
             <div class="text-white">
@@ -210,7 +224,7 @@ const offices = [
     <section class="container-page py-20">
       <div class="text-center">
         <p class="text-xs font-bold uppercase tracking-widest text-brand-600">Our Values</p>
-        <h2 class="mt-2 font-display text-3xl font-extrabold text-ink-900 lg:text-4xl">What drives us every day</h2>
+        <h2 class="mt-2 font-display text-3xl font-extrabold text-ink-900 lg:text-4xl">Values That Shape Every Solution </h2>
       </div>
       <div class="mt-12 grid gap-6 md:grid-cols-3">
         <div v-for="v in values" :key="v.title" class="rounded-2xl border border-gray-100 p-7 shadow-sm">

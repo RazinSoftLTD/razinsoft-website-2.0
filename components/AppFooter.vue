@@ -3,8 +3,11 @@ const company = [
   { label: 'About Us', to: '/about-us' },
   { label: 'Contact Us', to: '/contact-us' },
   { label: 'Career & Positions', to: '/careers' },
+  { label: 'Terms & Conditions', to: '/terms-and-conditions' },
   { label: 'Privacy Policy', to: '/privacy-policy' },
   { label: 'Refund Policy', to: '/refund-policy' },
+  { label: 'Service Policy', to: '/service-policy' },
+  { label: 'Support Policy', to: '/support-policy' },
   { label: 'Installation Policy', to: '/installation-policy' },
 ]
 const quick = [
@@ -20,6 +23,13 @@ const socials = [
   { label: 'RazinSoft on LinkedIn', href: 'https://www.linkedin.com/company/razinsoft', path: 'M4.98 3.5A2.5 2.5 0 1 0 5 8.5a2.5 2.5 0 0 0-.02-5ZM3 9h4v12H3V9Zm6 0h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05C20.4 8.65 22 10.6 22 14v7h-4v-6.2c0-1.48-.03-3.38-2.06-3.38-2.06 0-2.38 1.6-2.38 3.27V21H9V9Z' },
 ]
 const partners = ['Partner 1', 'Partner 2', 'Partner 3']
+
+// Link columns → collapsible accordions on mobile, static columns on desktop.
+const linkSections = [
+  { key: 'company', title: 'Company', items: company },
+  { key: 'quick', title: 'Quick Links', items: quick },
+]
+const open = reactive<Record<string, boolean>>({ company: false, quick: false })
 </script>
 
 <template>
@@ -32,7 +42,7 @@ const partners = ['Partner 1', 'Partner 2', 'Partner 3']
           <span class="font-display text-xl font-extrabold text-white">RazinSoft</span>
         </div>
         <p class="mt-4 max-w-xs text-sm leading-relaxed text-gray-400">
-          Innovative &amp; Business-Innovative Web, App, and Software Solutions. Partner for Excellence in Tech.
+          Elevate Your Business with Innovative Web, App, and Software Solutions. Partner for Excellence in Tech.
         </p>
         <address class="mt-5 space-y-3 text-sm not-italic">
           <a href="mailto:info@razinsoft.com" class="flex items-center gap-3 text-gray-300 hover:text-white">
@@ -57,21 +67,32 @@ const partners = ['Partner 1', 'Partner 2', 'Partner 3']
         </ul>
       </div>
 
-      <!-- Company -->
-      <nav class="lg:col-span-2" aria-label="Company">
-        <h2 class="font-display text-base font-bold text-white">Company</h2>
-        <ul class="mt-4 space-y-3 text-sm">
-          <li v-for="i in company" :key="i.label">
-            <NuxtLink :to="i.to" class="text-gray-400 hover:text-white">{{ i.label }}</NuxtLink>
-          </li>
-        </ul>
-      </nav>
-
-      <!-- Quick Links -->
-      <nav class="lg:col-span-2" aria-label="Quick links">
-        <h2 class="font-display text-base font-bold text-white">Quick Links</h2>
-        <ul class="mt-4 space-y-3 text-sm">
-          <li v-for="i in quick" :key="i.label">
+      <!-- Link columns: accordion on mobile (tap heading → arrow toggles), static columns on desktop. -->
+      <nav
+        v-for="sec in linkSections"
+        :key="sec.key"
+        class="border-b border-white/10 pb-4 lg:col-span-2 lg:border-0 lg:pb-0"
+        :aria-label="sec.title"
+      >
+        <h2 class="font-display text-base font-bold text-white">
+          <button
+            type="button"
+            class="flex w-full items-center justify-between lg:pointer-events-none"
+            :aria-expanded="open[sec.key]"
+            @click="open[sec.key] = !open[sec.key]"
+          >
+            {{ sec.title }}
+            <svg
+              class="h-4 w-4 text-gray-400 transition-transform duration-200 lg:hidden"
+              :class="open[sec.key] && 'rotate-180'"
+              fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" d="m6 9 6 6 6-6" />
+            </svg>
+          </button>
+        </h2>
+        <ul class="mt-4 space-y-3 text-sm" :class="open[sec.key] ? 'block' : 'hidden lg:block'">
+          <li v-for="i in sec.items" :key="i.label">
             <NuxtLink :to="i.to" class="text-gray-400 hover:text-white">{{ i.label }}</NuxtLink>
           </li>
         </ul>
@@ -157,7 +178,8 @@ const partners = ['Partner 1', 'Partner 2', 'Partner 3']
     <div class="border-t border-white/10">
       <div class="container-page flex flex-col items-center justify-between gap-3 py-5 text-xs text-gray-400 sm:flex-row">
         <p>© 2026 RazinSoft. All rights reserved.</p>
-        <div class="flex gap-5">
+        <div class="flex flex-wrap justify-center gap-x-5 gap-y-2">
+          <NuxtLink to="/terms-and-conditions" class="hover:text-white">Terms &amp; Conditions</NuxtLink>
           <NuxtLink to="/refund-policy" class="hover:text-white">Refund Policy</NuxtLink>
           <NuxtLink to="/privacy-policy" class="hover:text-white">Privacy Policy</NuxtLink>
           <NuxtLink to="/installation-policy" class="hover:text-white">Installation Policy</NuxtLink>

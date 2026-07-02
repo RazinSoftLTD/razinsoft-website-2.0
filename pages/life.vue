@@ -12,11 +12,11 @@ const highlights = [
 ]
 
 const photos = [
-  { src: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600&h=420&fit=crop&auto=format', alt: 'Team collaborating', span: 'sm:col-span-2 sm:row-span-2' },
-  { src: 'https://images.unsplash.com/photo-1543269865-cbf427effbad?w=400&h=300&fit=crop&auto=format', alt: 'Team meeting' },
-  { src: 'https://images.unsplash.com/photo-1556761175-b413da4baf72?w=400&h=300&fit=crop&auto=format', alt: 'Working together' },
-  { src: 'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=400&h=300&fit=crop&auto=format', alt: 'Brainstorming session' },
-  { src: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&h=300&fit=crop&auto=format', alt: 'Team celebration' },
+  { src: '/life/RazinSoft-Group-Image.webp', alt: 'The whole RazinSoft team together for a group photo', span: 'sm:col-span-2 sm:row-span-2' },
+  { src: '/life/RazinSoft-Work-Image.webp', alt: 'RazinSoft team members working together at the office' },
+  { src: '/life/RazinSoft-Cricket-Image.webp', alt: 'RazinSoft team playing cricket together' },
+  { src: '/life/RazinSoft-TT-Image.webp', alt: 'RazinSoft team enjoying a game of table tennis' },
+  { src: '/life/RazinSoft-Buffer-Image.webp', alt: 'RazinSoft team taking a relaxed break together' },
 ]
 
 const moments = [
@@ -47,7 +47,7 @@ const moments = [
     <section class="container-page py-16">
       <div class="grid auto-rows-[180px] grid-cols-2 gap-4 sm:grid-cols-4">
         <div v-for="(p, i) in photos" :key="i" class="overflow-hidden rounded-2xl bg-gray-100 shadow-sm" :class="p.span">
-          <img :src="p.src" :alt="p.alt" class="h-full w-full object-cover transition duration-500 hover:scale-105">
+          <img :src="p.src" :alt="p.alt" class="h-full w-full object-cover transition duration-500 hover:scale-105" loading="lazy" decoding="async">
         </div>
       </div>
     </section>

@@ -1,47 +1,55 @@
 <script setup lang="ts">
 usePageSeo({
   title: 'Refund Policy — RazinSoft',
-  description: 'Our refund policy for RazinSoft digital products — when refunds apply, how to request one, and what to expect.',
+  description: 'RazinSoft refund policy — eligibility, non-refundable services, how to request a refund and what to expect.',
 })
 
+// Content mirrored from https://razinsoft.com/refund-policy/ (headings are auto-numbered by PolicyPage).
 const sections = [
   {
-    heading: 'Digital Products',
-    paragraphs: ['Our products are digital and include full source code. Because source code cannot be “returned” once downloaded, all sales are generally considered final. We do, however, review every refund request fairly and on a case-by-case basis.'],
-  },
-  {
-    heading: 'When You May Be Eligible',
+    heading: 'Eligibility for Refund',
     list: [
-      'The product is materially different from its description and we are unable to resolve the issue.',
-      'A critical, reproducible defect prevents the product from working and our team cannot fix it in a reasonable time.',
-      'You were charged more than once for the same order due to a technical error.',
+      'Refunds are only applicable within 15 days of service purchase.',
+      'The service must not have been fully completed or delivered. If the service has been rendered in full, a refund will not be issued.',
+      'Partial refunds may be considered if only part of the service has been delivered and the remaining service cannot be completed.',
     ],
   },
   {
-    heading: 'When Refunds Are Not Provided',
+    heading: 'Non-Refundable Services',
     list: [
-      'You changed your mind after downloading the source code.',
-      'The issue is caused by your server, third-party plugins or customizations outside our product.',
-      'You lack the technical knowledge to install or use the product (we provide documentation and installation support instead).',
-      'The request is made more than 7 days after purchase.',
+      'Custom development work that has already commenced.',
+      'Services that have been fully delivered and approved by the client.',
+      'Installation or setup fees.',
     ],
   },
   {
     heading: 'How to Request a Refund',
-    paragraphs: ['Contact us within 7 days of purchase with your order number and a clear description of the problem. Please allow our support team to first attempt a fix — most issues are resolved quickly.'],
+    list: [
+      'To request a refund, please contact our support team at support@razinsoft.com with your order details and reason for the refund.',
+      'Our team will review your request and respond within 3-5 business days.',
+    ],
   },
   {
-    heading: 'Processing Time',
-    paragraphs: ['Approved refunds are issued to your original payment method within 5–10 business days. Timing may vary depending on your bank or payment provider.'],
+    heading: 'Refund Process',
+    list: [
+      'Approved refunds will be processed within 7-10 business days.',
+      'Refunds will be issued using the same payment method used for the original purchase.',
+    ],
+  },
+  {
+    heading: 'Changes to the Refund Policy',
+    paragraphs: [
+      'RazinSoft reserves the right to modify this refund policy at any time. Changes will be posted on our website at www.razinsoft.com.',
+      'For any further questions or concerns regarding our refund policy, please contact our support team.',
+    ],
   },
 ]
 </script>
 
 <template>
   <PolicyPage
-    title="Refund Policy"
-    updated="July 2, 2026"
-    intro="We want you to be happy with your purchase. Here’s how refunds work for our digital products."
+    title="Refund Policy for RazinSoft Services"
+    intro="At RazinSoft, we aim to make our customers happy by providing top-quality services. If you are not fully satisfied with what we offer, please check our refund policy below."
     :sections="sections"
   />
 </template>

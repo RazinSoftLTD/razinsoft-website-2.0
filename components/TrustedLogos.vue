@@ -5,15 +5,21 @@ const props = withDefaults(defineProps<{
   heading?: string
   logos?: Logo[]
 }>(), {
-  heading: 'Trusted By Fast-Moving Tech Teams From Startups to Enterprises',
+  heading: 'Trusted by Fast-Moving Tech Teams From Startups to Enterprises',
   logos: () => [
-    // Drop an `image` path to use a real logo instead of the styled name.
-    { name: 'Radiant Pharmaceuticals' },
-    { name: 'Bridge' },
-    { name: 'DocTime' },
-    { name: 'PCBBD Store' },
-    { name: 'Supraskills' },
-    { name: 'LaundryZone' },
+    // Real client logos from /public/clients (styled name shown only if `image` is missing).
+    { name: 'Radiant Pharmaceuticals', image: '/clients/radiant-pharmaceuticals.webp' },
+    { name: 'Bridge', image: '/clients/Bridge.webp' },
+    { name: 'DocTime', image: '/clients/DocTime.webp' },
+    { name: 'Dhaka Central International Medical College', image: '/clients/Dhaka_Central_International_Mediacal_College.webp' },
+    { name: 'EduMali', image: '/clients/EduMali.webp' },
+    { name: 'GoldStar', image: '/clients/GoldStar.webp' },
+    { name: 'IronMan', image: '/clients/IronMan.webp' },
+    { name: 'Jacks Gelato', image: '/clients/JacksGelato.webp' },
+    { name: 'LaundryRunnerz', image: '/clients/LaundryRunnerz.webp' },
+    { name: 'MasterBari', image: '/clients/MasterBari.webp' },
+    { name: 'PCBBD Store', image: '/clients/PCBBD_Store.webp' },
+    { name: 'Screw Hardware', image: '/clients/ScrewHardware.webp' },
   ],
 })
 

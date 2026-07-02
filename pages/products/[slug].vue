@@ -61,6 +61,10 @@ const featureList = computed(() => {
   })
 })
 
+// Show the first 6 feature cards; reveal the rest behind a "Read More" toggle.
+const FEATURE_LIMIT = 6
+const showAllFeatures = ref(false)
+
 const tiers = computed(() => {
   const pl = api.value.plans
   if (!pl?.length) return pricingFallback.map((t: any, i: number) => ({ ...t, id: -(i + 1) }))
@@ -95,6 +99,10 @@ const docList = computed(() => {
     return { title: x.title, url: x.url || '#', card: v.card, circle: v.circle, text: v.text, paths: v.paths }
   })
 })
+
+// Per-product FAQs (admin-managed) — revealed under the docs grid when the FAQ card is tapped.
+const faqList = computed<any[]>(() => (api.value.faqs || []).map((x: any) => ({ question: x.question, answer: x.answer })))
+const showFaqs = ref(false)
 
 const qa = computed(() => {
   // Real per-product question threads (anyone can answer). Falls back to admin FAQs if none.
@@ -504,7 +512,7 @@ const { addItem } = useCart()
           <h2 id="features-h" class="font-display text-3xl font-extrabold text-ink-900">Powerful Features</h2>
           <p class="mt-2 text-gray-600">Everything you need to run a successful multi-vendor marketplace</p>
           <div class="mt-8 grid gap-5 text-left sm:grid-cols-2 lg:grid-cols-3">
-            <article v-for="f in featureList" :key="f.title" class="rounded-2xl border border-gray-100 border-t-4 p-6 shadow-sm" :class="f.top">
+            <article v-for="(f, i) in featureList" v-show="showAllFeatures || i < FEATURE_LIMIT" :key="f.title" class="rounded-2xl border border-gray-100 border-t-4 p-6 shadow-sm" :class="f.top">
               <div class="flex items-start gap-3">
                 <span class="grid h-11 w-11 shrink-0 place-items-center rounded-xl" :class="f.icon" aria-hidden="true">
                   <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path v-for="d in f.paths" :key="d" stroke-linecap="round" stroke-linejoin="round" :d="d" /></svg>
@@ -517,6 +525,20 @@ const { addItem } = useCart()
               <p class="mt-3 text-sm text-gray-600">{{ f.desc }}</p>
             </article>
           </div>
+
+          <!-- Reveal the remaining feature cards (only when there are more than 6). -->
+          <button
+            v-if="featureList.length > FEATURE_LIMIT"
+            type="button"
+            class="btn-outline mt-8 inline-flex items-center gap-2"
+            :aria-expanded="showAllFeatures"
+            @click="showAllFeatures = !showAllFeatures"
+          >
+            {{ showAllFeatures ? 'Show Less' : `Read More (${featureList.length - FEATURE_LIMIT} more)` }}
+            <svg class="h-4 w-4 transition-transform duration-200" :class="showAllFeatures && 'rotate-180'" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m6 9 6 6 6-6" />
+            </svg>
+          </button>
         </section>
 
         <!-- Documentation & Resources -->
@@ -524,12 +546,40 @@ const { addItem } = useCart()
           <h2 id="docs-h" class="font-display text-3xl font-extrabold text-ink-900">Documentation &amp; Resources</h2>
           <p class="mt-2 text-gray-600">Everything you need to get started and succeed</p>
           <div class="mt-8 grid gap-4 sm:grid-cols-3 lg:grid-cols-5">
-            <a v-for="d in docList" :key="d.title" :href="d.url" class="flex flex-col items-center gap-3 rounded-2xl border p-6 transition hover:-translate-y-0.5 hover:shadow-md" :class="d.card">
-              <span class="grid h-14 w-14 place-items-center rounded-full" :class="d.circle" aria-hidden="true">
-                <svg class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path v-for="p in d.paths" :key="p" stroke-linecap="round" stroke-linejoin="round" :d="p" /></svg>
-              </span>
-              <span class="font-display text-sm font-bold" :class="d.text">{{ d.title }}</span>
-            </a>
+            <template v-for="d in docList" :key="d.title">
+              <!-- FAQ card toggles the product FAQ panel below instead of navigating away. -->
+              <button
+                v-if="d.title === 'FAQ' && faqList.length"
+                type="button"
+                class="flex flex-col items-center gap-3 rounded-2xl border p-6 transition hover:-translate-y-0.5 hover:shadow-md"
+                :class="[d.card, showFaqs ? 'ring-2 ring-brand-500' : '']"
+                :aria-expanded="showFaqs"
+                aria-controls="product-faqs"
+                @click="showFaqs = !showFaqs"
+              >
+                <span class="grid h-14 w-14 place-items-center rounded-full" :class="d.circle" aria-hidden="true">
+                  <svg class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path v-for="p in d.paths" :key="p" stroke-linecap="round" stroke-linejoin="round" :d="p" /></svg>
+                </span>
+                <span class="font-display text-sm font-bold" :class="d.text">{{ d.title }}</span>
+              </button>
+              <a v-else :href="d.url" class="flex flex-col items-center gap-3 rounded-2xl border p-6 transition hover:-translate-y-0.5 hover:shadow-md" :class="d.card">
+                <span class="grid h-14 w-14 place-items-center rounded-full" :class="d.circle" aria-hidden="true">
+                  <svg class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path v-for="p in d.paths" :key="p" stroke-linecap="round" stroke-linejoin="round" :d="p" /></svg>
+                </span>
+                <span class="font-display text-sm font-bold" :class="d.text">{{ d.title }}</span>
+              </a>
+            </template>
+          </div>
+
+          <!-- Product FAQ panel — in the DOM for SEO, revealed when the FAQ card is tapped. -->
+          <div v-show="showFaqs" id="product-faqs" class="mx-auto mt-8 max-w-3xl space-y-3 text-left">
+            <div v-for="(f, i) in faqList" :key="i" class="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
+              <p class="flex items-start gap-2 font-display font-bold text-ink-900">
+                <span class="mt-0.5 shrink-0 font-extrabold text-brand-600" aria-hidden="true">Q.</span>
+                <span>{{ f.question }}</span>
+              </p>
+              <p class="mt-2 pl-6 text-sm leading-relaxed text-gray-600">{{ f.answer }}</p>
+            </div>
           </div>
         </section>
 
