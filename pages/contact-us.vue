@@ -6,30 +6,33 @@ useSeoMeta({
   description: "Have a question or a project in mind? Reach out to RazinSoft and we'll get back to you within 24 hours.",
 })
 
-const WHATSAPP = '8801711257498'
+const SALES_PHONE = '+880 1336-909483'
+const SALES_WA = 'https://wa.me/8801336909483'
+const SALES_TG = 'https://t.me/+8801336909483'
+const MAP_URL = 'https://www.google.com/maps/search/?api=1&query=RazinSoft+RMR+Center+Shamoli+Ring+Road+Dhaka'
 
-const info = [
-  {
-    title: 'Headquarters',
-    lines: ['RazinSoft (HQ)', 'RMR Center (V), 4th Floor', 'Shamoli Ring Road, Dhaka - 1207', 'Bangladesh.'],
-    icon: ['M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11Z', 'M12 12a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z'],
-  },
-  {
-    title: 'Sales Inquiries',
-    lines: ['+880 1336-909483', '+880 1711-257498', '', 'Mon - Sat (9AM - 7PM)'],
-    icon: ['M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2 4.2 2 2 0 0 1 4 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.6a16 16 0 0 0 6 6l1.1-1.1a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.7.7A2 2 0 0 1 22 16.9Z'],
-  },
-  {
-    title: 'WhatsApp Support',
-    lines: ['+880 1711-257498', '', 'We reply within minutes'],
-    icon: ['M21 11.5a8.4 8.4 0 0 1-9 8.4L3 21l1.1-3.3A8.4 8.4 0 1 1 21 11.5Z', 'M8.5 9.5c0 3.3 2.7 6 6 6', 'M8.5 9.5c0-.6.5-1 1-1 .3 0 1.4 1.4 1.4 1.8s-.8.8-.8 1.2', 'M14.5 15.5c.6 0 1-.5 1-1 0-.4-1.4-1.4-1.8-1.4s-.8.8-1.2.8'],
-  },
-  {
-    title: 'Email Support',
-    lines: ['support@razinsoft.com', '', 'We reply within 24 hours'],
-    icon: ['M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z', 'm3.5 6.5 8.5 6 8.5-6'],
-  },
+// Sales channels shown in the "Sales Inquiries" card.
+const salesChannels = [
+  { label: 'WhatsApp', value: SALES_PHONE, href: SALES_WA, tone: 'bg-emerald-500', icon: 'wa' },
+  { label: 'Telegram', value: SALES_PHONE, href: SALES_TG, tone: 'bg-sky-500', icon: 'tg' },
+  { label: 'Email', value: 'sales@razinsoft.com', href: 'mailto:sales@razinsoft.com', tone: 'bg-brand-600', icon: 'mail' },
 ]
+
+// Support channel buttons in the "Need Help?" card.
+const supportChannels = [
+  { label: 'WhatsApp Support', href: SALES_WA, external: true, tone: 'border-emerald-300 text-emerald-600 hover:bg-emerald-50', icon: 'wa' },
+  { label: 'Telegram Support', href: SALES_TG, external: true, tone: 'border-sky-300 text-sky-600 hover:bg-sky-50', icon: 'tg' },
+  { label: 'Email Support', href: 'mailto:support@razinsoft.com', external: true, tone: 'border-indigo-300 text-indigo-600 hover:bg-indigo-50', icon: 'mail' },
+  { label: 'Desk Support', href: '/support', external: false, tone: 'border-purple-300 text-purple-600 hover:bg-purple-50', icon: 'desk' },
+]
+
+// Shared icon paths (stroke icons; WhatsApp/Telegram are filled brand-ish marks).
+const icons: Record<string, string[]> = {
+  wa: ['M21 11.5a8.4 8.4 0 0 1-9 8.4L3 21l1.1-3.3A8.4 8.4 0 1 1 21 11.5Z', 'M9 9.7c0 2.9 2.4 5.3 5.3 5.3l1.2-1.2-1.7-1.2-1 .5a4 4 0 0 1-1.9-1.9l.5-1-1.2-1.7L9 9.7Z'],
+  tg: ['m21 4-3 15.5-5.5-4L9.5 18l-1-5L21 4Z', 'M21 4 8.5 13'],
+  mail: ['M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z', 'm3.5 6.5 8.5 6 8.5-6'],
+  desk: ['M3 5h18a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z', 'M8 21h8m-4-4v4'],
+}
 
 const stats = [
   { value: '25+', label: 'Countries', icon: ['M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Z', 'M3 12h18M12 3c2.5 2.5 2.5 15 0 18M12 3c-2.5 2.5-2.5 15 0 18'] },
@@ -71,21 +74,55 @@ async function submit() {
           Let's Build Something Amazing <span class="text-brand-600">Together</span>
         </h1>
         <p class="mt-5 max-w-xl text-lg text-gray-600">
-          Have a question or a project in mind? We're here to help. Reach out to us and we'll get back to you within 24 hours.
+          Have a question or a project in mind? We're here to help.<br class="hidden sm:block">
+          Reach out to us and we'll get back to you within 24 hours.
         </p>
       </div>
     </section>
 
     <div class="container-page pb-20">
-      <!-- Info cards -->
-      <div class="-mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        <div v-for="c in info" :key="c.title" class="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
-          <span class="grid h-12 w-12 place-items-center rounded-full bg-brand-50 text-brand-600" aria-hidden="true">
-            <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path v-for="d in c.icon" :key="d" stroke-linecap="round" stroke-linejoin="round" :d="d" /></svg>
+      <!-- Info cards: Headquarters + Sales Inquiries -->
+      <div class="grid gap-6 lg:grid-cols-2">
+        <!-- Headquarters -->
+        <div class="flex min-w-0 gap-5 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm sm:p-7">
+          <span class="grid h-14 w-14 shrink-0 place-items-center rounded-full bg-brand-50 text-brand-600" aria-hidden="true">
+            <svg class="h-6 w-6 fill-current" viewBox="0 0 24 24"><path d="M12 2a7.5 7.5 0 0 0-7.5 7.5C4.5 14.6 12 22 12 22s7.5-7.4 7.5-12.5A7.5 7.5 0 0 0 12 2Zm0 10a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5Z" /></svg>
           </span>
-          <h3 class="mt-4 font-display text-base font-bold text-ink-900">{{ c.title }}</h3>
-          <div class="mt-2 space-y-0.5 text-sm text-gray-600">
-            <p v-for="(l, i) in c.lines" :key="i" :class="l === '' ? 'h-2' : ''">{{ l }}</p>
+          <div>
+            <h3 class="font-display text-lg font-bold text-ink-900">Headquarters</h3>
+            <div class="mt-2 space-y-0.5 text-sm leading-relaxed text-gray-600">
+              <p>RazinSoft (HQ)</p>
+              <p>RMR Center (V), 4th Floor</p>
+              <p>Shamoli Ring Road, Dhaka - 1207</p>
+              <p>Bangladesh.</p>
+            </div>
+            <a :href="MAP_URL" target="_blank" rel="noopener noreferrer" class="mt-4 inline-flex items-center gap-1.5 text-sm font-bold text-brand-600 hover:text-brand-700">
+              View on Map
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6" /></svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Sales Inquiries -->
+        <div class="flex min-w-0 gap-5 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm sm:p-7">
+          <span class="grid h-14 w-14 shrink-0 place-items-center rounded-full bg-brand-50 text-brand-600" aria-hidden="true">
+            <svg class="h-6 w-6 fill-current" viewBox="0 0 24 24"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.58 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1 11.4 11.4 0 0 0 .57 3.6 1 1 0 0 1-.25 1L6.6 10.8Z" /></svg>
+          </span>
+          <div class="min-w-0 flex-1">
+            <h3 class="font-display text-lg font-bold text-ink-900">Sales Inquiries</h3>
+            <p class="mt-1 text-sm text-gray-500">Chat with us on your preferred platform</p>
+            <ul class="mt-4 space-y-3">
+              <li v-for="ch in salesChannels" :key="ch.label">
+                <a :href="ch.href" target="_blank" rel="noopener noreferrer" class="group flex items-center gap-3 text-sm">
+                  <span class="grid h-7 w-7 shrink-0 place-items-center rounded-full text-white" :class="ch.tone" aria-hidden="true">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path v-for="d in icons[ch.icon]" :key="d" stroke-linecap="round" stroke-linejoin="round" :d="d" /></svg>
+                  </span>
+                  <span class="w-20 shrink-0 font-medium text-ink-800">{{ ch.label }}</span>
+                  <span class="min-w-0 truncate text-gray-600 group-hover:text-ink-900">{{ ch.value }}</span>
+                  <svg class="ml-auto h-4 w-4 shrink-0 text-brand-500 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5h5v5m0-5L9 15m-2-8H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-1" /></svg>
+                </a>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
@@ -137,32 +174,51 @@ async function submit() {
               </button>
               <span class="inline-flex items-center gap-1.5 text-sm text-gray-500">
                 <svg class="h-4 w-4 text-brand-600" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3 4.5 6v5c0 4.5 3 7.5 7.5 9 4.5-1.5 7.5-4.5 7.5-9V6L12 3Z" /><path stroke-linecap="round" stroke-linejoin="round" d="m9.5 12 1.8 1.8L15 10" /></svg>
-                Your information is secure and confidential
+                Your information is secure and confidential.
               </span>
             </div>
           </form>
         </section>
 
         <!-- Need help -->
-        <aside class="rounded-2xl bg-brand-50/70 p-6 sm:p-8">
-          <span class="grid h-12 w-12 place-items-center rounded-full bg-brand-100 text-brand-600" aria-hidden="true">
+        <aside class="h-fit rounded-2xl border border-gray-100 bg-[#f4f6fb] p-6 sm:p-8">
+          <span class="grid h-14 w-14 place-items-center rounded-full bg-indigo-100 text-indigo-600" aria-hidden="true">
             <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 14v-2a8 8 0 0 1 16 0v2M20 15a2 2 0 0 1-2 2h-1v-5h1a2 2 0 0 1 2 2ZM4 15a2 2 0 0 1 2-2h1v5H6a2 2 0 0 1-2-2ZM18 17a4 4 0 0 1-4 3h-2" /></svg>
           </span>
           <h3 class="mt-5 font-display text-2xl font-extrabold text-ink-900">Need Help?</h3>
-          <p class="mt-2 font-display text-xl font-bold text-ink-900">Our support team is ready for you.</p>
+          <p class="mt-2 max-w-[220px] font-display text-lg font-bold leading-snug text-ink-900">Our support team is ready to help you.</p>
           <div class="mt-4 h-1 w-12 rounded-full bg-brand-500" />
-          <p class="mt-4 text-sm leading-relaxed text-gray-600">Chat with our support expert on WhatsApp for instant assistance.</p>
-          <a :href="`https://wa.me/${WHATSAPP}`" target="_blank" rel="noopener noreferrer" class="mt-6 inline-flex items-center gap-2 rounded-lg border-2 border-emerald-500 bg-white px-5 py-2.5 text-sm font-bold text-emerald-600 transition hover:bg-emerald-500 hover:text-white">
-            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M21 11.5a8.4 8.4 0 0 1-9 8.4L3 21l1.1-3.3A8.4 8.4 0 1 1 21 11.5Z" /></svg>
-            Chat on WhatsApp
-          </a>
+          <p class="mt-4 max-w-[240px] text-sm leading-relaxed text-gray-600">Choose your preferred support channel to get instant assistance.</p>
+
+          <div class="mt-6 space-y-3">
+            <template v-for="ch in supportChannels" :key="ch.label">
+              <a
+                v-if="ch.external"
+                :href="ch.href" target="_blank" rel="noopener noreferrer"
+                class="flex w-full items-center justify-center gap-2 rounded-xl border bg-white px-5 py-3 text-sm font-bold transition" :class="ch.tone"
+              >
+                <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path v-for="d in icons[ch.icon]" :key="d" stroke-linecap="round" stroke-linejoin="round" :d="d" /></svg>
+                {{ ch.label }}
+                <svg class="h-3.5 w-3.5 shrink-0 opacity-60" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5h5v5m0-5L9 15m-2-8H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-1" /></svg>
+              </a>
+              <NuxtLink
+                v-else
+                :to="ch.href"
+                class="flex w-full items-center justify-center gap-2 rounded-xl border bg-white px-5 py-3 text-sm font-bold transition" :class="ch.tone"
+              >
+                <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path v-for="d in icons[ch.icon]" :key="d" stroke-linecap="round" stroke-linejoin="round" :d="d" /></svg>
+                {{ ch.label }}
+                <svg class="h-3.5 w-3.5 shrink-0 opacity-60" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5h5v5m0-5L9 15m-2-8H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-1" /></svg>
+              </NuxtLink>
+            </template>
+          </div>
         </aside>
       </div>
 
       <!-- Stats -->
       <div class="mt-8 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm sm:p-8">
         <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          <div v-for="s in stats" :key="s.label" class="flex items-center justify-center gap-4">
+          <div v-for="(s, i) in stats" :key="s.label" class="flex items-center justify-center gap-4" :class="i > 0 ? 'lg:border-l lg:border-gray-100' : ''">
             <span class="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-brand-50 text-brand-600" aria-hidden="true">
               <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path v-for="d in s.icon" :key="d" stroke-linecap="round" stroke-linejoin="round" :d="d" /></svg>
             </span>
