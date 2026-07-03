@@ -84,7 +84,7 @@ async function submit() {
       <!-- Info cards: Headquarters + Sales Inquiries -->
       <div class="grid gap-6 lg:grid-cols-2">
         <!-- Headquarters -->
-        <div class="flex min-w-0 gap-5 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm sm:p-7">
+        <div class="flex min-w-0 flex-col gap-4 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm sm:flex-row sm:gap-5 sm:p-7">
           <span class="grid h-14 w-14 shrink-0 place-items-center rounded-full bg-brand-50 text-brand-600" aria-hidden="true">
             <svg class="h-6 w-6 fill-current" viewBox="0 0 24 24"><path d="M12 2a7.5 7.5 0 0 0-7.5 7.5C4.5 14.6 12 22 12 22s7.5-7.4 7.5-12.5A7.5 7.5 0 0 0 12 2Zm0 10a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5Z" /></svg>
           </span>
@@ -104,7 +104,7 @@ async function submit() {
         </div>
 
         <!-- Sales Inquiries -->
-        <div class="flex min-w-0 gap-5 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm sm:p-7">
+        <div class="flex min-w-0 flex-col gap-4 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm sm:flex-row sm:gap-5 sm:p-7">
           <span class="grid h-14 w-14 shrink-0 place-items-center rounded-full bg-brand-50 text-brand-600" aria-hidden="true">
             <svg class="h-6 w-6 fill-current" viewBox="0 0 24 24"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.58 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1 11.4 11.4 0 0 0 .57 3.6 1 1 0 0 1-.25 1L6.6 10.8Z" /></svg>
           </span>
@@ -117,7 +117,8 @@ async function submit() {
                   <span class="grid h-7 w-7 shrink-0 place-items-center rounded-full text-white" :class="ch.tone" aria-hidden="true">
                     <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path v-for="d in icons[ch.icon]" :key="d" stroke-linecap="round" stroke-linejoin="round" :d="d" /></svg>
                   </span>
-                  <span class="w-20 shrink-0 font-medium text-ink-800">{{ ch.label }}</span>
+                  <!-- Redundant with the colored icon — hidden on ultra-narrow phones so the number never truncates. -->
+                  <span class="w-20 shrink-0 font-medium text-ink-800 max-[379px]:hidden">{{ ch.label }}</span>
                   <span class="min-w-0 truncate text-gray-600 group-hover:text-ink-900">{{ ch.value }}</span>
                   <svg class="ml-auto h-4 w-4 shrink-0 text-brand-500 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5h5v5m0-5L9 15m-2-8H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-1" /></svg>
                 </a>
