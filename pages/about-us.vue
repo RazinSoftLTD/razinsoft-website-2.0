@@ -1,6 +1,7 @@
 <script setup lang="ts">
 usePageSeo({
   title: 'About Us — Empowering Businesses Through Software',
+  image: '/images/team/group-image-fast.webp',
   description:
     'Meet the team behind RazinSoft — a software company helping startups, SMEs and enterprises build custom software, web & mobile apps, and SaaS products that scale.',
 })
