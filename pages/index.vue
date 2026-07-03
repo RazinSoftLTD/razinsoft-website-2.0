@@ -288,7 +288,8 @@ const posts = computed(() =>
         <NuxtLink to="/products?sort=free" class="btn bg-brand-600 text-white shadow-lg shadow-brand-600/20 hover:bg-brand-700">Book a Free Consultation
           <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6" /></svg>
         </NuxtLink>
-        <NuxtLink to="/#company" class="btn border border-white/25 bg-white/5 text-white hover:bg-white/10">Sign in to dashboard</NuxtLink>
+        <!-- Auth middleware sends logged-out users to /login (with redirect back to the dashboard). -->
+        <NuxtLink to="/dashboard" class="btn border border-white/25 bg-white/5 text-white hover:bg-white/10">Sign in to dashboard</NuxtLink>
       </div>
     </div>
   </section>
