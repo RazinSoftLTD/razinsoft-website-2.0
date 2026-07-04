@@ -35,9 +35,9 @@ useHead({ title: () => (inv.value ? `Pay ${inv.value.invoice_number} — RazinSo
           </span>
           <div><p class="font-semibold text-emerald-800">Payment received</p><p class="text-sm text-emerald-700">Thank you! This invoice is fully paid.</p></div>
         </div>
-        <div v-else-if="paid" class="mb-4 rounded-2xl border border-emerald-200 bg-emerald-50 px-5 py-3 text-sm text-emerald-700">
+        <!-- <div v-else-if="paid" class="mb-4 rounded-2xl border border-emerald-200 bg-emerald-50 px-5 py-3 text-sm text-emerald-700">
           Payment received. Remaining due: <strong>{{ money(inv.amount_due) }}</strong>.
-        </div>
+        </div> -->
 
         <!-- Full invoice document -->
         <div class="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
@@ -110,9 +110,15 @@ useHead({ title: () => (inv.value ? `Pay ${inv.value.invoice_number} — RazinSo
             </div>
           </div>
 
-          <div v-if="inv.notes || inv.terms" class="space-y-3 border-t border-gray-100 px-6 py-5 text-xs leading-relaxed text-gray-500 sm:px-8">
-            <div v-if="inv.notes"><span class="font-semibold text-ink-900">Notes:</span> {{ inv.notes }}</div>
-            <div v-if="inv.terms"><span class="font-semibold text-ink-900">Terms:</span> {{ inv.terms }}</div>
+          <div v-if="inv.notes || inv.terms" class="grid gap-6 border-t border-gray-100 px-6 py-5 text-xs leading-relaxed text-gray-500 sm:grid-cols-2 sm:px-8">
+            <div>
+              <p class="mb-1 text-[11px] font-bold uppercase tracking-wider text-gray-400">Notes</p>
+              <p>{{ inv.notes || '—' }}</p>
+            </div>
+            <div class="sm:text-right">
+              <p class="mb-1 text-[11px] font-bold uppercase tracking-wider text-gray-400">Terms</p>
+              <p>{{ inv.terms || '—' }}</p>
+            </div>
           </div>
         </div>
 
