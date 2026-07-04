@@ -115,7 +115,7 @@ useHead({ title: () => (inv.value ? `Pay ${inv.value.invoice_number} — RazinSo
               <p class="mb-1 text-[11px] font-bold uppercase tracking-wider text-gray-400">Notes</p>
               <p>{{ inv.notes || '—' }}</p>
             </div>
-            <div class="sm:text-right">
+            <div>
               <p class="mb-1 text-[11px] font-bold uppercase tracking-wider text-gray-400">Terms</p>
               <p>{{ inv.terms || '—' }}</p>
             </div>
