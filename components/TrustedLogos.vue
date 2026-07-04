@@ -53,7 +53,7 @@ const loop = computed(() => [...props.logos, ...props.logos, ...props.logos, ...
 .logo-track {
   display: flex;
   width: max-content;
-  animation: logo-marquee 35s linear infinite;
+  animation: logo-marquee 70s linear infinite;
 }
 /* Uniform trailing margin (incl. last item) keeps the -50% loop seamless. */
 .logo-track > li {

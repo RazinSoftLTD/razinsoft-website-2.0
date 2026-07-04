@@ -61,9 +61,30 @@ useSchemaOrg([
   }),
 ])
 
-const saved = ref(false)
 const shareOpen = ref(false)
 const helpful = ref<boolean | null>(null)
+
+// Follow → subscribe by email (stored in the admin subscriber list). $api declared above.
+const followOpen = ref(false)
+const following = ref(false)
+const email = ref('')
+const subscribing = ref(false)
+const subError = ref('')
+
+async function subscribe() {
+  if (!email.value || subscribing.value) return
+  subscribing.value = true
+  subError.value = ''
+  try {
+    await $api('/subscribe', { method: 'POST', body: { email: email.value, source: 'blog', article: article.value.title } })
+    following.value = true
+    followOpen.value = false
+  } catch {
+    subError.value = 'Could not subscribe. Please try again.'
+  } finally {
+    subscribing.value = false
+  }
+}
 
 function share(kind: string) {
   shareOpen.value = false
@@ -114,19 +135,30 @@ function share(kind: string) {
                 </div>
               </div>
               <div class="flex items-center gap-2">
-                <button type="button" class="inline-flex items-center rounded-lg border px-3 py-2 text-sm font-medium transition-colors" :class="saved ? 'border-primary bg-primary/5 text-primary' : 'border-border text-foreground hover:bg-muted'" @click="saved = !saved">
-                  <svg class="mr-2 h-4 w-4" :class="saved ? 'fill-primary' : ''" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2Z" /></svg>
-                  {{ saved ? 'Saved' : 'Save' }}
-                </button>
+                <div class="relative">
+                  <button type="button" class="inline-flex items-center rounded-lg border px-3 py-2 text-sm font-medium transition-colors" :class="following ? 'border-primary bg-primary/5 text-primary' : 'border-border text-foreground hover:bg-muted'" @click="!following && (followOpen = !followOpen)">
+                    <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0" /></svg>
+                    {{ following ? 'Following' : 'Follow' }}
+                  </button>
+                  <div v-if="followOpen && !following" class="absolute right-0 top-full z-10 mt-2 w-72 rounded-lg border border-border bg-white p-4 shadow-lg">
+                    <p class="text-sm font-semibold text-foreground">Follow for new posts</p>
+                    <p class="mb-3 mt-0.5 text-xs text-muted-foreground">Get an email when we publish new articles.</p>
+                    <form class="space-y-2" @submit.prevent="subscribe">
+                      <input v-model="email" type="email" required placeholder="you@email.com" class="w-full rounded-lg border border-border px-3 py-2 text-sm focus:border-primary focus:outline-none">
+                      <button type="submit" :disabled="subscribing" class="w-full rounded-lg bg-primary py-2 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-60">{{ subscribing ? 'Subscribing…' : 'Subscribe' }}</button>
+                      <p v-if="subError" class="text-xs text-red-500">{{ subError }}</p>
+                    </form>
+                  </div>
+                </div>
                 <div class="relative">
                   <button type="button" class="inline-flex items-center rounded-lg border border-border px-3 py-2 text-sm font-medium text-foreground hover:bg-muted" @click="shareOpen = !shareOpen">
                     <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="19" r="3" /><path stroke-linecap="round" d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4" /></svg>
                     Share
                   </button>
                   <div v-if="shareOpen" class="absolute right-0 top-full z-10 mt-2 w-56 rounded-lg border border-border bg-white p-2 shadow-lg">
-                    <button type="button" class="flex w-full items-center gap-3 rounded-md px-3 py-2 text-left transition-colors hover:bg-muted" @click="share('twitter')"><span class="h-4 w-4 rounded-sm bg-[#1DA1F2]" /><span class="text-sm">Share on Twitter</span></button>
-                    <button type="button" class="flex w-full items-center gap-3 rounded-md px-3 py-2 text-left transition-colors hover:bg-muted" @click="share('linkedin')"><span class="h-4 w-4 rounded-sm bg-[#0A66C2]" /><span class="text-sm">Share on LinkedIn</span></button>
-                    <button type="button" class="flex w-full items-center gap-3 rounded-md px-3 py-2 text-left transition-colors hover:bg-muted" @click="share('facebook')"><span class="h-4 w-4 rounded-sm bg-[#1877F2]" /><span class="text-sm">Share on Facebook</span></button>
+                    <button type="button" class="flex w-full items-center gap-3 rounded-md px-3 py-2 text-left transition-colors hover:bg-muted" @click="share('twitter')"><svg class="h-4 w-4 text-black" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg><span class="text-sm">Share on X</span></button>
+                    <button type="button" class="flex w-full items-center gap-3 rounded-md px-3 py-2 text-left transition-colors hover:bg-muted" @click="share('linkedin')"><svg class="h-4 w-4 text-[#0A66C2]" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" /></svg><span class="text-sm">Share on LinkedIn</span></button>
+                    <button type="button" class="flex w-full items-center gap-3 rounded-md px-3 py-2 text-left transition-colors hover:bg-muted" @click="share('facebook')"><svg class="h-4 w-4 text-[#1877F2]" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" /></svg><span class="text-sm">Share on Facebook</span></button>
                     <button type="button" class="flex w-full items-center gap-3 rounded-md px-3 py-2 text-left transition-colors hover:bg-muted" @click="share('email')"><svg class="h-4 w-4 text-muted-foreground" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2" /><path stroke-linecap="round" d="m3 7 9 6 9-6" /></svg><span class="text-sm">Share via Email</span></button>
                     <div class="my-2 border-t border-border" />
                     <button type="button" class="flex w-full items-center gap-3 rounded-md px-3 py-2 text-left transition-colors hover:bg-muted" @click="share('copy')"><svg class="h-4 w-4 text-muted-foreground" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" /><path stroke-linecap="round" d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" /></svg><span class="text-sm">Copy Link</span></button>
