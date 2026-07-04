@@ -42,9 +42,9 @@ useHead({ title: () => (inv.value ? `Pay ${inv.value.invoice_number} — RazinSo
         <!-- Full invoice document -->
         <div class="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
           <div class="flex flex-wrap items-start justify-between gap-4 border-b border-gray-100 p-6 sm:p-8">
-            <div class="flex items-center gap-3">
-              <span class="grid h-11 w-11 place-items-center rounded-xl bg-brand-600 text-lg font-extrabold text-white">R</span>
-              <div><p class="text-lg font-extrabold text-ink-900">RazinSoft</p><p class="text-xs text-gray-500">RazinSoft Ltd. · support@razinsoft.com</p></div>
+            <div>
+              <img src="/images/Razinsoft-logo.webp" alt="RazinSoft" width="1772" height="384" class="h-9 w-auto">
+              <p class="mt-2 text-xs text-gray-500">RazinSoft Ltd. · support@razinsoft.com</p>
             </div>
             <div class="text-right">
               <span class="inline-flex rounded-md bg-brand-50 px-3 py-1 text-xs font-bold uppercase tracking-wider text-brand-600">Invoice</span>
@@ -95,7 +95,7 @@ useHead({ title: () => (inv.value ? `Pay ${inv.value.invoice_number} — RazinSo
               <div class="flex justify-between"><span class="text-gray-500">Tax</span><span class="text-ink-900">{{ money(inv.tax_total) }}</span></div>
               <div class="flex justify-between border-t border-gray-100 pt-2 font-semibold text-ink-900"><span>Total</span><span>{{ money(inv.total) }}</span></div>
               <div v-if="inv.amount_paid > 0" class="flex justify-between text-emerald-600"><span>Paid</span><span>−{{ money(inv.amount_paid) }}</span></div>
-              <div class="mt-1 flex justify-between rounded-lg bg-brand-50 px-4 py-3 text-base font-bold text-brand-700"><span>Amount Due</span><span>{{ money(inv.amount_due) }}</span></div>
+              <div class="mt-1 flex justify-between rounded-lg bg-brand-50 px-4 py-3 text-base font-bold text-brand-700"><span>Pay Now</span><span>{{ money(inv.amount_due) }}</span></div>
             </div>
           </div>
 
