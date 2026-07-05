@@ -62,9 +62,11 @@ export default defineNuxtConfig({
   // Static marketing pages prerender; data- and auth-driven pages render live (SSR/SPA)
   // so they reflect the API instead of baking stale data at build time.
   routeRules: {
-    // Home shows LIVE product + blog data from the API — SWR (not prerender) so it stays
-    // fresh after admin edits instead of baking stale data at build time.
-    '/': { swr: 300 },
+    // Live content pages: the CDN/edge caches the HTML (s-maxage) for a fast load, but the
+    // BROWSER is told max-age=0 so a normal reload always revalidates and shows current data.
+    // Without max-age=0 browsers heuristically cache the HTML → only a HARD refresh shows new data.
+    // Home shows LIVE product + blog data from the API.
+    '/': { headers: { 'cache-control': 'public, max-age=0, must-revalidate, s-maxage=300, stale-while-revalidate=600' } },
     '/login': { prerender: true },
     '/register': { prerender: true },
     '/contact-us': { prerender: true },
@@ -80,11 +82,11 @@ export default defineNuxtConfig({
     '/support-policy': { prerender: true },
     // Catalogue: SSR + stale-while-revalidate cache. Crawlers still get full server-rendered
     // HTML (SEO-safe) but repeat visitors get it instantly from cache; revalidated in background.
-    '/products': { swr: 180 },
-    '/products/**': { swr: 300 },
-    // Insights / blog: SWR cache (articles change rarely).
-    '/blog': { swr: 180 },
-    '/blog/**': { swr: 600 },
+    '/products': { headers: { 'cache-control': 'public, max-age=0, must-revalidate, s-maxage=180, stale-while-revalidate=600' } },
+    '/products/**': { headers: { 'cache-control': 'public, max-age=0, must-revalidate, s-maxage=300, stale-while-revalidate=600' } },
+    // Insights / blog: edge-cached, browser revalidates (articles change rarely).
+    '/blog': { headers: { 'cache-control': 'public, max-age=0, must-revalidate, s-maxage=180, stale-while-revalidate=600' } },
+    '/blog/**': { headers: { 'cache-control': 'public, max-age=0, must-revalidate, s-maxage=600, stale-while-revalidate=600' } },
     // Auth-gated, per-user pages: client-rendered (token lives in a cookie).
     '/dashboard': { ssr: false },
     '/dashboard/**': { ssr: false },
