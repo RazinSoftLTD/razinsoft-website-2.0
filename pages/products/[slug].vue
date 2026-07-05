@@ -189,6 +189,9 @@ const demoPresets: Record<string, { tone: string; badge: string; paths: string[]
   link: { tone: 'from-gray-600 to-gray-800', badge: 'Open', paths: ['M14 5h5v5', 'M19 5 10 14', 'M19 13v6H5V5h6'] },
 }
 
+// Uploaded demo icons that failed to load → fall back to the preset SVG.
+const brokenIcons = reactive(new Set<string>())
+
 const demoLinks = computed(() => {
   const demos = api.value.demos
   if (demos?.length) {
@@ -199,6 +202,7 @@ const demoLinks = computed(() => {
         subtitle: d.subtitle || '',
         badge: d.badge || preset.badge,
         tone: preset.tone,
+        icon: d.icon || '', // uploaded icon image; empty → fall back to the preset SVG
         paths: preset.paths,
         url: d.url || '',
       }
@@ -460,7 +464,9 @@ const { addItem } = useCart()
             <a v-for="card in demoLinks" :key="card.title" :href="card.url || undefined" :target="card.url ? '_blank' : undefined" :rel="card.url ? 'noopener noreferrer' : undefined" :aria-disabled="!card.url" class="relative flex flex-col items-center gap-3 rounded-2xl bg-gradient-to-br p-6 text-white shadow-sm transition hover:shadow-lg" :class="[card.tone, !card.url && 'cursor-not-allowed opacity-60']">
               <span class="absolute right-3 top-3 rounded-full bg-white/20 px-2 py-0.5 text-[10px] font-bold">{{ card.badge }}</span>
               <span class="grid h-12 w-12 place-items-center rounded-xl bg-white/20" aria-hidden="true">
-                <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path v-for="d in card.paths" :key="d" stroke-linecap="round" stroke-linejoin="round" :d="d" /></svg>
+                <!-- Uploaded icon if set (and not broken), otherwise fall back to the type preset SVG -->
+                <img v-if="card.icon && !brokenIcons.has(card.icon)" :src="card.icon" alt="" class="h-6 w-6 object-contain" @error="brokenIcons.add(card.icon)">
+                <svg v-else class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path v-for="d in card.paths" :key="d" stroke-linecap="round" stroke-linejoin="round" :d="d" /></svg>
               </span>
               <span class="font-display text-base font-bold">{{ card.title }}</span>
               <span class="text-xs text-white/80">{{ card.subtitle }}</span>
