@@ -42,6 +42,8 @@ export default defineNuxtConfig({
       siteUrl,
       // Laravel API base — override via NUXT_PUBLIC_API_BASE in .env.
       apiBase,
+      // Calendly scheduling link for the Book a Meeting page — override via NUXT_PUBLIC_CALENDLY_URL.
+      calendlyUrl: process.env.NUXT_PUBLIC_CALENDLY_URL || 'https://calendly.com/razinsoft/consultation',
     },
   },
 
