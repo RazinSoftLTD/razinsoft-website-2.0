@@ -380,4 +380,30 @@ function share(kind: string) {
   max-width: 100%;
   height: auto;
 }
+/* Tables from the editor — visible borders, header shading, and horizontal scroll on small screens. */
+.article-content :deep(table) {
+  margin: 1.75rem 0;
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  display: block;
+  overflow-x: auto;
+  border: 1px solid #e4e4e7;
+  border-radius: 0.5rem;
+}
+.article-content :deep(th),
+.article-content :deep(td) {
+  border: 1px solid #e4e4e7;
+  padding: 0.625rem 0.875rem;
+  text-align: left;
+  vertical-align: top;
+}
+.article-content :deep(th) {
+  background: #f8fafc;
+  font-weight: 700;
+  color: #111827;
+}
+.article-content :deep(tbody tr:nth-child(even)) {
+  background: #fbfcfe;
+}
 </style>
