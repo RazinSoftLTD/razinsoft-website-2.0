@@ -106,9 +106,9 @@ onMounted(() => {
         <AppSearch />
 
         <!-- Book a meeting CTA (desktop) -->
-        <NuxtLink to="/book-a-meeting" class="hidden rounded-xl border border-brand-600 px-3.5 py-2 text-sm font-semibold text-brand-600 transition-colors hover:bg-brand-600 hover:text-white lg:inline-flex">
+        <!-- <NuxtLink to="/book-a-meeting" class="hidden rounded-xl border border-brand-600 px-3.5 py-2 text-sm font-semibold text-brand-600 transition-colors hover:bg-brand-600 hover:text-white lg:inline-flex">
           Book a Meeting
-        </NuxtLink>
+        </NuxtLink> -->
 
         <!-- Cart — always available -->
         <NuxtLink to="/cart" class="relative rounded-lg p-2 text-ink-700 hover:bg-gray-50" :aria-label="`View cart, ${count} items`">

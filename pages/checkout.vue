@@ -318,7 +318,7 @@ const field = 'h-11 w-full rounded-lg border border-transparent bg-gray-100 px-4
           </section>
 
           <!-- What's included -->
-          <section class="rounded-2xl border border-gray-100 p-6 shadow-sm">
+          <!-- <section class="rounded-2xl border border-gray-100 p-6 shadow-sm">
             <h3 class="font-display text-base font-bold text-ink-900">What's Included</h3>
             <ul class="mt-4 space-y-2.5 text-sm text-gray-700">
               <li v-for="f in included" :key="f" class="flex items-center gap-2">
@@ -326,7 +326,7 @@ const field = 'h-11 w-full rounded-lg border border-transparent bg-gray-100 px-4
                 {{ f }}
               </li>
             </ul>
-          </section>
+          </section> -->
         </div>
       </form>
     </template>

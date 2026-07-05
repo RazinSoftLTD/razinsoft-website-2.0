@@ -44,12 +44,12 @@ const field = 'h-11 w-full rounded-lg border border-gray-200 bg-white pl-10 text
         <h1 class="font-display text-3xl font-extrabold text-ink-900">Welcome back</h1>
         <p class="mt-2 text-gray-500">Sign in to continue to your dashboard.</p>
 
-        <div class="mt-7">
+        <!-- <div class="mt-7">
           <AuthSocials />
-        </div>
+        </div> -->
 
         <div class="my-6 flex items-center gap-3 text-xs font-medium uppercase tracking-wider text-gray-400">
-          <span class="h-px flex-1 bg-gray-200" />or continue with email<span class="h-px flex-1 bg-gray-200" />
+          <!-- <span class="h-px flex-1 bg-gray-200" />or continue with email<span class="h-px flex-1 bg-gray-200" /> -->
         </div>
 
         <form class="space-y-4" @submit.prevent="onSubmit">

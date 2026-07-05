@@ -36,9 +36,9 @@ const testimonials = [
   { quote: "ReadyRide helped us launch much faster than building everything from scratch. The apps run smoothly, and the admin panel is easy to manage.", name: 'Araf khan', role: 'CTO, MetroRide Technologies', initials: 'AK', avatar: 'bg-blue-600' },
   { quote: 'We wanted an eCommerce solution that could be launched quickly. The setup was straightforward, and the platform has been a great fit for our business.', name: 'Pedro van', role: 'HR Manager, NovaCart Commerce', initials: 'PV', avatar: 'bg-emerald-600' },
   { quote: "The software has been reliable, and the support team is responsive whenever we need help. It's a solution we can depend on every day.", name: 'David Müller', role: 'Founder, RetailHub Stores', initials: 'DM', avatar: 'bg-orange-500' },
-  { quote: "ReadyLMS gave us most of the features we needed from day one. The platform is easy to use, and both instructors and students adapted quickly.", name: 'Pradip kulkarni', role: 'SEO, SkillBridge Academy', initials: 'PK', avatar: 'bg-orange-500' },
-  { quote: "The platform made our laundry operations much easier to manage. Order tracking is smoother, and daily tasks take less time than before.", name: 'Michael Carter', role: 'SEO, FreshFold Laundry Services', initials: 'MC', avatar: 'bg-orange-500' },
-  { quote: "We needed a system to manage properties, tenants, and payments in one place. The platform was easy to use, and the support team was always helpful when needed.", name: 'Thomas Becker', role: 'AM, UrbanSpace Management', initials: 'MC', avatar: 'bg-orange-500' },
+  { quote: "ReadyLMS gave us most of the features we needed from day one. The platform is easy to use, and both instructors and students adapted quickly.", name: 'Pradip kulkarni', role: 'CEO, SkillBridge Academy', initials: 'PK', avatar: 'bg-violet-600' },
+  { quote: "The platform made our laundry operations much easier to manage. Order tracking is smoother, and daily tasks take less time than before.", name: 'Michael Carter', role: 'CEO, FreshFold Laundry Services', initials: 'MC', avatar: 'bg-rose-500' },
+  { quote: "We needed a system to manage properties, tenants, and payments in one place. The platform was easy to use, and the support team was always helpful when needed.", name: 'Thomas Becker', role: 'AM, UrbanSpace Management', initials: 'TB', avatar: 'bg-cyan-600' },
 ]
 // Duplicated set for a seamless infinite marquee (loops at -50%).
 const reviewsLoop = [...testimonials, ...testimonials, ...testimonials, ...testimonials]
