@@ -17,7 +17,13 @@ const { $api } = useNuxtApp()
 // Live product detail from the Laravel API (SSR).
 const { data: detail, error, refresh } = await useAsyncData(`product-${slug}`, () => $api<any>(`/products/${slug}`))
 if (error.value || !detail.value) {
-  throw createError({ statusCode: 404, statusMessage: 'Product not found', fatal: true })
+  // Only a real 404 means "not found"; a transient/network/CORS error shouldn't masquerade as one.
+  const status = (error.value as any)?.statusCode ?? (error.value as any)?.response?.status
+  throw createError(
+    status === 404 || !error.value
+      ? { statusCode: 404, statusMessage: 'Product not found', fatal: true }
+      : { statusCode: status || 503, statusMessage: 'Could not load this product. Please try again.', fatal: true },
+  )
 }
 const api = computed<any>(() => (detail.value as any)?.data ?? detail.value)
 
