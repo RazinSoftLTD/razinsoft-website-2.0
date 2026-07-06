@@ -30,7 +30,7 @@ function add() {
           format="webp"
           :loading="eager ? 'eager' : 'lazy'"
           :fetchpriority="eager ? 'high' : 'auto'"
-          class="h-44 w-full bg-gray-100 object-cover transition group-hover:scale-[1.02]"
+          class="aspect-[3/2] w-full bg-gray-50 object-contain transition group-hover:scale-[1.02]"
         />
       </NuxtLink>
       <span
