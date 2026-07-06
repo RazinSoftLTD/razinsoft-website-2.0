@@ -297,11 +297,6 @@ const field = 'h-11 w-full rounded-lg border border-transparent bg-gray-100 px-4
               <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" /></svg>
               {{ placing ? 'Processing…' : 'Complete Purchase' }}
             </button>
-
-            <p class="mt-4 flex items-center justify-center gap-1.5 text-xs text-gray-500">
-              <svg class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3 4.5 6v5c0 4.5 3 7.5 7.5 9 4.5-1.5 7.5-4.5 7.5-9V6L12 3Z" /></svg>
-              Secure 256-bit SSL Encrypted
-            </p>
           </section>
 
           <!-- Money-back guarantee -->
