@@ -406,4 +406,60 @@ function share(kind: string) {
 .article-content :deep(tbody tr:nth-child(even)) {
   background: #fbfcfe;
 }
+/* Extra headings from the editor (H1 + H4–H6). */
+.article-content :deep(h1) {
+  margin: 2.5rem 0 1.25rem;
+  font-size: 2.15rem;
+  font-weight: 800;
+  color: #1a1a1a;
+  line-height: 1.15;
+}
+.article-content :deep(h4) {
+  margin: 1.5rem 0 0.65rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #252525;
+}
+.article-content :deep(h5) {
+  margin: 1.35rem 0 0.6rem;
+  font-size: 1.02rem;
+  font-weight: 700;
+  color: #252525;
+}
+.article-content :deep(h6) {
+  margin: 1.25rem 0 0.55rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #52525b;
+}
+/* Quill class-based formats (font family, alignment, size) so the article renders as edited. */
+.article-content :deep(.ql-font-serif) { font-family: Georgia, 'Times New Roman', serif; }
+.article-content :deep(.ql-font-monospace) { font-family: Menlo, Consolas, monospace; }
+.article-content :deep(.ql-font-arial) { font-family: Arial, Helvetica, sans-serif; }
+.article-content :deep(.ql-font-georgia) { font-family: Georgia, serif; }
+.article-content :deep(.ql-font-tahoma) { font-family: Tahoma, Geneva, sans-serif; }
+.article-content :deep(.ql-font-verdana) { font-family: Verdana, Geneva, sans-serif; }
+.article-content :deep(.ql-font-times) { font-family: 'Times New Roman', Times, serif; }
+.article-content :deep(.ql-font-courier) { font-family: 'Courier New', Courier, monospace; }
+.article-content :deep(.ql-align-center) { text-align: center; }
+.article-content :deep(.ql-align-right) { text-align: right; }
+.article-content :deep(.ql-align-justify) { text-align: justify; }
+.article-content :deep(.ql-size-small) { font-size: 0.85em; }
+.article-content :deep(.ql-size-large) { font-size: 1.4em; }
+.article-content :deep(.ql-size-huge) { font-size: 2em; }
+/* Code blocks from the editor. */
+.article-content :deep(pre.ql-syntax),
+.article-content :deep(pre) {
+  margin: 1.5rem 0;
+  padding: 1rem 1.25rem;
+  border-radius: 0.5rem;
+  background: #1e293b;
+  color: #e2e8f0;
+  font-family: Menlo, Consolas, monospace;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  overflow-x: auto;
+}
 </style>
