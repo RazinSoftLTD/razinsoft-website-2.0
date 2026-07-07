@@ -7,6 +7,8 @@ useSeoMeta({ robots: 'noindex, nofollow', title: 'Payment successful' })
 const route = useRoute()
 const order = (route.query.order as string) || ''
 const sessionId = (route.query.session_id as string) || ''
+// PayPal appends ?token=<paypal-order-id> to the return URL — the backend captures it.
+const token = (route.query.token as string) || ''
 const { $api } = useNuxtApp()
 const { clear } = useCart()
 
@@ -17,10 +19,10 @@ onMounted(async () => {
     return
   }
 
-  // Top-level return (Stripe Embedded Checkout): confirm the session → fulfil, then go to orders.
+  // Top-level return (Stripe Embedded Checkout or PayPal redirect): confirm → fulfil, then go to orders.
   if (order) {
     try {
-      await $api(`/orders/${order}/confirm`, { method: 'POST', query: { session_id: sessionId } })
+      await $api(`/orders/${order}/confirm`, { method: 'POST', query: { session_id: sessionId, token } })
     } catch {
       // webhook will fulfil even if this confirm call fails
     }

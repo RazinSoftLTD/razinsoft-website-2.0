@@ -73,13 +73,16 @@ async function placeOrder() {
       },
     }
 
-    const res = await $api<{ order_number: string; checkout_url?: string; stripe?: { client_secret: string; publishable_key: string } }>('/checkout', { method: 'POST', body: payload })
+    const res = await $api<{ order_number: string; provider?: string; checkout_url?: string; stripe?: { client_secret: string; publishable_key: string } }>('/checkout', { method: 'POST', body: payload })
     orderNo.value = res.order_number
 
     if (res.stripe?.client_secret) {
       // Stripe card → mount Embedded Checkout inside the page.
       stripeData.value = res.stripe
       showStripe.value = true
+    } else if (res.provider === 'paypal' && res.checkout_url) {
+      // PayPal blocks being iframed → full-page redirect to approve; it returns to /payment/success.
+      window.location.href = res.checkout_url
     } else if (res.checkout_url) {
       // dev-pay / other frameable gateway → iframe modal.
       frameUrl.value = res.checkout_url
