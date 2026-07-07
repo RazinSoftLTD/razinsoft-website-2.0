@@ -67,3 +67,12 @@ export function useProducts() {
     default: () => [] as CardProduct[],
   })
 }
+
+// Homepage picks — only products the admin flagged for_home (max 6; API falls back if none).
+export function useHomeProducts() {
+  const { $api } = useNuxtApp()
+  return useAsyncData('home-products', () => $api<{ data: ApiProduct[] }>('/products?for_home=1&per_page=6'), {
+    transform: (res) => (res.data ?? []).slice(0, 6).map(toCardProduct),
+    default: () => [] as CardProduct[],
+  })
+}

@@ -1,7 +1,7 @@
 <script setup lang="ts">
-// Live catalogue from the API (falls back to an empty list if unreachable at build).
-const { data: allProducts } = await useProducts()
-const products = computed(() => (allProducts.value ?? []).slice(0, 8))
+// Homepage products = the ones the admin flagged for_home (max 6; API falls back if none set).
+const { data: homeProducts } = await useHomeProducts()
+const products = computed(() => homeProducts.value ?? [])
 
 usePageSeo({
   title: 'RazinSoft | Custom Software Development & Ready-Made Business Solutions',

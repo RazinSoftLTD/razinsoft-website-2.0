@@ -226,6 +226,13 @@ const demoLinks = computed(() => {
   return tryItLive.map((c) => ({ ...c, url: byTitle[c.title] || demo.live || '' })).filter((c) => c.url)
 })
 
+// Balance the Try It Live grid to the card count: 6→3/row, 8→4/row, 4→4/row, 3→3/row, else 4.
+const demoGridClass = computed(() => {
+  const n = demoLinks.value.length
+  const cols = n % 4 === 0 ? 4 : n % 3 === 0 ? 3 : Math.min(n, 4)
+  return ({ 1: 'sm:grid-cols-1', 2: 'sm:grid-cols-2', 3: 'sm:grid-cols-2 lg:grid-cols-3', 4: 'sm:grid-cols-2 lg:grid-cols-4' } as Record<number, string>)[cols] || 'sm:grid-cols-2 lg:grid-cols-4'
+})
+
 // ---- SEO from the API seo payload ----
 const seo = computed(() => api.value.seo || {})
 
@@ -466,7 +473,7 @@ const { addItem } = useCart()
         <section v-if="demoLinks.length" aria-labelledby="tryit-h" class="text-center">
           <h2 id="tryit-h" class="font-display text-3xl font-extrabold text-ink-900">Try It Live</h2>
           <p class="mt-2 text-gray-600">Experience the product with live demos and mobile apps</p>
-          <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div class="mx-auto mt-8 grid max-w-5xl gap-4" :class="demoGridClass">
             <a v-for="card in demoLinks" :key="card.title" :href="card.url || undefined" :target="card.url ? '_blank' : undefined" :rel="card.url ? 'noopener noreferrer' : undefined" :aria-disabled="!card.url" class="relative flex flex-col items-center gap-3 rounded-2xl bg-gradient-to-br p-6 text-white shadow-sm transition hover:shadow-lg" :class="[card.tone, !card.url && 'cursor-not-allowed opacity-60']">
               <span class="absolute right-3 top-3 rounded-full bg-white/20 px-2 py-0.5 text-[10px] font-bold">{{ card.badge }}</span>
               <span class="grid h-12 w-12 place-items-center rounded-xl bg-white/20" aria-hidden="true">
