@@ -34,6 +34,8 @@ useSchemaOrg([
 </script>
 
 <template>
+  <!-- Top progress bar in the brand colour — visible feedback while a page loads. -->
+  <NuxtLoadingIndicator color="#2563eb" :height="3" :throttle="100" />
   <NuxtLayout>
     <NuxtPage />
   </NuxtLayout>

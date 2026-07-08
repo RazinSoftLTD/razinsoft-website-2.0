@@ -1,6 +1,11 @@
 <script setup lang="ts">
-// Homepage products = the ones the admin flagged for_home (max 6; API falls back if none set).
-const { data: homeProducts } = await useHomeProducts()
+// Homepage products (admin-flagged for_home, max 6) + the latest articles teaser both come
+// from the API — fetch them IN PARALLEL so SSR waits once (max of the two), not one-after-another.
+const { $api } = useNuxtApp()
+const [{ data: homeProducts }, { data: articlesRes }] = await Promise.all([
+  useHomeProducts(),
+  useAsyncData('home-articles', () => $api<any>('/articles')),
+])
 const products = computed(() => homeProducts.value ?? [])
 
 usePageSeo({
@@ -43,10 +48,8 @@ const testimonials = [
 // Duplicated set for a seamless infinite marquee (loops at -50%).
 const reviewsLoop = [...testimonials, ...testimonials, ...testimonials, ...testimonials]
 
-// Latest published articles for the "Insights & updates" teaser (from the API).
-const { $api } = useNuxtApp()
-const { data: articlesRes } = await useAsyncData('home-articles', () => $api<any>('/articles'))
-const tagTones = ['bg-blue-100 text-blue-700', 'bg-emerald-100 text-emerald-700', 'bg-purple-100 text-purple-700', 'bg-orange-100 text-orange-700', 'bg-rose-100 text-rose-700']
+// Latest published articles for the "Insights & updates" teaser (fetched in parallel above).
+const tagTones =['bg-blue-100 text-blue-700', 'bg-emerald-100 text-emerald-700', 'bg-purple-100 text-purple-700', 'bg-orange-100 text-orange-700', 'bg-rose-100 text-rose-700']
 const posts = computed(() =>
   (articlesRes.value?.data ?? []).slice(0, 3).map((a: any, i: number) => ({
     slug: a.slug,

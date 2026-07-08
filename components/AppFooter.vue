@@ -49,11 +49,11 @@ const open = reactive<Record<string, boolean>>({ company: false, quick: false })
             </span>
             info@razinsoft.com
           </a>
-          <a href="tel:+8801111257408" class="flex items-center gap-3 text-gray-300 hover:text-white">
+          <a href="tel:+8801711257498" class="flex items-center gap-3 text-gray-300 hover:text-white">
             <span class="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-white/5 text-brand-400" aria-hidden="true">
               <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.28 6.72 15 15 15h2.25a1.5 1.5 0 0 0 1.5-1.5v-2.69a1.5 1.5 0 0 0-1.06-1.44l-3.36-1.12a1.5 1.5 0 0 0-1.62.49l-.97 1.2a12.04 12.04 0 0 1-5.42-5.42l1.2-.97a1.5 1.5 0 0 0 .49-1.62L8.88 4.06A1.5 1.5 0 0 0 7.44 3H4.75a1.5 1.5 0 0 0-1.5 1.5v2.25Z" /></svg>
             </span>
-            +880 1111257408
+            +880 1711 257498
           </a>
         </address>
         <ul class="mt-5 flex gap-3">
@@ -131,18 +131,18 @@ const open = reactive<Record<string, boolean>>({ company: false, quick: false })
             </div>
           </div>
           <div class="mt-3 grid gap-3 sm:grid-cols-2">
-            <a href="tel:+8801711257408" class="rounded-xl bg-white/5 p-3 hover:bg-white/10">
+            <a href="tel:+8801711257498" class="rounded-xl bg-white/5 p-3 hover:bg-white/10">
               <p class="text-xs text-gray-400">Sale Queries</p>
               <p class="mt-0.5 flex items-center gap-1.5 whitespace-nowrap text-sm font-semibold text-white">
                 <svg class="h-3.5 w-3.5 text-emerald-400" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.25 6.75c0 8.28 6.72 15 15 15h2.25a1.5 1.5 0 0 0 1.5-1.5v-2.69a1.5 1.5 0 0 0-1.06-1.44l-3.36-1.12a1.5 1.5 0 0 0-1.62.49l-.97 1.2a12 12 0 0 1-5.42-5.42l1.2-.97a1.5 1.5 0 0 0 .49-1.62L8.88 4.06A1.5 1.5 0 0 0 7.44 3H4.75a1.5 1.5 0 0 0-1.5 1.5v2.25Z" /></svg>
-                +880 1711 257408
+                +880 1711 257498
               </p>
             </a>
-            <a href="tel:+8801313560943" class="rounded-xl bg-white/5 p-3 hover:bg-white/10">
+            <a href="tel:+8801336909483" class="rounded-xl bg-white/5 p-3 hover:bg-white/10">
               <p class="text-xs text-gray-400">Tech Support</p>
               <p class="mt-0.5 flex items-center gap-1.5 whitespace-nowrap text-sm font-semibold text-white">
                 <svg class="h-3.5 w-3.5 text-emerald-400" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.25 6.75c0 8.28 6.72 15 15 15h2.25a1.5 1.5 0 0 0 1.5-1.5v-2.69a1.5 1.5 0 0 0-1.06-1.44l-3.36-1.12a1.5 1.5 0 0 0-1.62.49l-.97 1.2a12 12 0 0 1-5.42-5.42l1.2-.97a1.5 1.5 0 0 0 .49-1.62L8.88 4.06A1.5 1.5 0 0 0 7.44 3H4.75a1.5 1.5 0 0 0-1.5 1.5v2.25Z" /></svg>
-                +880 1313 560943
+                +880 1336 909483
               </p>
             </a>
           </div>
