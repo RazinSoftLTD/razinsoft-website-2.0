@@ -1,13 +1,13 @@
 <script setup lang="ts">
 usePageSeo({
-  title: 'Live@RazinSoft — Our Life, Culture & Workplace',
+  title: 'Life@RazinSoft — Our Life, Culture & Workplace',
   description: 'Take a peek inside RazinSoft — our people, culture, celebrations and the everyday moments that make working here special.',
 })
 
 const highlights = [
   { title: 'People First', desc: 'A supportive, no-ego culture where everyone has a voice and room to grow.', tone: 'bg-blue-50 text-blue-600', paths: ['M9 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z', 'M17 11a3 3 0 1 0 0-6', 'M3 20a6 6 0 0 1 12 0', 'M16.5 14.5A6 6 0 0 1 21 20'] },
   { title: 'Celebrate Together', desc: 'Festivals, birthdays, product launches — we love finding reasons to celebrate.', tone: 'bg-rose-50 text-rose-600', paths: ['m12 2 2.4 4.8L20 8l-4 3.8L17 18l-5-2.6L7 18l1-6.2L4 8l5.6-1.2Z'] },
-  { title: 'Learn & Build', desc: 'Hackathons, tech talks and side projects keep our curiosity alive.', tone: 'bg-emerald-50 text-emerald-600', paths: ['m8 16-4-4 4-4m8 0 4 4-4 4M14 4l-4 16'] },
+  { title: 'Learn & Build', desc: 'Hackathons, tech talks and side projects keep our curiosity alive.', tone: 'bg-brand-50 text-brand-600', paths: ['m8 16-4-4 4-4m8 0 4 4-4 4M14 4l-4 16'] },
   { title: 'Work-Life Balance', desc: 'Flexible hours and hybrid work so you can do great work and live well.', tone: 'bg-purple-50 text-purple-600', paths: ['M12 8v4l3 2', 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Z'] },
 ]
 
@@ -30,12 +30,12 @@ const moments = [
 <template>
   <div>
     <!-- Hero -->
-    <section class="relative overflow-hidden bg-gradient-to-b from-emerald-50/60 to-white">
-      <span class="pointer-events-none absolute -right-8 top-4 select-none font-display text-[16rem] font-black leading-none text-emerald-600/[0.05] sm:text-[22rem]" aria-hidden="true">R</span>
+    <section class="relative overflow-hidden bg-gradient-to-b from-brand-50/60 to-white">
+      <span class="pointer-events-none absolute -right-8 top-4 select-none font-display text-[16rem] font-black leading-none text-brand-600/[0.05] sm:text-[22rem]" aria-hidden="true">R</span>
       <div class="container-page relative py-16 lg:py-24">
-        <p class="text-xs font-bold uppercase tracking-widest text-emerald-600">Live@RazinSoft</p>
+        <p class="text-xs font-bold uppercase tracking-widest text-brand-600">Life@RazinSoft</p>
         <h1 class="mt-3 max-w-3xl font-display text-4xl font-extrabold leading-tight text-ink-900 sm:text-5xl">
-          Life, culture and the <span class="text-emerald-600">people behind the products</span>
+          Life, culture and the <span class="text-brand-600">people behind the products</span>
         </h1>
         <p class="mt-5 max-w-2xl text-lg leading-relaxed text-gray-600">
           Great software is built by great people who love what they do. Here's a look inside our workplace — the culture, the moments and the team that makes RazinSoft feel like home.
@@ -56,7 +56,7 @@ const moments = [
     <section class="bg-gray-50 py-20">
       <div class="container-page">
         <div class="text-center">
-          <p class="text-xs font-bold uppercase tracking-widest text-emerald-600">Our Culture</p>
+          <p class="text-xs font-bold uppercase tracking-widest text-brand-600">Our Culture</p>
           <h2 class="mt-2 font-display text-3xl font-extrabold text-ink-900 lg:text-4xl">What makes us, us</h2>
         </div>
         <div class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
@@ -74,12 +74,12 @@ const moments = [
     <!-- Moments -->
     <section class="container-page py-20">
       <div class="text-center">
-        <p class="text-xs font-bold uppercase tracking-widest text-emerald-600">Everyday Moments</p>
+        <p class="text-xs font-bold uppercase tracking-widest text-brand-600">Everyday Moments</p>
         <h2 class="mt-2 font-display text-3xl font-extrabold text-ink-900 lg:text-4xl">More than just work</h2>
       </div>
       <div class="mx-auto mt-12 grid max-w-4xl gap-5 sm:grid-cols-2">
         <div v-for="m in moments" :key="m.title" class="flex gap-4 rounded-2xl border border-gray-100 p-6 shadow-sm">
-          <span class="mt-0.5 grid h-10 w-10 shrink-0 place-items-center rounded-full bg-emerald-50 text-emerald-600" aria-hidden="true">
+          <span class="mt-0.5 grid h-10 w-10 shrink-0 place-items-center rounded-full bg-brand-50 text-brand-600" aria-hidden="true">
             <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m5 13 4 4L19 7" /></svg>
           </span>
           <div>
@@ -91,13 +91,13 @@ const moments = [
     </section>
 
     <!-- CTA -->
-    <section class="relative overflow-hidden bg-gradient-to-br from-[#052e2b] via-[#0f3d38] to-[#052e2b] py-20 text-white">
+    <section class="relative overflow-hidden bg-gradient-to-br from-[#0b1e4d] via-[#16357e] to-[#0b1e4d] py-20 text-white">
       <div class="pointer-events-none absolute inset-0 opacity-[0.05]" aria-hidden="true" style="background-image: linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px); background-size: 60px 60px;" />
       <div class="container-page relative text-center">
         <h2 class="font-display text-3xl font-extrabold sm:text-4xl">Want to be part of the story?</h2>
         <p class="mx-auto mt-4 max-w-xl text-white/70">We're always looking for curious, kind and talented people to join the team.</p>
         <div class="mt-8 flex flex-wrap justify-center gap-3">
-          <NuxtLink to="/careers" class="btn bg-emerald-500 text-white shadow-lg shadow-emerald-500/20 hover:bg-emerald-600">View open roles</NuxtLink>
+          <NuxtLink to="/careers" class="btn bg-brand-500 text-white shadow-lg shadow-brand-500/20 hover:bg-brand-600">View open roles</NuxtLink>
           <NuxtLink to="/about-us" class="btn border border-white/25 bg-white/5 text-white hover:bg-white/10">About us</NuxtLink>
         </div>
       </div>
