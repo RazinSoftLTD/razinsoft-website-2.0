@@ -3,8 +3,14 @@ export interface AuthUser {
   name: string
   email: string
   phone?: string | null
+  address?: string | null
+  city?: string | null
+  country?: string | null
+  photo?: string | null
+  email_verified?: boolean
   role: string
   initials: string
+  created_at?: string
 }
 
 /**
@@ -69,5 +75,37 @@ export function useAuth() {
     await navigateTo('/login')
   }
 
-  return { token, user, isLoggedIn, login, register, fetchMe, logout }
+  // ---- Profile management ----
+  const unwrap = (res: any) => (res?.data ?? res) as AuthUser
+
+  async function updateProfile(payload: { name: string; phone?: string | null; address?: string | null; city?: string | null; country?: string | null }) {
+    user.value = unwrap(await $api<any>('/account/profile', { method: 'PUT', body: payload }))
+    return user.value
+  }
+
+  async function changePassword(payload: { current_password: string; password: string; password_confirmation: string }) {
+    return $api('/account/password', { method: 'PUT', body: payload })
+  }
+
+  async function uploadAvatar(file: File) {
+    const fd = new FormData()
+    fd.append('photo', file)
+    user.value = unwrap(await $api<any>('/account/avatar', { method: 'POST', body: fd }))
+    return user.value
+  }
+
+  async function resendVerification() {
+    return $api<{ message: string }>('/account/email/verify', { method: 'POST' })
+  }
+
+  async function deleteAccount(password: string) {
+    await $api('/account', { method: 'DELETE', body: { password } })
+    token.value = null
+    user.value = null
+  }
+
+  return {
+    token, user, isLoggedIn, login, register, fetchMe, logout,
+    updateProfile, changePassword, uploadAvatar, resendVerification, deleteAccount,
+  }
 }
