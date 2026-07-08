@@ -23,6 +23,29 @@ const apiOrigin = (() => {
   }
 })()
 
+// ---- Google Tag Manager — loads in production builds only (keeps dev traffic out of analytics).
+// Override the container id via NUXT_GTM_ID; set it empty to disable GTM entirely.
+const gtmId = process.env.NUXT_GTM_ID ?? 'GTM-WBX6S622'
+const gtmEnabled = process.env.NODE_ENV === 'production' && !!gtmId
+const gtmHeadScript = gtmEnabled
+  ? [{
+      // GTM loader — injected as high in <head> as possible.
+      innerHTML:
+        `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});` +
+        `var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;` +
+        `j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);` +
+        `})(window,document,'script','dataLayer','${gtmId}');`,
+      tagPosition: 'head' as const,
+    }]
+  : []
+const gtmBodyNoscript = gtmEnabled
+  ? [{
+      // Fallback for JS-disabled clients — must sit right after <body> opens.
+      innerHTML: `<iframe src="https://www.googletagmanager.com/ns.html?id=${gtmId}" height="0" width="0" style="display:none;visibility:hidden"></iframe>`,
+      tagPosition: 'bodyOpen' as const,
+    }]
+  : []
+
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
   devtools: { enabled: true },
@@ -175,6 +198,9 @@ export default defineNuxtConfig({
         // Warm up the connection to the API/storage host early → faster image + data fetch (LCP).
         ...(apiOrigin ? [{ rel: 'preconnect', href: apiOrigin, crossorigin: '' as const }, { rel: 'dns-prefetch', href: apiOrigin }] : []),
       ],
+      // Google Tag Manager (production only) — loader in <head>, noscript iframe right after <body>.
+      script: gtmHeadScript,
+      noscript: gtmBodyNoscript,
     },
   },
 })
