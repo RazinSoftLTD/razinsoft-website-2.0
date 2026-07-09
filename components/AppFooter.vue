@@ -22,7 +22,6 @@ const socials = [
   { label: 'RazinSoft on Instagram', href: 'https://instagram.com/razinsoft', path: 'M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Zm0 5.5a2 2 0 1 1 0-4 2 2 0 0 1 0 4Zm4-9.25H8A3.75 3.75 0 0 0 4.25 8.5v8A3.75 3.75 0 0 0 8 20.25h8a3.75 3.75 0 0 0 3.75-3.75v-8A3.75 3.75 0 0 0 16 4.75Zm2.25 11.75A2.25 2.25 0 0 1 16 18.75H8a2.25 2.25 0 0 1-2.25-2.25v-8A2.25 2.25 0 0 1 8 6.25h8a2.25 2.25 0 0 1 2.25 2.25Zm.25-7.25a.9.9 0 1 1 0-1.8.9.9 0 0 1 0 1.8Z' },
   { label: 'RazinSoft on LinkedIn', href: 'https://www.linkedin.com/company/razinsoft', path: 'M4.98 3.5A2.5 2.5 0 1 0 5 8.5a2.5 2.5 0 0 0-.02-5ZM3 9h4v12H3V9Zm6 0h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05C20.4 8.65 22 10.6 22 14v7h-4v-6.2c0-1.48-.03-3.38-2.06-3.38-2.06 0-2.38 1.6-2.38 3.27V21H9V9Z' },
 ]
-const partners = ['Partner 1', 'Partner 2', 'Partner 3']
 
 // Link columns → collapsible accordions on mobile, static columns on desktop.
 const linkSections = [
@@ -166,7 +165,9 @@ const open = reactive<Record<string, boolean>>({ company: false, quick: false })
         <div class="lg:text-right">
           <p class="text-xs font-semibold uppercase tracking-wider text-gray-400">Affiliated With</p>
           <div class="mt-3 flex flex-wrap gap-2 lg:justify-end">
-            <span v-for="p in partners" :key="p" class="rounded-md bg-white/90 px-4 py-1.5 text-sm font-semibold text-ink-800">{{ p }}</span>
+            <span class="inline-flex items-center rounded-md bg-white px-4 py-2">
+              <img src="/images/CodeCanyon-logo.webp" alt="CodeCanyon" class="h-6 w-auto" width="120" height="24">
+            </span>
           </div>
         </div>
       </div>
