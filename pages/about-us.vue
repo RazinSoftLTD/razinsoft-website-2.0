@@ -7,8 +7,8 @@ usePageSeo({
 })
 
 const stats = [
-  { value: '50,000+', label: 'Businesses served' },
-  { value: '40+', label: 'Countries' },
+  { value: '30,000+', label: 'Businesses served' },
+  { value: '25+', label: 'Countries' },
   { value: '35+', label: 'Team members' },
   { value: '10+', label: 'Ready products' },
 ]

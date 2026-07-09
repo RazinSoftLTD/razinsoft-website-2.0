@@ -6,8 +6,8 @@ useSeoMeta({
   description: "Have a question or a project in mind? Reach out to RazinSoft and we'll get back to you within 24 hours.",
 })
 
-const SALES_PHONE = '+880 1336-909483'
-const SALES_WA = 'https://wa.link/woclza'
+const SALES_PHONE = '+880 1711-257498'
+const SALES_WA = 'https://wa.link/hfp42a'
 const SALES_TG = 'https://t.me/razinsoft'
 const MAP_URL = 'https://www.google.com/maps/search/?api=1&query=RazinSoft+RMR+Center+Shamoli+Ring+Road+Dhaka'
 
@@ -36,7 +36,7 @@ const iconImg: Record<string, string> = {
 
 const stats = [
   { value: '25+', label: 'Countries', icon: ['M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Z', 'M3 12h18M12 3c2.5 2.5 2.5 15 0 18M12 3c-2.5 2.5-2.5 15 0 18'] },
-  { value: '5,000+', label: 'Happy Clients', icon: ['M9 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z', 'M17 11a3 3 0 1 0 0-6', 'M3 20a6 6 0 0 1 12 0', 'M16.5 14.5A6 6 0 0 1 21 20'] },
+  { value: '3,000+', label: 'Happy Clients', icon: ['M9 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z', 'M17 11a3 3 0 1 0 0-6', 'M3 20a6 6 0 0 1 12 0', 'M16.5 14.5A6 6 0 0 1 21 20'] },
   { value: '10+', label: 'Products', icon: ['M21 8 12 3 3 8l9 5 9-5Z', 'M3 8v8l9 5 9-5V8', 'M12 13v8'] },
   { value: '24/7', label: 'Support', icon: ['M4 14v-2a8 8 0 0 1 16 0v2', 'M20 15a2 2 0 0 1-2 2h-1v-5h1a2 2 0 0 1 2 2Z', 'M4 15a2 2 0 0 1 2-2h1v5H6a2 2 0 0 1-2-2Z', 'M18 17a4 4 0 0 1-4 3h-2'] },
 ]

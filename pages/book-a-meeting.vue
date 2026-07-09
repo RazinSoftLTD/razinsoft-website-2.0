@@ -2,7 +2,15 @@
 const calendlyUrl = useRuntimeConfig().public.calendlyUrl as string
 
 const SALES_PHONE = '+880 1336-909483'
-const SALES_WA = 'https://wa.me/8801336909483'
+const SALES_WA = 'https://wa.link/woclza'
+const SALES_TG = 'https://t.me/razinsoft'
+
+// Same contact channels as the Contact Us page.
+const talkChannels = [
+  { label: 'WhatsApp', value: SALES_PHONE, href: SALES_WA, img: '/icons/Whats-App-Support.webp' },
+  { label: 'Telegram', value: SALES_PHONE, href: SALES_TG, img: '/icons/Teligram-Support.webp' },
+  { label: 'Email', value: 'support@razinsoft.com', href: 'mailto:support@razinsoft.com', img: '/icons/Email-Support.webp' },
+]
 
 useSeoMeta({
   title: 'Book a Meeting — Free Consultation with RazinSoft',
@@ -41,6 +49,20 @@ const steps = [
       <div class="grid gap-8 lg:grid-cols-[380px_1fr]">
         <!-- Left: what to expect + contact -->
         <div class="space-y-6">
+                  <div class="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm sm:p-7">
+            <h2 class="font-display text-lg font-bold text-ink-900">Prefer to talk now?</h2>
+            <p class="mt-1 text-sm text-gray-500">Chat with us on your preferred platform.</p>
+            <ul class="mt-4 space-y-3">
+              <li v-for="ch in talkChannels" :key="ch.label">
+                <a :href="ch.href" target="_blank" rel="noopener noreferrer" class="group flex items-center gap-3 text-sm">
+                  <img :src="ch.img" :alt="ch.label" class="h-7 w-7 shrink-0 object-contain" width="28" height="28">
+                  <span class="w-20 shrink-0 font-medium text-ink-800">{{ ch.label }}</span>
+                  <span class="min-w-0 truncate text-gray-600 group-hover:text-ink-900">{{ ch.value }}</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+          
           <div class="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm sm:p-7">
             <h2 class="font-display text-lg font-bold text-ink-900">What to expect</h2>
             <ul class="mt-5 space-y-5">
@@ -54,25 +76,6 @@ const steps = [
                 </div>
               </li>
             </ul>
-          </div>
-
-          <div class="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm sm:p-7">
-            <h2 class="font-display text-lg font-bold text-ink-900">Prefer to talk now?</h2>
-            <p class="mt-1 text-sm text-gray-500">Call or message our sales team directly.</p>
-            <div class="mt-4 space-y-3">
-              <a :href="`tel:${SALES_PHONE.replace(/[^+\d]/g, '')}`" class="flex items-center gap-3 text-sm font-semibold text-ink-900 hover:text-brand-600">
-                <span class="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-brand-50 text-brand-600" aria-hidden="true">
-                  <svg class="h-4 w-4 fill-current" viewBox="0 0 24 24"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.58 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1 11.4 11.4 0 0 0 .57 3.6 1 1 0 0 1-.25 1L6.6 10.8Z" /></svg>
-                </span>
-                {{ SALES_PHONE }}
-              </a>
-              <a :href="SALES_WA" target="_blank" rel="noopener noreferrer" class="flex items-center gap-3 text-sm font-semibold text-ink-900 hover:text-brand-600">
-                <span class="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-emerald-500 text-white" aria-hidden="true">
-                  <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 11.5a8.4 8.4 0 0 1-9 8.4L3 21l1.1-3.3A8.4 8.4 0 1 1 21 11.5Z" /></svg>
-                </span>
-                WhatsApp us
-              </a>
-            </div>
           </div>
         </div>
 
