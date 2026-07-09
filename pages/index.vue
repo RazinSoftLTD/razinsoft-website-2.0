@@ -16,9 +16,9 @@ usePageSeo({
 useSchemaOrg([defineWebPage({ '@type': 'CollectionPage' })])
 
 const reviews = [
-  { brand: 'Google', color: 'text-[#4285F4]', score: '5.0' },
-  { brand: 'CodeCanyon', color: 'text-emerald-600', score: '4.9' },
-  { brand: 'Clutch', color: 'text-[#FF3D2E]', score: '4.9' },
+  { brand: 'Google', img: '/home/Google.webp', score: '5.0' },
+  { brand: 'CodeCanyon', img: '/home/Code-Canyon.webp', score: '4.9' },
+  { brand: 'Clutch', img: '/home/Clutch.webp', score: '4.9' },
 ]
 
 const whyFeatures = [
@@ -81,13 +81,12 @@ const posts = computed(() =>
         <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6" /></svg>
       </NuxtLink>
 
-      <dl class="mt-10 flex flex-wrap items-start gap-x-6 gap-y-4 divide-gray-200 sm:divide-x">
-        <div v-for="(r, i) in reviews" :key="r.brand" :class="i > 0 ? 'sm:pl-6' : ''">
-          <dt class="text-sm font-bold" :class="r.color">{{ r.brand }}</dt>
-          <div class="mt-1 flex items-center gap-0.5 text-amber-400" aria-hidden="true">
-            <svg v-for="n in 5" :key="n" class="h-3.5 w-3.5 fill-current" viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.3 5.9.9-4.2 4.1 1 5.8L10 15l-5.3 2.6 1-5.8L1.5 7.7l5.9-.9z" /></svg>
-          </div>
-          <dd class="mt-1 text-xs text-gray-500">Reviews <span class="font-semibold text-ink-800">{{ r.score }}</span></dd>
+      <dl class="mt-10 flex flex-wrap items-center gap-4 sm:gap-6">
+        <div v-for="r in reviews" :key="r.brand">
+          <dt class="sr-only">{{ r.brand }} — reviews {{ r.score }}</dt>
+          <dd>
+            <img :src="r.img" :alt="`${r.brand} rating ${r.score} out of 5`" class="h-16 w-auto" width="80" height="64" loading="lazy">
+          </dd>
         </div>
       </dl>
     </div>
