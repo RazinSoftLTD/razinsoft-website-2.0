@@ -81,11 +81,11 @@ const posts = computed(() =>
         <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6" /></svg>
       </NuxtLink>
 
-      <dl class="mt-10 flex flex-wrap items-center gap-4 sm:gap-6">
+      <dl class="mt-10 flex flex-wrap items-center gap-8 sm:gap-12">
         <div v-for="r in reviews" :key="r.brand">
           <dt class="sr-only">{{ r.brand }} — reviews {{ r.score }}</dt>
           <dd>
-            <img :src="r.img" :alt="`${r.brand} rating ${r.score} out of 5`" class="h-16 w-auto" width="80" height="64" loading="lazy">
+            <img :src="r.img" :alt="`${r.brand} rating ${r.score} out of 5`" class="h-20 w-auto" width="100" height="80" loading="lazy">
           </dd>
         </div>
       </dl>
