@@ -8,7 +8,7 @@ const WHATSAPP = '8801711257498'
 
 const channels = [
   { title: 'Documentation', desc: 'Step-by-step guides, setup docs and API references for every product.', action: 'Browse docs', to: '/products', tone: 'bg-blue-50 text-blue-600', paths: ['M7 3h7l5 5v13H7z', 'M14 3v5h5', 'M9 13h6', 'M9 17h4'] },
-  { title: 'WhatsApp Support', desc: 'Chat with a support expert for instant help — we reply within minutes.', action: 'Chat now', href: `https://wa.me/${WHATSAPP}`, tone: 'bg-emerald-50 text-emerald-600', paths: ['M21 11.5a8.4 8.4 0 0 1-9 8.4L3 21l1.1-3.3A8.4 8.4 0 1 1 21 11.5Z'] },
+  { title: 'WhatsApp Support', desc: 'Chat with a support expert for instant help — we reply within minutes.', action: 'Chat now', href: `https://wa.me/${WHATSAPP}`, tone: 'bg-emerald-50 text-emerald-600', img: '/icons/Whats-App-Support.webp', paths: [] },
   { title: 'Email Support', desc: 'Send us the details and we’ll get back to you within 24 hours.', action: 'Email us', href: 'mailto:support@razinsoft.com', tone: 'bg-sky-50 text-sky-600', paths: ['M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z', 'm3.5 6.5 8.5 6 8.5-6'] },
   { title: 'Priority Support', desc: 'Dedicated engineers and faster SLAs for business and enterprise plans.', action: 'Contact sales', to: '/contact-us', tone: 'bg-purple-50 text-purple-600', paths: ['M12 3 4.5 6v5c0 4.5 3 7.5 7.5 9 4.5-1.5 7.5-4.5 7.5-9V6L12 3Z'] },
 ]
@@ -46,7 +46,8 @@ function toggle(i: number) { open.value = open.value === i ? null : i }
       <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
         <article v-for="c in channels" :key="c.title" class="flex flex-col rounded-2xl border border-gray-100 bg-white p-6 shadow-sm transition hover:shadow-md">
           <span class="grid h-12 w-12 place-items-center rounded-xl" :class="c.tone" aria-hidden="true">
-            <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path v-for="d in c.paths" :key="d" stroke-linecap="round" stroke-linejoin="round" :d="d" /></svg>
+            <img v-if="c.img" :src="c.img" :alt="c.title" class="h-7 w-7 object-contain" width="28" height="28">
+            <svg v-else class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path v-for="d in c.paths" :key="d" stroke-linecap="round" stroke-linejoin="round" :d="d" /></svg>
           </span>
           <h3 class="mt-4 font-display text-base font-bold text-ink-900">{{ c.title }}</h3>
           <p class="mt-2 flex-1 text-sm leading-relaxed text-gray-600">{{ c.desc }}</p>

@@ -7,15 +7,15 @@ useSeoMeta({
 })
 
 const SALES_PHONE = '+880 1336-909483'
-const SALES_WA = 'https://wa.me/8801336909483'
-const SALES_TG = 'https://t.me/+8801336909483'
+const SALES_WA = 'https://wa.link/woclza'
+const SALES_TG = 'https://t.me/razinsoft'
 const MAP_URL = 'https://www.google.com/maps/search/?api=1&query=RazinSoft+RMR+Center+Shamoli+Ring+Road+Dhaka'
 
 // Sales channels shown in the "Sales Inquiries" card.
 const salesChannels = [
   { label: 'WhatsApp', value: SALES_PHONE, href: SALES_WA, tone: 'bg-emerald-500', icon: 'wa' },
   { label: 'Telegram', value: SALES_PHONE, href: SALES_TG, tone: 'bg-sky-500', icon: 'tg' },
-  { label: 'Email', value: 'sales@razinsoft.com', href: 'mailto:sales@razinsoft.com', tone: 'bg-brand-600', icon: 'mail' },
+  { label: 'Email', value: 'support@razinsoft.com', href: 'mailto:support@razinsoft.com', tone: 'bg-brand-600', icon: 'mail' },
 ]
 
 // Support channel buttons in the "Need Help?" card.
