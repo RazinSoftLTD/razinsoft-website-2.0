@@ -165,9 +165,7 @@ const open = reactive<Record<string, boolean>>({ company: false, quick: false })
         <div class="lg:text-right">
           <p class="text-xs font-semibold uppercase tracking-wider text-gray-400">Affiliated With</p>
           <div class="mt-3 flex flex-wrap gap-2 lg:justify-end">
-            <span class="inline-flex items-center rounded-md bg-white px-4 py-2">
-              <img src="/images/CodeCanyon-logo.webp" alt="CodeCanyon" class="h-6 w-auto" width="120" height="24">
-            </span>
+            <img src="/images/CodeCanyon-logo.webp" alt="CodeCanyon" class="h-8 w-auto" width="160" height="32">
           </div>
         </div>
       </div>
