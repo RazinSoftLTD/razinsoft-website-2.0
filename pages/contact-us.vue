@@ -26,12 +26,12 @@ const supportChannels = [
   { label: 'Desk Support', href: '/support', external: false, tone: 'border-purple-300 text-purple-600 hover:bg-purple-50', icon: 'desk' },
 ]
 
-// Shared icon paths (stroke icons; WhatsApp/Telegram are filled brand-ish marks).
-const icons: Record<string, string[]> = {
-  wa: ['M21 11.5a8.4 8.4 0 0 1-9 8.4L3 21l1.1-3.3A8.4 8.4 0 1 1 21 11.5Z', 'M9 9.7c0 2.9 2.4 5.3 5.3 5.3l1.2-1.2-1.7-1.2-1 .5a4 4 0 0 1-1.9-1.9l.5-1-1.2-1.7L9 9.7Z'],
-  tg: ['m21 4-3 15.5-5.5-4L9.5 18l-1-5L21 4Z', 'M21 4 8.5 13'],
-  mail: ['M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z', 'm3.5 6.5 8.5 6 8.5-6'],
-  desk: ['M3 5h18a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z', 'M8 21h8m-4-4v4'],
+// Brand-coloured support icons the client dropped in /public/icons.
+const iconImg: Record<string, string> = {
+  wa: '/icons/Whats-App-Support.webp',
+  tg: '/icons/Teligram-Support.webp',
+  mail: '/icons/Email-Support.webp',
+  desk: '/icons/Desk-Support.webp',
 }
 
 const stats = [
@@ -114,9 +114,7 @@ async function submit() {
             <ul class="mt-4 space-y-3">
               <li v-for="ch in salesChannels" :key="ch.label">
                 <a :href="ch.href" target="_blank" rel="noopener noreferrer" class="group flex items-center gap-3 text-sm">
-                  <span class="grid h-7 w-7 shrink-0 place-items-center rounded-full text-white" :class="ch.tone" aria-hidden="true">
-                    <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path v-for="d in icons[ch.icon]" :key="d" stroke-linecap="round" stroke-linejoin="round" :d="d" /></svg>
-                  </span>
+                  <img :src="iconImg[ch.icon]" :alt="ch.label" class="h-7 w-7 shrink-0 object-contain" width="28" height="28">
                   <!-- Redundant with the colored icon — hidden on ultra-narrow phones so the number never truncates. -->
                   <span class="w-20 shrink-0 font-medium text-ink-800 max-[379px]:hidden">{{ ch.label }}</span>
                   <span class="min-w-0 truncate text-gray-600 group-hover:text-ink-900">{{ ch.value }}</span>
@@ -198,7 +196,7 @@ async function submit() {
                 :href="ch.href" target="_blank" rel="noopener noreferrer"
                 class="flex w-full items-center justify-center gap-2 rounded-xl border bg-white px-5 py-3 text-sm font-bold transition" :class="ch.tone"
               >
-                <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path v-for="d in icons[ch.icon]" :key="d" stroke-linecap="round" stroke-linejoin="round" :d="d" /></svg>
+                <img :src="iconImg[ch.icon]" alt="" class="h-5 w-5 shrink-0 object-contain" width="20" height="20">
                 {{ ch.label }}
                 <svg class="h-3.5 w-3.5 shrink-0 opacity-60" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5h5v5m0-5L9 15m-2-8H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-1" /></svg>
               </a>
@@ -207,7 +205,7 @@ async function submit() {
                 :to="ch.href"
                 class="flex w-full items-center justify-center gap-2 rounded-xl border bg-white px-5 py-3 text-sm font-bold transition" :class="ch.tone"
               >
-                <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path v-for="d in icons[ch.icon]" :key="d" stroke-linecap="round" stroke-linejoin="round" :d="d" /></svg>
+                <img :src="iconImg[ch.icon]" alt="" class="h-5 w-5 shrink-0 object-contain" width="20" height="20">
                 {{ ch.label }}
                 <svg class="h-3.5 w-3.5 shrink-0 opacity-60" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5h5v5m0-5L9 15m-2-8H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-1" /></svg>
               </NuxtLink>
