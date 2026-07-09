@@ -106,13 +106,7 @@ const field = 'h-11 w-full rounded-lg border border-gray-200 bg-white pl-10 text
           <div>
             <label for="phone" class="mb-1.5 block text-sm font-medium text-ink-800">Phone number <span class="text-gray-400">(Optional)</span></label>
             <div class="flex gap-2">
-              <select
-                v-model="form.country"
-                aria-label="Country dialing code"
-                class="h-11 shrink-0 rounded-lg border border-gray-200 bg-white px-2 text-sm text-ink-900 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
-              >
-                <option v-for="c in countries" :key="c.code" :value="c.code" :title="c.name">{{ c.flag }} {{ c.dial }}</option>
-              </select>
+              <CountrySelect v-model="form.country" class="shrink-0" />
               <div class="relative flex-1">
                 <svg class="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.28 6.72 15 15 15h2.25a1.5 1.5 0 0 0 1.5-1.5v-2.69a1.5 1.5 0 0 0-1.06-1.44l-3.36-1.12a1.5 1.5 0 0 0-1.62.49l-.97 1.2a12 12 0 0 1-5.42-5.42l1.2-.97a1.5 1.5 0 0 0 .49-1.62L8.88 4.06A1.5 1.5 0 0 0 7.44 3H4.75a1.5 1.5 0 0 0-1.5 1.5v2.25Z" /></svg>
                 <input
