@@ -93,7 +93,7 @@ function toggle(i: number) { open.value = open.value === i ? null : i }
         <p class="mx-auto mt-4 max-w-xl text-white/90">Our support team is ready. Reach out and we’ll get you sorted quickly.</p>
         <div class="mt-8 flex flex-wrap justify-center gap-3">
           <a :href="`https://wa.me/${WHATSAPP}`" target="_blank" rel="noopener" class="btn bg-white text-brand-700 hover:bg-white/90">
-            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 11.5a8.4 8.4 0 0 1-9 8.4L3 21l1.1-3.3A8.4 8.4 0 1 1 21 11.5Z" /></svg>
+            <img src="/icons/Whats-App-Support.webp" alt="" class="h-5 w-5 object-contain" width="20" height="20">
             Chat on WhatsApp
           </a>
           <NuxtLink to="/contact-us" class="btn border border-white/40 bg-white/10 text-white hover:bg-white/20">Contact us</NuxtLink>
