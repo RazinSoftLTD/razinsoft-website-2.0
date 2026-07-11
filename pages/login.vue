@@ -65,7 +65,7 @@ const field = 'h-11 w-full rounded-lg border border-gray-200 bg-white pl-10 text
           <div>
             <div class="mb-1.5 flex items-center justify-between">
               <label for="password" class="block text-sm font-medium text-ink-800">Password</label>
-              <NuxtLink to="/login" class="text-sm font-semibold text-brand-600 hover:text-brand-700">Forgot password?</NuxtLink>
+              <NuxtLink to="/forgot-password" class="text-sm font-semibold text-brand-600 hover:text-brand-700">Forgot password?</NuxtLink>
             </div>
             <div class="relative">
               <svg class="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" /></svg>

@@ -41,6 +41,7 @@ const nav = [
   { label: 'Dashboard', to: '/dashboard', match: (p: string) => p === '/dashboard', paths: ['M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z'] },
   { label: 'My Orders', to: '/dashboard/orders', match: (p: string) => p.startsWith('/dashboard/orders'), paths: ['M3 7h18l-1.4 12a2 2 0 0 1-2 1.8H6.4a2 2 0 0 1-2-1.8L3 7Z', 'M8 7a4 4 0 1 1 8 0'] },
   { label: 'My Invoices', to: '/dashboard/invoices', match: (p: string) => p.startsWith('/dashboard/invoices'), paths: ['M7 3h7l5 5v13H7zM14 3v5h5', 'M9 13h6M9 17h4'] },
+  { label: 'My Meetings', to: '/dashboard/meetings', match: (p: string) => p.startsWith('/dashboard/meetings'), paths: ['M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z', 'M9 16l2 2 4-4'] },
   { label: 'Support / Tickets', to: '/dashboard/support', match: (p: string) => p.startsWith('/dashboard/support'), paths: ['M4 13a8 8 0 0 1 16 0v5a2 2 0 0 1-2 2h-1v-6h3M4 13v5a2 2 0 0 0 2 2h1v-6H4'] },
   { label: 'Profile', to: '/dashboard/profile', match: (p: string) => p.startsWith('/dashboard/profile'), paths: ['M12 8a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z', 'M4.5 20a7.5 7.5 0 0 1 15 0'] },
 ]
