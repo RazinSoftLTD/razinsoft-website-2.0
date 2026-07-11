@@ -36,6 +36,18 @@ const slots = ref<SlotInfo[]>([])
 const selectedSlot = ref<SlotInfo | null>(null)
 const loadingSlots = ref(false)
 
+const SALES_PHONE = '+880 1336-909483'
+const SALES_WA = 'https://wa.link/woclza'
+const SALES_TG = 'https://t.me/razinsoft'
+
+
+// Same contact channels as the Contact Us page.
+const talkChannels = [
+  { label: 'WhatsApp', value: SALES_PHONE, href: SALES_WA, img: '/icons/Whats-App-Support.webp' },
+  { label: 'Telegram', value: SALES_PHONE, href: SALES_TG, img: '/icons/Teligram-Support.webp' },
+  { label: 'Email', value: 'support@razinsoft.com', href: 'mailto:support@razinsoft.com', img: '/icons/Email-Support.webp' },
+]
+
 // ── Flow ──
 const step = ref<'pick' | 'details' | 'done'>('pick')
 const submitting = ref(false)
@@ -162,6 +174,19 @@ const expect = [
       <div class="grid gap-8 lg:grid-cols-[340px_1fr]">
         <!-- Left: what to expect -->
         <aside class="space-y-6">
+          <div class="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm sm:p-7">
+            <h2 class="font-display text-lg font-bold text-ink-900">Prefer to talk now?</h2>
+            <p class="mt-1 text-sm text-gray-500">Chat with us on your preferred platform.</p>
+            <ul class="mt-4 space-y-3">
+              <li v-for="ch in talkChannels" :key="ch.label">
+                <a :href="ch.href" target="_blank" rel="noopener noreferrer" class="group flex items-center gap-3 text-sm">
+                  <img :src="ch.img" :alt="ch.label" class="h-7 w-7 shrink-0 object-contain" width="28" height="28">
+                  <span class="w-20 shrink-0 font-medium text-ink-800">{{ ch.label }}</span>
+                  <span class="min-w-0 truncate text-gray-600 group-hover:text-ink-900">{{ ch.value }}</span>
+                </a>
+              </li>
+            </ul>
+          </div>
           <div class="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
             <div class="flex items-center gap-3">
               <span class="grid h-11 w-11 place-items-center rounded-xl bg-brand-600 font-bold text-white">R</span>
