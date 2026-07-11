@@ -67,6 +67,11 @@ export default defineNuxtConfig({
       apiBase,
       // Calendly scheduling link for the Book a Meeting page — override via NUXT_PUBLIC_CALENDLY_URL.
       calendlyUrl: process.env.NUXT_PUBLIC_CALENDLY_URL || 'https://calendly.com/razinsoft/consultation',
+      // Laravel Reverb (real-time support tickets, Pusher protocol). Set NUXT_PUBLIC_REVERB_* to enable.
+      reverbKey: process.env.NUXT_PUBLIC_REVERB_KEY || '',
+      reverbHost: process.env.NUXT_PUBLIC_REVERB_HOST || 'localhost',
+      reverbPort: Number(process.env.NUXT_PUBLIC_REVERB_PORT || 8080),
+      reverbScheme: process.env.NUXT_PUBLIC_REVERB_SCHEME || 'http',
     },
   },
 

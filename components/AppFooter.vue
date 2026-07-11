@@ -4,19 +4,26 @@ const company = [
   { label: 'Contact Us', to: '/contact-us' },
   { label: 'Career & Positions', to: '/careers' },
   { label: 'Terms & Conditions', to: '/terms-and-conditions' },
-  { label: 'Privacy Policy', to: '/privacy-policy' },
-  { label: 'Refund Policy', to: '/refund-policy' },
-  { label: 'Service Policy', to: '/service-policy' },
-  { label: 'Support Policy', to: '/support-policy' },
-  { label: 'Installation Policy', to: '/installation-policy' },
 ]
 const quick = [
   { label: 'Login', to: '/login' },
   { label: 'Products', to: '/products' },
   { label: 'Services', to: '/#services' },
   { label: 'Blogs', to: '/blog' },
-  { label: 'Get Support', to: '/support' },
+  { label: 'Get Support', to: '/dashboard/support', action: 'support' },
 ]
+
+// "Get Support": logged-in → dashboard support; otherwise → sign in first.
+const { user } = useAuth()
+const toast = useToast()
+function onSupport() {
+  if (user.value) {
+    navigateTo('/dashboard/support')
+  } else {
+    toast.info('Please sign in first to get support.')
+    navigateTo('/login?redirect=/dashboard/support')
+  }
+}
 const socials = [
   { label: 'RazinSoft on Facebook', href: 'https://facebook.com/razinsoft', path: 'M14 9h3V5h-3a4 4 0 0 0-4 4v2H7v4h3v6h4v-6h3l1-4h-4V9a1 1 0 0 1 1-1Z' },
   { label: 'RazinSoft on Instagram', href: 'https://instagram.com/razinsoft', path: 'M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Zm0 5.5a2 2 0 1 1 0-4 2 2 0 0 1 0 4Zm4-9.25H8A3.75 3.75 0 0 0 4.25 8.5v8A3.75 3.75 0 0 0 8 20.25h8a3.75 3.75 0 0 0 3.75-3.75v-8A3.75 3.75 0 0 0 16 4.75Zm2.25 11.75A2.25 2.25 0 0 1 16 18.75H8a2.25 2.25 0 0 1-2.25-2.25v-8A2.25 2.25 0 0 1 8 6.25h8a2.25 2.25 0 0 1 2.25 2.25Zm.25-7.25a.9.9 0 1 1 0-1.8.9.9 0 0 1 0 1.8Z' },
@@ -90,7 +97,8 @@ const open = reactive<Record<string, boolean>>({ company: false, quick: false })
         </h2>
         <ul class="mt-4 space-y-3 text-sm" :class="open[sec.key] ? 'block' : 'hidden lg:block'">
           <li v-for="i in sec.items" :key="i.label">
-            <NuxtLink :to="i.to" class="text-gray-400 hover:text-white">{{ i.label }}</NuxtLink>
+            <button v-if="(i as any).action === 'support'" type="button" @click="onSupport" class="text-left text-gray-400 hover:text-white">{{ i.label }}</button>
+            <NuxtLink v-else :to="i.to" class="text-gray-400 hover:text-white">{{ i.label }}</NuxtLink>
           </li>
         </ul>
       </nav>

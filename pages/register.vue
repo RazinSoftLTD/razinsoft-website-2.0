@@ -8,15 +8,9 @@ const agree = ref(false)
 const showPwd = ref(false)
 const showConfirm = ref(false)
 
-const { countries, digits, isValidPhone, expectedLength } = useCountries()
+const { countries, digits } = useCountries()
 const selectedCountry = computed(() => countries.find((c) => c.code === form.country) ?? countries[0])
-// Phone is optional — but if entered it must be valid for the chosen country.
-const phoneError = computed(() => {
-  if (!form.phone.trim()) return ''
-  return isValidPhone(selectedCountry.value, form.phone)
-    ? ''
-    : `Enter a valid ${selectedCountry.value.name} number (${expectedLength(selectedCountry.value)} digits).`
-})
+// Phone is optional and free-form — only the country code is applied, no per-country digit validation.
 
 const score = computed(() => {
   const p = form.password
@@ -35,7 +29,7 @@ const strength = computed(() => {
   return { label: 'Strong', text: 'text-emerald-600', bar: 'bg-emerald-500', bars: 4 }
 })
 const mismatch = computed(() => form.confirm !== '' && form.confirm !== form.password)
-const canSubmit = computed(() => form.name && form.email && form.password && form.confirm === form.password && agree.value && !phoneError.value)
+const canSubmit = computed(() => form.name && form.email && form.password && form.confirm === form.password && agree.value)
 
 const { register } = useAuth()
 const loading = ref(false)
@@ -116,11 +110,10 @@ const field = 'h-11 w-full rounded-lg border border-gray-200 bg-white pl-10 text
                   inputmode="numeric"
                   autocomplete="tel"
                   placeholder="1712345678"
-                  :class="[field, 'pr-3', phoneError ? 'border-red-400 focus:border-red-500 focus:ring-red-500' : '']"
+                  :class="[field, 'pr-3']"
                 />
               </div>
             </div>
-            <p v-if="phoneError" class="mt-1 text-xs text-red-600">{{ phoneError }}</p>
             <p class="mt-1.5 flex items-center gap-1.5 text-xs text-emerald-600">
               <svg class="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38c1.45.79 3.08 1.2 4.79 1.2h.01c5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2Zm5.8 14.13c-.24.68-1.42 1.31-1.96 1.36-.5.05-.98.23-3.3-.69-2.78-1.1-4.55-3.94-4.69-4.13-.14-.19-1.13-1.5-1.13-2.86 0-1.36.71-2.03.97-2.31.24-.26.53-.32.71-.32.18 0 .36 0 .51.01.16.01.39-.06.6.46.24.58.82 2 .89 2.14.07.14.12.31.02.5-.09.19-.14.31-.28.48-.14.17-.29.38-.42.51-.14.14-.28.29-.12.57.16.28.72 1.19 1.55 1.93 1.07.95 1.96 1.25 2.24 1.39.28.14.44.12.6-.07.16-.19.69-.81.87-1.09.18-.28.36-.23.6-.14.24.09 1.55.73 1.81.86.27.14.44.21.51.32.07.11.07.65-.17 1.33Z" /></svg>
               WhatsApp number preferred
