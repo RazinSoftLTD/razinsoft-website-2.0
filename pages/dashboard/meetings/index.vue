@@ -6,8 +6,13 @@ const { data: res } = await useAsyncData('account-meetings', () => $api<any>('/a
 const meetings = computed<any[]>(() => res.value?.data || [])
 
 const badge: Record<string, string> = {
-  pending: 'bg-amber-50 text-amber-700', confirmed: 'bg-emerald-50 text-emerald-700',
-  completed: 'bg-gray-100 text-gray-600', cancelled: 'bg-red-50 text-red-600',
+  pending: 'bg-amber-50 text-amber-700', waiting_for_client: 'bg-blue-50 text-blue-700',
+  confirmed: 'bg-emerald-50 text-emerald-700', completed: 'bg-gray-100 text-gray-600',
+  cancelled: 'bg-red-50 text-red-600',
+}
+const statusLabel: Record<string, string> = {
+  pending: 'Pending', waiting_for_client: 'Waiting for Client',
+  confirmed: 'Confirm', completed: 'Complete', cancelled: 'Cancel',
 }
 </script>
 
@@ -40,7 +45,7 @@ const badge: Record<string, string> = {
               {{ m.slot }}<span v-if="m.host"> · with {{ m.host }}</span>
             </p>
           </div>
-          <span class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold capitalize" :class="badge[m.status] || 'bg-gray-100 text-gray-600'">{{ m.status }}</span>
+          <span class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold" :class="badge[m.status] || 'bg-gray-100 text-gray-600'">{{ statusLabel[m.status] || m.status }}</span>
           <a v-if="m.meeting_link && m.is_upcoming" :href="m.meeting_link" target="_blank" rel="noopener"
              class="inline-flex items-center gap-1.5 rounded-lg border border-brand-200 px-3 py-2 text-sm font-semibold text-brand-700 hover:bg-brand-50">
             Join

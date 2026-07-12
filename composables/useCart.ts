@@ -43,8 +43,10 @@ export function useCart() {
   const subtotal = computed(() => items.value.reduce((s, it) => s + lineTotal(it), 0))
 
   // Shared coupon (carries from cart → checkout)
-  const COUPONS: Record<string, number> = { RAZIN10: 0.1, SAVE20: 0.2 }
+  const COUPONS: Record<string, number> = { SAVE20: 0.2 }
   const coupon = useState<string>('cart-coupon', () => '')
+  // Drop any previously-applied coupon that's no longer valid (e.g. a removed promo like RAZIN10).
+  if (coupon.value && !COUPONS[coupon.value]) coupon.value = ''
   const discount = computed(() => Math.round(subtotal.value * (COUPONS[coupon.value] || 0)))
   const total = computed(() => subtotal.value - discount.value)
   function applyCoupon(code: string): boolean {

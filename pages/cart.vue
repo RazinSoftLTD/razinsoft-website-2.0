@@ -122,7 +122,6 @@ function onApply() {
           </div>
           <p v-if="couponError" class="mt-1.5 text-xs text-red-600">{{ couponError }}</p>
           <p v-else-if="coupon" class="mt-1.5 text-xs text-emerald-600">Coupon “{{ coupon }}” applied.</p>
-          <p v-else class="mt-1.5 text-xs text-gray-400">Try <button type="button" class="font-semibold text-brand-600" @click="couponInput = 'RAZIN10'; onApply()">RAZIN10</button> for 10% off.</p>
         </form>
 
         <div class="mt-5 flex items-center justify-between border-t border-gray-100 pt-5">
@@ -138,7 +137,6 @@ function onApply() {
         <ul class="mt-5 space-y-2 text-xs text-gray-500">
           <!-- <li class="flex items-center gap-2"><svg class="h-4 w-4 text-emerald-500" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3 4.5 6v5c0 4.5 3 7.5 7.5 9 4.5-1.5 7.5-4.5 7.5-9V6L12 3Z" /><path stroke-linecap="round" stroke-linejoin="round" d="m9 12 2 2 4-4" /></svg> Secure SSL checkout</li> -->
           <li class="flex items-center gap-2"><svg class="h-4 w-4 text-emerald-500" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m5 13 4 4L19 7" /></svg> 30-day money-back guarantee</li>
-          <li class="flex items-center gap-2"><svg class="h-4 w-4 text-emerald-500" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m5 13 4 4L19 7" /></svg> Lifetime updates &amp; source code</li>
         </ul>
       </aside>
     </div>

@@ -97,13 +97,38 @@ const gallery = computed(() => {
   })
 })
 
+// Documentation links are admin-managed only — no fallback. Empty when the admin enabled none.
+// Each doc is matched to a preset (icon/colour) by title, else cycles through the pool.
 const docList = computed(() => {
-  const d = api.value.docs
-  if (!d?.length) return docsFallback
+  // FAQ is rendered as its own card from the product FAQs, so drop any "FAQ" doc entry here.
+  const d = (api.value.docs || []).filter((x: any) => String(x.title || '').trim().toLowerCase() !== 'faq')
+  if (!d?.length) return [] as any[]
   return d.map((x: any, i: number) => {
-    const v = docsFallback[i % docsFallback.length]
-    return { title: x.title, url: x.url || '#', card: v.card, circle: v.circle, text: v.text, paths: v.paths }
+    const key = String(x.title || '').toLowerCase()
+    const preset = docsFallback.find((p) => {
+      const t = p.title.toLowerCase()
+      return key.includes(t) || (t.includes('api') && key.includes('api')) || (t.includes('video') && key.includes('video'))
+    }) || docsFallback[i % docsFallback.length]
+    return { title: x.title, url: x.url || '#', card: preset.card, circle: preset.circle, text: preset.text, paths: preset.paths }
   })
+})
+
+// The FAQ card is its own resource: shown only when an enabled "FAQ" doc exists AND the product has FAQs.
+const faqCard = docsFallback[docsFallback.length - 1] // amber "FAQ" preset
+const hasFaqCard = computed(() =>
+  (api.value.docs || []).some((d: any) => String(d.title || '').trim().toLowerCase() === 'faq') && faqList.value.length > 0,
+)
+
+// Balance the docs grid to the number of enabled resources (docs + optional FAQ card).
+const docsGridCols = computed(() => {
+  const n = docList.value.length + (hasFaqCard.value ? 1 : 0)
+  return ({
+    1: 'sm:grid-cols-1',
+    2: 'sm:grid-cols-2',
+    3: 'sm:grid-cols-3',
+    4: 'sm:grid-cols-2 lg:grid-cols-4',
+    5: 'sm:grid-cols-3 lg:grid-cols-5',
+  } as Record<number, string>)[n] || 'sm:grid-cols-3 lg:grid-cols-5'
 })
 
 // Per-product FAQs (admin-managed) — revealed under the docs grid when the FAQ card is tapped.
@@ -232,6 +257,34 @@ const demoGridClass = computed(() => {
   const cols = n % 4 === 0 ? 4 : n % 3 === 0 ? 3 : Math.min(n, 4)
   return ({ 1: 'sm:grid-cols-1', 2: 'sm:grid-cols-2', 3: 'sm:grid-cols-2 lg:grid-cols-3', 4: 'sm:grid-cols-2 lg:grid-cols-4' } as Record<number, string>)[cols] || 'sm:grid-cols-2 lg:grid-cols-4'
 })
+
+// "Live Demo" hero button → smooth-scroll to the Try It Live section and flash a highlight.
+const tryItLiveEl = ref<HTMLElement | null>(null)
+const demoHighlight = ref(false)
+let demoHlTimer: ReturnType<typeof setTimeout> | null = null
+function scrollToDemos() {
+  const el = tryItLiveEl.value
+  if (!el) return
+  el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  demoHighlight.value = false
+  requestAnimationFrame(() => { demoHighlight.value = true })
+  if (demoHlTimer) clearTimeout(demoHlTimer)
+  demoHlTimer = setTimeout(() => { demoHighlight.value = false }, 2200)
+}
+
+// "Add to Cart" hero button → jump to the Lifetime License Plans and flash them so the visitor picks a plan.
+const plansEl = ref<HTMLElement | null>(null)
+const plansHighlight = ref(false)
+let plansHlTimer: ReturnType<typeof setTimeout> | null = null
+function scrollToPlans() {
+  const el = plansEl.value
+  if (!el) return
+  el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  plansHighlight.value = false
+  requestAnimationFrame(() => { plansHighlight.value = true })
+  if (plansHlTimer) clearTimeout(plansHlTimer)
+  plansHlTimer = setTimeout(() => { plansHighlight.value = false }, 2200)
+}
 
 // ---- SEO from the API seo payload ----
 const seo = computed(() => api.value.seo || {})
@@ -372,11 +425,11 @@ const { addItem } = useCart()
           </div>
 
           <div class="mt-7 flex flex-wrap gap-3">
-            <button v-if="tiers[0]" type="button" class="btn bg-brand-600 text-white hover:bg-brand-700" @click="addItem({ slug: product.slug, name: product.name, unitPrice: tiers[0].price, image: product.image, version: product.version, planId: tiers[0].id, planName: tiers[0].name })">
+            <button v-if="tiers[0]" type="button" class="btn bg-brand-600 text-white hover:bg-brand-700" @click="scrollToPlans">
               <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.5l1.5 13.5h12l1.5-9H6" /><circle cx="9" cy="20" r="1.25" /><circle cx="17" cy="20" r="1.25" /></svg>
-              Add to Cart — ${{ tiers[0].price }}
+              Add to Cart
             </button>
-            <button type="button" class="btn border border-white/25 bg-white/5 text-white hover:bg-white/10">
+            <button v-if="demoLinks.length" type="button" class="btn border border-white/25 bg-white/5 text-white hover:bg-white/10" @click="scrollToDemos">
               <svg class="h-4 w-4 fill-current" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg>
               Live Demo
             </button>
@@ -470,7 +523,7 @@ const { addItem } = useCart()
         </section>
 
         <!-- Try It Live -->
-        <section v-if="demoLinks.length" aria-labelledby="tryit-h" class="text-center">
+        <section v-if="demoLinks.length" id="try-it-live" ref="tryItLiveEl" aria-labelledby="tryit-h" class="scroll-mt-24 rounded-3xl px-4 py-6 text-center transition-colors" :class="{ 'demo-highlight': demoHighlight }">
           <h2 id="tryit-h" class="font-display text-3xl font-extrabold text-ink-900">Try It Live</h2>
           <p class="mt-2 text-gray-600">Experience the product with live demos and mobile apps</p>
           <div class="mx-auto mt-8 grid max-w-5xl gap-4" :class="demoGridClass">
@@ -488,7 +541,7 @@ const { addItem } = useCart()
         </section>
 
         <!-- Pricing -->
-        <section aria-labelledby="pricing-h" class="text-center">
+        <section id="license-plans" ref="plansEl" aria-labelledby="pricing-h" class="scroll-mt-24 rounded-3xl px-4 py-6 text-center transition-colors" :class="{ 'demo-highlight': plansHighlight }">
           <h2 id="pricing-h" class="font-display text-3xl font-extrabold text-ink-900">Lifetime License Plans</h2>
           <p class="mt-2 text-gray-600">One-time payment, lifetime access with no recurring fees</p>
           <div class="mt-10 grid items-stretch gap-6 text-left lg:grid-cols-3">
@@ -560,34 +613,33 @@ const { addItem } = useCart()
           </button>
         </section>
 
-        <!-- Documentation & Resources -->
-        <section aria-labelledby="docs-h" class="text-center">
+        <!-- Documentation & Resources — only shown when the admin enabled at least one resource -->
+        <section v-if="docList.length || hasFaqCard" aria-labelledby="docs-h" class="text-center">
           <h2 id="docs-h" class="font-display text-3xl font-extrabold text-ink-900">Documentation &amp; Resources</h2>
           <p class="mt-2 text-gray-600">Everything you need to get started and succeed</p>
-          <div class="mt-8 grid gap-4 sm:grid-cols-3 lg:grid-cols-5">
-            <template v-for="d in docList" :key="d.title">
-              <!-- FAQ card toggles the product FAQ panel below instead of navigating away. -->
-              <button
-                v-if="d.title === 'FAQ' && faqList.length"
-                type="button"
-                class="flex flex-col items-center gap-3 rounded-2xl border p-6 transition hover:-translate-y-0.5 hover:shadow-md"
-                :class="[d.card, showFaqs ? 'ring-2 ring-brand-500' : '']"
-                :aria-expanded="showFaqs"
-                aria-controls="product-faqs"
-                @click="showFaqs = !showFaqs"
-              >
-                <span class="grid h-14 w-14 place-items-center rounded-full" :class="d.circle" aria-hidden="true">
-                  <svg class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path v-for="p in d.paths" :key="p" stroke-linecap="round" stroke-linejoin="round" :d="p" /></svg>
-                </span>
-                <span class="font-display text-sm font-bold" :class="d.text">{{ d.title }}</span>
-              </button>
-              <a v-else :href="d.url" class="flex flex-col items-center gap-3 rounded-2xl border p-6 transition hover:-translate-y-0.5 hover:shadow-md" :class="d.card">
-                <span class="grid h-14 w-14 place-items-center rounded-full" :class="d.circle" aria-hidden="true">
-                  <svg class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path v-for="p in d.paths" :key="p" stroke-linecap="round" stroke-linejoin="round" :d="p" /></svg>
-                </span>
-                <span class="font-display text-sm font-bold" :class="d.text">{{ d.title }}</span>
-              </a>
-            </template>
+          <div class="mx-auto mt-8 grid max-w-5xl gap-4" :class="docsGridCols">
+            <!-- Admin-enabled documentation links -->
+            <a v-for="d in docList" :key="d.title" :href="d.url" class="flex flex-col items-center gap-3 rounded-2xl border p-6 transition hover:-translate-y-0.5 hover:shadow-md" :class="d.card">
+              <span class="grid h-14 w-14 place-items-center rounded-full" :class="d.circle" aria-hidden="true">
+                <svg class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path v-for="p in d.paths" :key="p" stroke-linecap="round" stroke-linejoin="round" :d="p" /></svg>
+              </span>
+              <span class="font-display text-sm font-bold" :class="d.text">{{ d.title }}</span>
+            </a>
+            <!-- FAQ card — shown when the FAQ doc is enabled and the product has FAQs; toggles the panel below -->
+            <button
+              v-if="hasFaqCard"
+              type="button"
+              class="flex flex-col items-center gap-3 rounded-2xl border p-6 transition hover:-translate-y-0.5 hover:shadow-md"
+              :class="[faqCard.card, showFaqs ? 'ring-2 ring-brand-500' : '']"
+              :aria-expanded="showFaqs"
+              aria-controls="product-faqs"
+              @click="showFaqs = !showFaqs"
+            >
+              <span class="grid h-14 w-14 place-items-center rounded-full" :class="faqCard.circle" aria-hidden="true">
+                <svg class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path v-for="p in faqCard.paths" :key="p" stroke-linecap="round" stroke-linejoin="round" :d="p" /></svg>
+              </span>
+              <span class="font-display text-sm font-bold" :class="faqCard.text">FAQ</span>
+            </button>
           </div>
 
           <!-- Product FAQ panel — in the DOM for SEO, revealed when the FAQ card is tapped. -->
@@ -759,5 +811,34 @@ const { addItem } = useCart()
 .lb-enter-from,
 .lb-leave-to {
   opacity: 0;
+}
+
+/* "Live Demo" → flash the Try It Live section. */
+.demo-highlight {
+  animation: demo-pulse 2.2s ease-out;
+}
+@keyframes demo-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(99, 102, 241, 0);
+    background-color: rgba(99, 102, 241, 0);
+  }
+  18% {
+    box-shadow: 0 0 0 5px rgba(99, 102, 241, 0.45);
+    background-color: rgba(99, 102, 241, 0.07);
+  }
+  45% {
+    box-shadow: 0 0 0 5px rgba(99, 102, 241, 0.25);
+    background-color: rgba(99, 102, 241, 0.05);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(99, 102, 241, 0);
+    background-color: rgba(99, 102, 241, 0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .demo-highlight {
+    animation: none;
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.4);
+  }
 }
 </style>
