@@ -7,10 +7,10 @@ usePageSeo({
 })
 
 const stats = [
-  { value: '30,000+', label: 'Businesses served' },
+  { value: '3100+', label: 'Businesses served' },
   { value: '25+', label: 'Countries' },
   { value: '35+', label: 'Team members' },
-  { value: '10+', label: 'Ready products' },
+  { value: '20', label: 'Ready products' },
 ]
 
 const doWork = [
@@ -32,7 +32,7 @@ const leaders = [
     photo: '/images/team/LeaderShip/mohammad-shofikul-islam.webp',
     quote: 'We don’t just sell software — we partner in our clients’ success. Every product we ship is a promise to help a business grow.',
     accent: 'text-brand-600',
-    linkedin: 'https://linkedin.com/company/razinsoft',
+    linkedin: 'https://www.linkedin.com/in/shofikul/',
   },
   {
     name: 'Md Joynal Abedin',
@@ -40,7 +40,7 @@ const leaders = [
     photo: '/images/team/LeaderShip/md-joynal-abedin.webp',
     quote: 'Great engineering is invisible — it just works, at any scale. We obsess over reliability so our customers never have to.',
     accent: 'text-emerald-600',
-    linkedin: 'https://linkedin.com/company/razinsoft',
+    linkedin: 'https://www.linkedin.com/in/joynal-abedin-57470016a/',
   },
 ]
 
@@ -73,7 +73,7 @@ const values = [
 ]
 
 const offices = [
-  { city: 'Dhaka, Bangladesh', line: 'RMR Center (V), 4th Floor, Shamoli Ring Road, Dhaka - 1207', flag: '🇧🇩', hq: true },
+  { city: 'Dhaka, Bangladesh', line: '1st Floor, RMR Center, A&B Ring Rd, Dhaka 1207', flag: '🇧🇩', hq: true },
   { city: 'Seattle, USA', line: '411 University St, Seattle, Washington, USA', flag: '🇺🇸' },
 ]
 </script>
@@ -118,7 +118,7 @@ const offices = [
             <img src="/images/our-mission.webp" alt="The RazinSoft team collaborating" class="h-80 w-full object-cover" loading="lazy" decoding="async">
           </div>
           <div class="absolute -bottom-6 -right-4 max-w-[220px] rounded-2xl border border-gray-100 bg-white px-5 py-4 shadow-xl">
-            <p class="font-display text-2xl font-extrabold text-ink-900">Since 2016</p>
+            <p class="font-display text-2xl font-extrabold text-ink-900">Since 2021</p>
             <p class="text-xs text-gray-500">Building software that scales with your business.</p>
           </div>
         </div>

@@ -36,8 +36,8 @@ const slots = ref<SlotInfo[]>([])
 const selectedSlot = ref<SlotInfo | null>(null)
 const loadingSlots = ref(false)
 
-const SALES_PHONE = '+880 1336-909483'
-const SALES_WA = 'https://wa.link/woclza'
+const SALES_PHONE = '+880 1711-257498'
+const SALES_WA = 'https://wa.link/hfp42a'
 const SALES_TG = 'https://t.me/razinsoft'
 
 

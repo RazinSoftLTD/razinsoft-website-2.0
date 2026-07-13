@@ -110,7 +110,7 @@ const open = reactive<Record<string, boolean>>({ company: false, quick: false })
           Global Offices
         </h2>
         <div class="mt-4 grid gap-4 sm:grid-cols-2">
-          <div v-for="o in [{ name: 'Bangladesh', hq: true, addr: 'HMR Center 171, Shyamoli Ring Road, Dhaka - 1207' }, { name: 'USA Inc', hq: false, addr: '700 Smith St #0070, Houston, TX 77002' }]" :key="o.name" class="flex h-full flex-col rounded-2xl border border-white/10 bg-white/5 p-4">
+          <div v-for="o in [{ name: 'Bangladesh', hq: true, addr: '1st Floor, RMR Center, A&B Ring Rd, Dhaka 1207' }, { name: 'USA Inc', hq: false, addr: '700 Smith St #0070, Houston, TX 77002' }]" :key="o.name" class="flex h-full flex-col rounded-2xl border border-white/10 bg-white/5 p-4">
             <div class="flex items-start gap-3">
               <span class="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-brand-500/20 text-brand-300" aria-hidden="true">
                 <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21s-7-6.3-7-11a7 7 0 0 1 14 0c0 4.7-7 11-7 11Z" /><circle cx="12" cy="10" r="2.4" /></svg>
@@ -138,7 +138,7 @@ const open = reactive<Record<string, boolean>>({ company: false, quick: false })
             </div>
           </div>
           <div class="mt-3 grid gap-3 sm:grid-cols-2">
-            <a href="https://wa.link/woclza " class="rounded-xl bg-white/5 p-3 hover:bg-white/10">
+            <a href="https://wa.link/hfp42a" class="rounded-xl bg-white/5 p-3 hover:bg-white/10">
               <p class="text-xs text-gray-400">Sale Queries</p>
               <p class="mt-0.5 flex items-center gap-1.5 whitespace-nowrap text-sm font-semibold text-white">
                 <svg class="h-3.5 w-3.5 text-emerald-400" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.25 6.75c0 8.28 6.72 15 15 15h2.25a1.5 1.5 0 0 0 1.5-1.5v-2.69a1.5 1.5 0 0 0-1.06-1.44l-3.36-1.12a1.5 1.5 0 0 0-1.62.49l-.97 1.2a12 12 0 0 1-5.42-5.42l1.2-.97a1.5 1.5 0 0 0 .49-1.62L8.88 4.06A1.5 1.5 0 0 0 7.44 3H4.75a1.5 1.5 0 0 0-1.5 1.5v2.25Z" /></svg>
@@ -149,7 +149,7 @@ const open = reactive<Record<string, boolean>>({ company: false, quick: false })
               <p class="text-xs text-gray-400">Tech Support</p>
               <p class="mt-0.5 flex items-center gap-1.5 whitespace-nowrap text-sm font-semibold text-white">
                 <svg class="h-3.5 w-3.5 text-emerald-400" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.25 6.75c0 8.28 6.72 15 15 15h2.25a1.5 1.5 0 0 0 1.5-1.5v-2.69a1.5 1.5 0 0 0-1.06-1.44l-3.36-1.12a1.5 1.5 0 0 0-1.62.49l-.97 1.2a12 12 0 0 1-5.42-5.42l1.2-.97a1.5 1.5 0 0 0 .49-1.62L8.88 4.06A1.5 1.5 0 0 0 7.44 3H4.75a1.5 1.5 0 0 0-1.5 1.5v2.25Z" /></svg>
-                +880 1336 909483
+                +880 1711 257498
               </p>
             </a>
           </div>
