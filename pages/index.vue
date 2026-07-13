@@ -101,7 +101,7 @@ const posts = computed(() =>
         </div>
       </div>
       <div class="relative -mt-14 w-[72%]">
-        <NuxtImg src="/images/razinsoft-resolving-issue-together.webp" alt="RazinSoft team is resolving their issues together" width="420" height="300" sizes="100vw lg:420px" format="webp" loading="eager" class="aspect-[7/5] w-full rounded-3xl border-4 border-white bg-gray-100 object-cover shadow-xl" />
+        <NuxtImg src="/images/razinsoft-resolving-issue-together.webp" alt="RazinSoft team is resolving their issues together" width="420" height="300" sizes="100vw lg:420px" format="webp" loading="lazy" fetchpriority="low" class="aspect-[7/5] w-full rounded-3xl border-4 border-white bg-gray-100 object-cover shadow-xl" />
         <div class="absolute left-4 top-4 rounded-2xl bg-white/95 px-4 py-2.5 shadow-lg backdrop-blur">
           <p class="font-display text-2xl font-extrabold text-ink-900">25+</p>
           <p class="text-xs text-gray-500">Countries Served</p>
