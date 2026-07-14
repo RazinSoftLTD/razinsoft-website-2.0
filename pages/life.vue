@@ -45,6 +45,17 @@ const stories = [
 ]
 
 const initials = (name: string) => name.split(' ').map((n) => n[0]).join('').slice(0, 2).toUpperCase()
+
+const benefits = [
+  { title: 'Health & Wellness', desc: 'Full medical coverage for you and your family, from day one.', paths: ['M20.8 8.6a5.5 5.5 0 0 0-9-1.8 5.5 5.5 0 0 0-9 1.8c0 3.6 4 6.9 9 10.4 5-3.5 9-6.8 9-10.4Z'] },
+  { title: 'Fast Growth', desc: 'Ship real products from week one — no bench time, no busy work.', paths: ['M13 2 4 14h6l-1 8 9-12h-6l1-8Z'] },
+  { title: 'Remote-Friendly', desc: 'Work from our Dhaka office, the USA, or remotely — we care about output, not location.', featured: true, paths: ['M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18ZM3 12h18M12 3c2.5 2.7 2.5 15 0 18M12 3c-2.5 2.7-2.5 15 0 18'] },
+  { title: 'Great Office', desc: 'A comfortable Dhaka HQ with free lunches, unlimited coffee, and quiet focus space.', paths: ['M4 8h12v5a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V8ZM16 9h1.5a2.5 2.5 0 0 1 0 5H16M7 2v2M10 2v2M13 2v2'] },
+  { title: 'Learning Budget', desc: 'A yearly learning budget for courses, books, certifications and conferences.', paths: ['M12 15a5 5 0 1 0 0-10 5 5 0 0 0 0 10ZM8.5 13.2 7 22l5-3 5 3-1.5-8.8'] },
+  { title: 'Bonuses & Increments', desc: 'Competitive pay, performance bonuses, and yearly increments.', paths: ['M3 17l6-6 4 4 8-8M21 7h-5m5 0v5'] },
+  { title: 'Team Retreats', desc: 'Team outings and yearly retreats — past trips include Cox’s Bazar and Sylhet.', paths: ['M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75'] },
+  { title: 'Flexible Hours', desc: 'A focused core through the day, and flexibility around the edges — you own your schedule.', paths: ['M4 7h16a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1ZM9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M3 12h18'] },
+]
 </script>
 
 <template>
@@ -159,6 +170,27 @@ const initials = (name: string) => name.split(' ').map((n) => n[0]).join('').sli
           </div>
           <blockquote class="mt-4 text-sm italic leading-relaxed text-gray-600">{{ s.quote }}</blockquote>
         </figure>
+      </div>
+    </section>
+
+    <!-- ══════════ 6 · Benefits ══════════ -->
+    <section class="bg-gray-50 py-16 lg:py-20">
+      <div class="container-page">
+        <p class="font-mono text-xs uppercase tracking-[0.25em] text-brand-600">Benefits</p>
+        <h2 class="mt-2 font-display text-4xl font-extrabold tracking-tight text-ink-900">What you get</h2>
+        <p class="mt-3 max-w-xl text-[15px] leading-relaxed text-gray-500">We offer a comprehensive benefits package that treats people like adults — not perks designed to keep you at your desk longer.</p>
+
+        <div class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <div v-for="b in benefits" :key="b.title"
+               class="rounded-2xl border p-6 transition"
+               :class="b.featured ? 'border-brand-200 bg-brand-50 ring-1 ring-brand-100' : 'border-gray-100 bg-white shadow-sm hover:shadow-md'">
+            <span class="grid h-11 w-11 place-items-center rounded-xl bg-brand-100/70 text-brand-600" aria-hidden="true">
+              <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path v-for="d in b.paths" :key="d" stroke-linecap="round" stroke-linejoin="round" :d="d" /></svg>
+            </span>
+            <h3 class="mt-4 font-display text-base font-bold text-ink-900">{{ b.title }}</h3>
+            <p class="mt-1.5 text-sm leading-relaxed text-gray-500">{{ b.desc }}</p>
+          </div>
+        </div>
       </div>
     </section>
   </div>
