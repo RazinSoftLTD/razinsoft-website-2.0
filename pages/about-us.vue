@@ -44,26 +44,35 @@ const leaders = [
   },
 ]
 
-// The wider team (shown under the meetup photo). Photos are the real member files in
-// /public/images/team — names match the filenames. Designations are placeholders to refine.
+// The wider team (shown under the meetup photo), in the order provided by the company.
+// Photos are the real member files in /public/images/team — paths match the exact
+// filenames (case-sensitive on the server).
 const team = [
-  { name: 'Abdullah Hossain', role: 'Team Member', photo: '/images/team/abdullah-hossain.webp' },
-  { name: 'Ahmed All Muzahed', role: 'Team Member', photo: '/images/team/ahmed-all-muzahed.webp' },
-  { name: 'Jannatun Nesa Jolly', role: 'Team Member', photo: '/images/team/jannatun-nesa-jolly.webp' },
-  { name: 'Jobeda Khatun', role: 'Team Member', photo: '/images/team/jobeda-khatun.webp' },
-  { name: 'Lamiya Akter Liza', role: 'Team Member', photo: '/images/team/lamiya-akter-liza.webp' },
-  { name: 'Leaya Sultana', role: 'Team Member', photo: '/images/team/leaya-sultana.webp' },
-  { name: 'Md Emon Mia', role: 'Team Member', photo: '/images/team/md-emon-mia.webp' },
-  { name: 'Md Nizam Uddin', role: 'Team Member', photo: '/images/team/md-nizam-uddin.webp' },
-  { name: 'Md Sohag Sheikh', role: 'Team Member', photo: '/images/team/md-sohag-sheikh.webp' },
-  { name: 'Md. Sabbir Sarker', role: 'Team Member', photo: '/images/team/md-sabbir-sarker.webp' },
-  { name: 'Mijanur Rahman', role: 'Team Member', photo: '/images/team/mijanur-rahman.webp' },
-  { name: 'Nayeem Islam', role: 'Team Member', photo: '/images/team/nayeem-islam.webp' },
-  { name: 'Raihan Sikdar', role: 'Team Member', photo: '/images/team/raihan-sikdar.webp' },
-  { name: 'Rifat Hasan', role: 'Team Member', photo: '/images/team/rifat-hasan.webp' },
-  { name: 'S.M Arifuzzaman', role: 'Team Member', photo: '/images/team/s-m-arifuzzaman.webp' },
-  { name: 'Sabrina Ferdous Reza', role: 'Team Member', photo: '/images/team/sabrina-ferdous-reza.webp' },
-  { name: 'Sohan Biswas', role: 'Team Member', photo: '/images/team/sohan-biswas.webp' },
+  { name: 'Sohan Biswas', role: 'HR Manager', photo: '/images/team/sohan-biswas.webp' },
+  { name: 'Md Nizam Uddin', role: 'Business Development Manager', photo: '/images/team/md-nizam-uddin.webp' },
+  { name: 'Ahmed All Muzahed', role: 'Marketing Manager', photo: '/images/team/ahmed-all-muzahed.webp' },
+  { name: 'Md Sohag Sheikh', role: 'DevOps Engineer', photo: '/images/team/md-sohag-sheikh.webp' },
+  { name: 'Jannatun Nesa Jolly', role: 'Business Development Executive', photo: '/images/team/jannatun-nesa-jolly.webp' },
+  { name: 'Faisal', role: 'Sr. Frontend Developer', photo: '/images/team/faisal.webp' },
+  { name: 'Munshi', role: 'Frontend Developer', photo: '/images/team/munshi.webp' },
+  { name: 'Jobeda Khatun', role: 'Sr. Backend Developer', photo: '/images/team/jobeda-khatun.webp' },
+  { name: 'Leaya Sultana', role: 'Sr. Backend Developer', photo: '/images/team/leaya-sultana.webp' },
+  { name: 'Khadija Banu', role: 'Sr. Backend Developer', photo: '/images/team/khadija-banu.webp' },
+  { name: 'Lamiya Akter Liza', role: 'Project Coordinator', photo: '/images/team/lamiya-akter-liza.webp' },
+  { name: 'Sabrina Ferdous Reza', role: 'Project Coordinator', photo: '/images/team/sabrina-ferdous-reza.webp' },
+  { name: 'Rakibul', role: 'Sr. Backend Developer', photo: '/images/team/rakibul.webp' },
+  { name: 'S.M Arifuzzaman', role: 'Backend Team Lead', photo: '/images/team/s-m-arifuzzaman.webp' },
+  { name: 'Md Emon Mia', role: 'Office Assistant', photo: '/images/team/md-emon-mia.webp' },
+  { name: 'Mijanur Rahman', role: 'Office Assistant', photo: '/images/team/mijanur-rahman.webp' },
+  { name: 'Raihan Sikdar', role: 'Sr. Flutter Developer', photo: '/images/team/raihan-sikdar.webp' },
+  { name: 'Traik', role: 'Flutter Developer', photo: '/images/team/traik.webp' },
+  { name: 'Nayeem Islam', role: 'Flutter Developer', photo: '/images/team/nayeem-islam.webp' },
+  { name: 'Sakibul Hasan Shanto', role: 'Flutter Developer', photo: '/images/team/sakibul-hasan-shanto.webp' },
+  { name: 'Abdullah Hossain', role: 'Web Developer', photo: '/images/team/abdullah-hossain.webp' },
+  { name: 'Arif Hossain', role: 'Content Writer', photo: '/images/team/arif-hossain.webp' },
+  { name: 'Md. Sabbir Sarker', role: 'Backend Developer', photo: '/images/team/md-sabbir-sarker.webp' },
+  { name: 'Sarah Islam', role: 'Content Writer', photo: '/images/team/sarah-islam.webp' },
+  { name: 'Rifat Hasan', role: 'Product Designer', photo: '/images/team/rifat-hasan.webp' },
 ]
 
 const values = [
@@ -205,17 +214,16 @@ const offices = [
           </div>
         </div>
 
-        <!-- Team grid — with photos -->
-        <div class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          <article v-for="m in team" :key="m.name" class="group overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg">
-            <div class="relative aspect-square overflow-hidden bg-gray-100">
-              <img :src="m.photo" :alt="m.name" loading="lazy" class="h-full w-full object-cover transition duration-500 group-hover:scale-105">
-            </div>
-            <div class="p-4 text-center">
-              <p class="font-display font-bold text-ink-900 transition-colors group-hover:text-brand-600">{{ m.name }}</p>
-              <p class="mt-0.5 text-xs text-gray-500">{{ m.role }}</p>
-            </div>
-          </article>
+        <!-- Team grid — portrait cards with name/role overlaid (25 members → tidy 5-col grid) -->
+        <div class="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+          <figure v-for="m in team" :key="m.name" class="group relative aspect-[4/5] overflow-hidden rounded-2xl bg-gray-100 shadow-sm ring-1 ring-black/[0.06]">
+            <img :src="m.photo" :alt="m.name" loading="lazy" decoding="async" class="h-full w-full object-cover transition duration-500 group-hover:scale-[1.04]">
+            <div class="absolute inset-0 bg-gradient-to-t from-ink-900/85 via-ink-900/20 to-transparent"></div>
+            <figcaption class="absolute inset-x-0 bottom-0 p-3.5 sm:p-4">
+              <p class="font-display text-sm font-bold leading-tight text-white">{{ m.name }}</p>
+              <p class="mt-0.5 text-xs font-medium text-brand-200">{{ m.role }}</p>
+            </figcaption>
+          </figure>
         </div>
         <p class="mt-8 text-center text-sm text-gray-500">…and many more building behind the scenes. <NuxtLink to="/careers" class="font-semibold text-brand-600 hover:underline">Want to join us?</NuxtLink></p>
       </div>
