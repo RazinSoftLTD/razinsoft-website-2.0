@@ -76,15 +76,36 @@ const team = [
 ]
 
 const values = [
-  { title: 'Client-First', desc: "Every decision begins with understanding our clients' goals and delivering solutions that create real business value.", paths: ['M20.8 8.6a5.5 5.5 0 0 0-9-1.8 5.5 5.5 0 0 0-9 1.8c0 3.6 4 6.9 9 10.4 5-3.5 9-6.8 9-10.4Z'] },
-  { title: 'Quality Without Compromise', desc: 'From design to deployment, we maintain high standards to ensure every solution is secure, reliable, and built to last.', paths: ['M12 3 4.5 6v5c0 4.5 3 7.5 7.5 9 4.5-1.5 7.5-4.5 7.5-9V6L12 3Z', 'm9.5 12 1.8 1.8L15 10'] },
-  { title: 'Continuous Innovation', desc: 'Technology evolves every day, and so do we. We embrace new ideas to build smarter, faster, and more impactful software.', paths: ['M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.1v.2h6v-.2c0-.8.4-1.6 1-2.1A7 7 0 0 0 12 2Z'] },
+  { title: 'Client-First, Always', desc: 'Every decision starts with your goals. We measure success by the impact we create for your business — not the hours we bill.', paths: ['M20.8 8.6a5.5 5.5 0 0 0-9-1.8 5.5 5.5 0 0 0-9 1.8c0 3.6 4 6.9 9 10.4 5-3.5 9-6.8 9-10.4Z'] },
+  { title: 'Built to Last', desc: 'Secure, reliable, well-documented software — so what we build keeps working long after launch, and your team can own it with confidence.', paths: ['M12 3 4.5 6v5c0 4.5 3 7.5 7.5 9 4.5-1.5 7.5-4.5 7.5-9V6L12 3Z', 'm9.5 12 1.8 1.8L15 10'] },
+  { title: 'Honest & Transparent', desc: 'Clear timelines, straight answers and no surprises. You always know where your project stands and exactly what comes next.', paths: ['M2.5 12s3.5-7 9.5-7 9.5 7 9.5 7-3.5 7-9.5 7-9.5-7-9.5-7Z', 'M12 14.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z'] },
+  { title: 'A True Partner', desc: 'We don’t disappear after delivery. We stay on to maintain, improve and scale — treating your product like our own.', paths: ['M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75'] },
 ]
 
-const offices = [
-  { city: 'Dhaka, Bangladesh', line: '1st Floor, RMR Center, A&B Ring Rd, Dhaka 1207', flag: '🇧🇩', hq: true },
-  { city: 'Seattle, USA', line: '411 University St, Seattle, Washington, USA', flag: '🇺🇸' },
-]
+// Newsletter subscribe → stored in the admin subscriber list via POST /subscribe.
+const { $api } = useNuxtApp()
+const sub = reactive({ name: '', email: '' })
+const subLoading = ref(false)
+const subMsg = ref('')
+const subOk = ref(false)
+const canSubscribe = computed(() => !!sub.email.trim())
+async function subscribe() {
+  if (!canSubscribe.value || subLoading.value) return
+  subLoading.value = true
+  subMsg.value = ''
+  try {
+    await $api('/subscribe', { method: 'POST', body: { email: sub.email.trim(), name: sub.name.trim() || undefined, source: 'about' } })
+    subOk.value = true
+    subMsg.value = 'You’re in! Thanks for subscribing — watch your inbox.'
+    sub.name = ''
+    sub.email = ''
+  } catch (e: any) {
+    subOk.value = false
+    subMsg.value = e?.data?.message || 'Something went wrong. Please try again.'
+  } finally {
+    subLoading.value = false
+  }
+}
 </script>
 
 <template>
@@ -163,30 +184,37 @@ const offices = [
       </div>
     </section>
 
-    <!-- Leadership — CEO & CTO as distinct personalities -->
-    <section class="container-page py-20">
-      <div class="text-center">
-        <p class="text-xs font-bold uppercase tracking-widest text-brand-600">Leadership</p>
-        <h2 class="mt-2 font-display text-3xl font-extrabold text-ink-900 lg:text-4xl">Meet the People Driving Our Vision</h2>
-        <p class="mx-auto mt-3 max-w-xl text-gray-600">Our leadership team combines vision, innovation, and technology to shape the future of our company. </p>
+    <!-- Leadership — editorial, alternating feature rows -->
+    <section class="container-page py-20 lg:py-24">
+      <div class="max-w-2xl">
+        <p class="font-mono text-xs uppercase tracking-[0.25em] text-brand-600">Leadership</p>
+        <h2 class="mt-3 font-display text-4xl font-extrabold tracking-tight text-ink-900">Meet the people driving our vision</h2>
+        <p class="mt-4 text-lg leading-relaxed text-gray-500">The founders behind RazinSoft — pairing product vision with deep engineering to shape what we build next.</p>
       </div>
-      <div class="mx-auto mt-12 grid max-w-4xl gap-6 md:grid-cols-2">
-        <article v-for="l in leaders" :key="l.name" class="group overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-sm transition hover:shadow-xl">
-          <div class="relative aspect-[4/3] overflow-hidden bg-gray-100">
-            <img :src="l.photo" :alt="l.name" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" decoding="async">
-            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-transparent" />
-            <div class="absolute bottom-4 left-5 text-white">
-              <p class="font-display text-2xl font-extrabold drop-shadow">{{ l.name }}</p>
-              <p class="text-sm font-semibold text-white/90">{{ l.role }}</p>
+
+      <div class="mt-16 space-y-20">
+        <article v-for="(l, i) in leaders" :key="l.name" class="grid items-center gap-10 lg:grid-cols-12 lg:gap-14">
+          <!-- Portrait with a soft gradient accent panel behind it -->
+          <div class="relative lg:col-span-5" :class="i % 2 ? 'lg:order-2' : ''">
+            <div class="absolute -inset-3 rounded-[2rem] bg-gradient-to-br from-brand-100 to-purple-100 opacity-70" :class="i % 2 ? 'rotate-2' : '-rotate-2'" aria-hidden="true"></div>
+            <div class="relative overflow-hidden rounded-[1.75rem] shadow-xl ring-1 ring-black/[0.04]">
+              <img :src="l.photo" :alt="l.name" class="aspect-[4/5] w-full object-cover" loading="lazy" decoding="async">
             </div>
           </div>
-          <div class="p-6">
-            <svg class="h-8 w-8 opacity-90" :class="l.accent" fill="currentColor" viewBox="0 0 24 24"><path d="M7 7h4v4H7c0 2 1 3 3 3v2c-3 0-5-2-5-5V7Zm8 0h4v4h-4c0 2 1 3 3 3v2c-3 0-5-2-5-5V7Z" /></svg>
-            <p class="mt-2 leading-relaxed text-gray-700">{{ l.quote }}</p>
-            <a :href="l.linkedin" target="_blank" rel="noopener" class="mt-4 inline-flex items-center gap-2 text-sm font-semibold" :class="l.accent">
-              <svg class="h-5 w-5 fill-current" viewBox="0 0 24 24"><path d="M4.98 3.5A2.5 2.5 0 1 0 5 8.5a2.5 2.5 0 0 0-.02-5ZM3 9h4v12H3V9Zm6 0h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05C20.4 8.65 22 10.6 22 14v7h-4v-6.2c0-1.48-.03-3.38-2.06-3.38-2.06 0-2.38 1.6-2.38 3.27V21H9V9Z" /></svg>
-              Connect on LinkedIn
-            </a>
+          <!-- Content — the quote leads -->
+          <div class="lg:col-span-7" :class="i % 2 ? 'lg:order-1' : ''">
+            <svg class="h-10 w-10 text-brand-200" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h4v4H7c0 2 1 3 3 3v2c-3 0-5-2-5-5V7Zm8 0h4v4h-4c0 2 1 3 3 3v2c-3 0-5-2-5-5V7Z" /></svg>
+            <p class="mt-3 font-display text-2xl font-semibold leading-relaxed text-ink-900 sm:text-3xl sm:leading-relaxed">{{ l.quote }}</p>
+            <div class="mt-7 flex flex-wrap items-center gap-4">
+              <div>
+                <p class="font-display text-lg font-extrabold text-ink-900">{{ l.name }}</p>
+                <p class="text-sm font-semibold" :class="l.accent">{{ l.role }}</p>
+              </div>
+              <a :href="l.linkedin" target="_blank" rel="noopener" class="inline-flex items-center gap-2 rounded-full border border-gray-200 px-4 py-2 text-sm font-semibold text-ink-800 transition hover:border-brand-300 hover:text-brand-600 sm:ml-auto">
+                <svg class="h-4 w-4 fill-current" viewBox="0 0 24 24"><path d="M4.98 3.5A2.5 2.5 0 1 0 5 8.5a2.5 2.5 0 0 0-.02-5ZM3 9h4v12H3V9Zm6 0h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05C20.4 8.65 22 10.6 22 14v7h-4v-6.2c0-1.48-.03-3.38-2.06-3.38-2.06 0-2.38 1.6-2.38 3.27V21H9V9Z" /></svg>
+                Connect on LinkedIn
+              </a>
+            </div>
           </div>
         </article>
       </div>
@@ -233,48 +261,56 @@ const offices = [
     <section class="container-page py-20">
       <div class="text-center">
         <p class="text-xs font-bold uppercase tracking-widest text-brand-600">Our Values</p>
-        <h2 class="mt-2 font-display text-3xl font-extrabold text-ink-900 lg:text-4xl">Values That Shape Every Solution </h2>
+        <h2 class="mt-2 font-display text-3xl font-extrabold text-ink-900 lg:text-4xl">How we show up for clients</h2>
+        <p class="mx-auto mt-3 max-w-xl text-gray-600">The principles that guide every project — from the first call to long after launch.</p>
       </div>
-      <div class="mt-12 grid gap-6 md:grid-cols-3">
-        <div v-for="v in values" :key="v.title" class="rounded-2xl border border-gray-100 p-7 shadow-sm">
+      <div class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <div v-for="v in values" :key="v.title" class="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-md">
           <span class="grid h-12 w-12 place-items-center rounded-xl bg-brand-50 text-brand-600" aria-hidden="true">
             <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path v-for="p in v.paths" :key="p" stroke-linecap="round" stroke-linejoin="round" :d="p" /></svg>
           </span>
-          <h3 class="mt-4 font-display text-lg font-bold text-ink-900">{{ v.title }}</h3>
+          <h3 class="mt-4 font-display text-base font-bold text-ink-900">{{ v.title }}</h3>
           <p class="mt-2 text-sm leading-relaxed text-gray-600">{{ v.desc }}</p>
         </div>
       </div>
     </section>
 
-    <!-- Global offices -->
-    <section class="bg-gray-50 py-20">
-      <div class="container-page">
-        <div class="text-center">
-          <p class="text-xs font-bold uppercase tracking-widest text-brand-600">Global Offices</p>
-          <h2 class="mt-2 font-display text-3xl font-extrabold text-ink-900 lg:text-4xl">Where you’ll find us</h2>
-        </div>
-        <div class="mx-auto mt-12 grid max-w-3xl gap-5 sm:grid-cols-2">
-          <div v-for="o in offices" :key="o.city" class="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
-            <div class="flex items-center gap-2">
-              <span class="text-2xl">{{ o.flag }}</span>
-              <h3 class="font-display text-lg font-bold text-ink-900">{{ o.city }}</h3>
-              <span v-if="o.hq" class="rounded-full bg-brand-50 px-2 py-0.5 text-[11px] font-bold text-brand-600">HQ</span>
-            </div>
-            <p class="mt-3 text-sm leading-relaxed text-gray-600">{{ o.line }}</p>
+    <!-- Closing: build-with-us CTA + newsletter, unified -->
+    <section class="relative overflow-hidden bg-gradient-to-br from-[#0f172a] via-[#1e3a5f] to-[#0f172a] py-20 text-white lg:py-24">
+      <div class="pointer-events-none absolute inset-0 opacity-[0.05]" aria-hidden="true" style="background-image: linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px); background-size: 60px 60px;" />
+      <div class="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-brand-500/20 blur-3xl" aria-hidden="true"></div>
+
+      <div class="container-page relative">
+        <!-- Primary CTA -->
+        <div class="mx-auto max-w-2xl text-center">
+          <h2 class="font-display text-3xl font-extrabold tracking-tight sm:text-4xl">Let’s build something great together</h2>
+          <p class="mx-auto mt-4 max-w-xl text-gray-300">Have a project in mind? Our team is ready to help you plan, build and scale.</p>
+          <div class="mt-8 flex flex-wrap justify-center gap-3">
+            <NuxtLink to="/contact-us" class="btn bg-brand-600 text-white shadow-lg shadow-brand-600/25 hover:bg-brand-700">Contact us</NuxtLink>
+            <NuxtLink to="/careers" class="btn border border-white/25 bg-white/5 text-white hover:bg-white/10">Join our team</NuxtLink>
           </div>
         </div>
-      </div>
-    </section>
 
-    <!-- CTA -->
-    <section class="relative overflow-hidden bg-gradient-to-br from-[#0f172a] via-[#1e3a5f] to-[#0f172a] py-20 text-white">
-      <div class="pointer-events-none absolute inset-0 opacity-[0.05]" aria-hidden="true" style="background-image: linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px); background-size: 60px 60px;" />
-      <div class="container-page relative text-center">
-        <h2 class="font-display text-3xl font-extrabold sm:text-4xl">Let’s build something great together</h2>
-        <p class="mx-auto mt-4 max-w-xl text-gray-300">Have a project in mind? Our team is ready to help you plan, build and scale.</p>
-        <div class="mt-8 flex flex-wrap justify-center gap-3">
-          <NuxtLink to="/contact-us" class="btn bg-brand-600 text-white shadow-lg shadow-brand-600/20 hover:bg-brand-700">Contact us</NuxtLink>
-          <NuxtLink to="/careers" class="btn border border-white/25 bg-white/5 text-white hover:bg-white/10">Join our team</NuxtLink>
+        <!-- Newsletter — inset card -->
+        <div class="mx-auto mt-14 max-w-3xl rounded-2xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur sm:p-8">
+          <div class="flex flex-col items-center gap-6 text-center md:flex-row md:items-center md:justify-between md:text-left">
+            <div class="max-w-sm">
+              <p class="font-mono text-[11px] uppercase tracking-[0.25em] text-brand-300">Newsletter</p>
+              <h3 class="mt-1.5 font-display text-xl font-bold">Stay in the loop</h3>
+              <p class="mt-1.5 text-sm text-gray-400">Product updates and engineering notes — no spam, unsubscribe anytime.</p>
+            </div>
+            <form class="w-full md:w-auto" @submit.prevent="subscribe">
+              <div class="flex flex-col gap-2.5 sm:flex-row">
+                <input v-model="sub.email" type="email" required autocomplete="email" placeholder="Your email"
+                       class="h-12 w-full rounded-xl border border-white/15 bg-white/10 px-4 text-sm text-white placeholder-gray-400 focus:border-brand-400 focus:outline-none focus:ring-1 focus:ring-brand-400 sm:w-64">
+                <button type="submit" :disabled="!canSubscribe || subLoading"
+                        class="inline-flex h-12 shrink-0 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-brand-500 to-purple-500 px-6 text-sm font-bold text-white shadow-lg shadow-brand-500/25 transition hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-60">
+                  {{ subLoading ? 'Subscribing…' : 'Subscribe' }}
+                </button>
+              </div>
+              <p v-if="subMsg" class="mt-2.5 text-sm font-medium" :class="subOk ? 'text-emerald-400' : 'text-red-300'">{{ subMsg }}</p>
+            </form>
+          </div>
         </div>
       </div>
     </section>
