@@ -217,8 +217,8 @@ async function subscribe() {
           </div>
           <!-- Content — the quote leads -->
           <div class="lg:col-span-8" :class="i % 2 ? 'lg:order-1' : ''">
-            <svg class="h-10 w-10 text-brand-200" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h4v4H7c0 2 1 3 3 3v2c-3 0-5-2-5-5V7Zm8 0h4v4h-4c0 2 1 3 3 3v2c-3 0-5-2-5-5V7Z" /></svg>
-            <p class="mt-3 font-display text-2xl font-semibold leading-relaxed text-ink-900 sm:text-3xl sm:leading-relaxed">{{ l.quote }}</p>
+            <svg class="h-8 w-8 text-brand-200" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h4v4H7c0 2 1 3 3 3v2c-3 0-5-2-5-5V7Zm8 0h4v4h-4c0 2 1 3 3 3v2c-3 0-5-2-5-5V7Z" /></svg>
+            <p class="mt-3 font-display text-lg font-semibold leading-relaxed text-ink-900 sm:text-xl sm:leading-relaxed">{{ l.quote }}</p>
             <div class="mt-7 flex flex-wrap items-center gap-4">
               <div>
                 <p class="font-display text-lg font-extrabold text-ink-900">{{ l.name }}</p>
