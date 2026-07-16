@@ -124,12 +124,17 @@ useHead({ title: () => (inv.value ? `Pay ${inv.value.invoice_number} — RazinSo
 
         <!-- Pay action -->
         <div v-if="inv.amount_due > 0" class="mt-5 rounded-2xl border border-gray-100 bg-white p-6 text-center shadow-sm">
-          <p class="text-sm text-gray-500">Amount to pay now</p>
+          <p class="text-sm text-gray-500">{{ inv.partial_requested ? 'Partial payment requested' : 'Amount to pay now' }}</p>
           <p class="mt-1 text-3xl font-extrabold text-ink-900">{{ money(inv.payable_amount) }} {{ inv.currency }}</p>
-          <a :href="inv.checkout_url" class="mt-4 inline-block w-full rounded-xl bg-brand-600 py-3.5 text-center font-bold text-white transition hover:bg-brand-700">
-            Pay {{ money(inv.payable_amount) }} Now
+          <p v-if="inv.partial_requested" class="mt-1 text-xs text-gray-400">Remaining due after this payment: {{ money(inv.amount_due - inv.payable_amount) }} {{ inv.currency }}</p>
+
+          <a v-if="!inv.pay_methods || inv.pay_methods.includes('stripe')" :href="inv.checkout_url" class="mt-4 inline-block w-full rounded-xl bg-brand-600 py-3.5 text-center font-bold text-white transition hover:bg-brand-700">
+            Pay {{ money(inv.payable_amount) }} with Card
           </a>
-          <p class="mt-3 text-xs text-gray-400">Secured payment · powered by Stripe</p>
+          <a v-if="inv.pay_methods && inv.pay_methods.includes('paypal')" :href="inv.paypal_url" class="mt-3 inline-block w-full rounded-xl bg-[#ffc439] py-3.5 text-center font-bold text-[#003087] transition hover:bg-[#f2ba36]">
+            Pay {{ money(inv.payable_amount) }} with PayPal
+          </a>
+          <p class="mt-3 text-xs text-gray-400">Secured payment · powered by {{ (inv.pay_methods || ['stripe']).map(m => m === 'stripe' ? 'Stripe' : 'PayPal').join(' & ') }}</p>
         </div>
       </template>
     </div>
