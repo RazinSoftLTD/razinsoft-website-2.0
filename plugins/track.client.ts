@@ -17,6 +17,8 @@ export default defineNuxtPlugin((nuxtApp) => {
         path,
         title: typeof document !== 'undefined' ? document.title : undefined,
         referrer: typeof document !== 'undefined' ? document.referrer || undefined : undefined,
+        // Browser timezone — the most reliable "where is this user really" signal.
+        tz: Intl.DateTimeFormat().resolvedOptions().timeZone || undefined,
       },
     }).catch(() => {})
   }

@@ -23,6 +23,7 @@ onMounted(() => {
         title: `Error ${code.value}`,
         error: code.value,
         referrer: typeof document !== 'undefined' ? document.referrer || undefined : undefined,
+        tz: Intl.DateTimeFormat().resolvedOptions().timeZone || undefined,
       },
     }).catch(() => {})
   } catch {}
