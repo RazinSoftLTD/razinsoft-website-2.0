@@ -29,12 +29,20 @@ const gtmId = process.env.NUXT_GTM_ID ?? 'GTM-WBX6S622'
 const gtmEnabled = process.env.NODE_ENV === 'production' && !!gtmId
 const gtmHeadScript = gtmEnabled
   ? [{
-      // GTM loader — injected as high in <head> as possible.
+      // GTM loader — DEFERRED so the marketing-tag chain (FB pixel, LinkedIn, Hotjar, Brevo…)
+      // never competes with page rendering. Loads on first user interaction, or 1.5s after the
+      // window load event, whichever comes first. Pageviews are still tracked for everyone —
+      // they just fire a moment later, keeping FCP/LCP/load fast.
       innerHTML:
-        `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});` +
-        `var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;` +
-        `j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);` +
-        `})(window,document,'script','dataLayer','${gtmId}');`,
+        `(function(w,d,l,i){w[l]=w[l]||[];var loaded=false;` +
+        `function loadGTM(){if(loaded)return;loaded=true;` +
+        `w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});` +
+        `var f=d.getElementsByTagName('script')[0],j=d.createElement('script');j.async=true;` +
+        `j.src='https://www.googletagmanager.com/gtm.js?id='+i;f.parentNode.insertBefore(j,f);}` +
+        `['pointerdown','keydown','touchstart','scroll'].forEach(function(e){w.addEventListener(e,loadGTM,{once:true,passive:true});});` +
+        `w.addEventListener('load',function(){setTimeout(loadGTM,1500);});` +
+        `setTimeout(loadGTM,7000);` + // absolute fallback so tracking always loads
+        `})(window,document,'dataLayer','${gtmId}');`,
       tagPosition: 'head' as const,
     }]
   : []
@@ -94,7 +102,9 @@ export default defineNuxtConfig({
     // BROWSER is told max-age=0 so a normal reload always revalidates and shows current data.
     // Without max-age=0 browsers heuristically cache the HTML → only a HARD refresh shows new data.
     // Home shows LIVE product + blog data from the API.
-    '/': { headers: { 'cache-control': 'public, max-age=0, must-revalidate, s-maxage=300, stale-while-revalidate=600' } },
+    // swr: Nitro also caches the rendered HTML in-process, so repeat SSR hits skip the
+    // render + API round-trip entirely (TTFB ~120ms → ~15ms at the origin).
+    '/': { swr: 300, headers: { 'cache-control': 'public, max-age=0, must-revalidate, s-maxage=300, stale-while-revalidate=600' } },
     '/login': { prerender: true },
     '/register': { prerender: true },
     '/contact-us': { prerender: true },
@@ -110,11 +120,11 @@ export default defineNuxtConfig({
     '/support-policy': { prerender: true },
     // Catalogue: SSR + stale-while-revalidate cache. Crawlers still get full server-rendered
     // HTML (SEO-safe) but repeat visitors get it instantly from cache; revalidated in background.
-    '/products': { headers: { 'cache-control': 'public, max-age=0, must-revalidate, s-maxage=180, stale-while-revalidate=600' } },
-    '/products/**': { headers: { 'cache-control': 'public, max-age=0, must-revalidate, s-maxage=300, stale-while-revalidate=600' } },
+    '/products': { swr: 180, headers: { 'cache-control': 'public, max-age=0, must-revalidate, s-maxage=180, stale-while-revalidate=600' } },
+    '/products/**': { swr: 300, headers: { 'cache-control': 'public, max-age=0, must-revalidate, s-maxage=300, stale-while-revalidate=600' } },
     // Insights / blog: edge-cached, browser revalidates (articles change rarely).
-    '/blog': { headers: { 'cache-control': 'public, max-age=0, must-revalidate, s-maxage=180, stale-while-revalidate=600' } },
-    '/blog/**': { headers: { 'cache-control': 'public, max-age=0, must-revalidate, s-maxage=600, stale-while-revalidate=600' } },
+    '/blog': { swr: 180, headers: { 'cache-control': 'public, max-age=0, must-revalidate, s-maxage=180, stale-while-revalidate=600' } },
+    '/blog/**': { swr: 600, headers: { 'cache-control': 'public, max-age=0, must-revalidate, s-maxage=600, stale-while-revalidate=600' } },
     // Auth-gated, per-user pages: client-rendered (token lives in a cookie).
     '/dashboard': { ssr: false },
     '/dashboard/**': { ssr: false },
@@ -171,6 +181,8 @@ export default defineNuxtConfig({
   // ---- SEO modules ----
   sitemap: {
     autoLastmod: true,
+    // Utility/auth pages waste crawl budget — keep them out of the sitemap.
+    exclude: ['/login', '/register', '/forgot-password', '/reset-password'],
     // Pull dynamic product + blog URLs from the API so every detail page is indexable.
     sources: ['/api/__sitemap__/urls'],
     // Always regenerate from the live API — never serve a stale/empty cached sitemap.
