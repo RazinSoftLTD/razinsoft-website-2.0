@@ -8,6 +8,8 @@ export default defineNuxtPlugin((nuxtApp) => {
   const { $api } = useNuxtApp() as unknown as { $api: typeof $fetch }
 
   const send = (path: string) => {
+    // The error page reports itself (with the status code) — skip the normal beacon.
+    if (useError().value) return
     // Fire-and-forget; never block navigation or surface errors.
     $api('/track/visit', {
       method: 'POST',
