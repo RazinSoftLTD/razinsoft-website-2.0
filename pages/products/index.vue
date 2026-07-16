@@ -34,6 +34,14 @@ const view = ref<'grid' | 'list'>('grid')
 // Restore filter state from the URL so reload / share / deep-link (e.g. /products?sort=free) keeps it.
 const initialSort = (route.query.sort as string) || (route.query.free ? 'free' : 'best')
 const sort = ref(sorts.some((s) => s.key === initialSort) ? initialSort : 'best')
+// Price sort direction: first click = high → low, next click flips it.
+const priceDir = ref<'desc' | 'asc'>('desc')
+function setSort(key: string) {
+  if (key === 'price') {
+    priceDir.value = sort.value === 'price' ? (priceDir.value === 'desc' ? 'asc' : 'desc') : 'desc'
+  }
+  sort.value = key
+}
 const category = ref((route.query.category as string) || 'All Categories')
 const search = ref((route.query.q as string) || '')
 
@@ -68,7 +76,7 @@ const filtered = computed(() => {
   switch (sort.value) {
     case 'sellers': list.sort((a, b) => b.sales - a.sales); break
     case 'rated': list.sort((a, b) => b.rating - a.rating); break
-    case 'price': list.sort((a, b) => a.price - b.price); break
+    case 'price': list.sort((a, b) => (priceDir.value === 'desc' ? b.price - a.price : a.price - b.price)); break
     case 'free': list = list.filter((p) => p.price === 0); break
   }
   return list
@@ -119,9 +127,12 @@ const badgeClass: Record<string, string> = {
         <div class="hidden h-6 w-px bg-gray-200 sm:block" />
 
         <div class="flex flex-wrap items-center gap-1">
-          <button v-for="s in sorts" :key="s.key" type="button" class="flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-semibold transition" :class="sort === s.key ? 'bg-ink-900 text-white' : 'text-gray-500 hover:bg-gray-50'" @click="sort = s.key">
+          <button v-for="s in sorts" :key="s.key" type="button" class="flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-semibold transition" :class="sort === s.key ? 'bg-ink-900 text-white' : 'text-gray-500 hover:bg-gray-50'" @click="setSort(s.key)">
             {{ s.label }}
-            <svg v-if="s.key === 'price'" class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M7 4v16m0 0-3-3m3 3 3-3M17 20V4m0 0-3 3m3-3 3 3" /></svg>
+            <!-- Price arrow: inactive = both, active desc = down (high → low), active asc = up (low → high) -->
+            <svg v-if="s.key === 'price' && sort !== 'price'" class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M7 4v16m0 0-3-3m3 3 3-3M17 20V4m0 0-3 3m3-3 3 3" /></svg>
+            <svg v-else-if="s.key === 'price' && priceDir === 'desc'" class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m0 0-4-4m4 4 4-4" /></svg>
+            <svg v-else-if="s.key === 'price'" class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 20V4m0 0-4 4m4-4 4 4" /></svg>
           </button>
         </div>
 
@@ -156,9 +167,10 @@ const badgeClass: Record<string, string> = {
           </NuxtLink>
 
           <div class="flex flex-1 flex-col p-5">
-            <h2 class="font-display text-base font-bold leading-snug text-ink-900">
-              <NuxtLink :to="`/products/${p.slug}`" class="hover:text-brand-700">{{ p.name }} — {{ p.tagline }}</NuxtLink>
+            <h2 class="font-display text-lg font-bold text-ink-900">
+              <NuxtLink :to="`/products/${p.slug}`" class="hover:text-brand-700">{{ p.name }}</NuxtLink>
             </h2>
+            <p class="mt-1 text-sm text-gray-600">{{ p.tagline }}</p>
 
             <div class="mt-3 flex items-center justify-between gap-2">
               <p>
