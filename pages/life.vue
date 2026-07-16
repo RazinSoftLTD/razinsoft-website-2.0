@@ -48,7 +48,6 @@ const stories = [
   { name: 'Rifat Ahmed', role: 'Product Designer', years: 3, avatar: 'bg-purple-600', quote: "Seeing an idea go from a quick discussion to a real product is the best part of my job. Everyone's open to feedback, and that makes working together really enjoyable." },
   { name: 'Nayeem Islam', role: 'Flutter Developer', years: 2, avatar: 'bg-sky-500', quote: 'One thing I really enjoy is our play area. A quick game of ping pong with teammates is a fun way to recharge, clear your mind, and get back to work with fresh energy.' },
   { name: 'Lamiya Akter Liza', role: 'Backend Developer', years: 4, avatar: 'bg-emerald-500', quote: "What I value most is the trust. Once you're given responsibility, people believe in you and let you do your best. That kind of confidence means a lot." },
-  { name: 'Lamiya Akter Liza', role: 'Backend Developer', years: 3, avatar: 'bg-amber-500', quote: "It's not just about deadlines. We celebrate birthdays, achievements, and small wins together, which makes the workplace feel much more personal." },
   { name: 'Md Nizam Uddin', role: 'Business Development Manager', years: 4, avatar: 'bg-brand-600', quote: "I spend a lot of time talking with clients, so it's nice to work in an environment that stays positive and relaxed. It helps you stay motivated, even on busy days." },
 ]
 
