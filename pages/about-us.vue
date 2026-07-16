@@ -24,6 +24,10 @@ const doWork = [
 // missing file never breaks the production build).
 const groupPhoto = '/images/team/group-image-fast.webp'
 
+// Cache-buster for team photos: files were replaced at the SAME urls, so Cloudflare/
+// browsers sometimes served the old cached image. Bump this whenever photos change.
+const pv = '?v=2'
+
 // Leadership — featured as distinct personalities. Photos live in /public/images/team/LeaderShip.
 const leaders = [
   {
@@ -53,6 +57,7 @@ const team = [
   { name: 'Ahmed All Muzahed', role: 'Marketing Manager', photo: '/images/team/ahmed-all-muzahed.webp' },
   { name: 'Md Sohag Sheikh', role: 'DevOps Engineer', photo: '/images/team/md-sohag-sheikh.webp' },
   { name: 'Jannatun Nesa Jolly', role: 'Business Development Executive', photo: '/images/team/jannatun-nesa-jolly.webp' },
+  { name: 'Jechi', role: 'Business Development Executive', photo: '/images/team/jechi.webp' },
   { name: 'Faisal', role: 'Sr. Frontend Developer', photo: '/images/team/faisal.webp' },
   { name: 'Munshi', role: 'Frontend Developer', photo: '/images/team/munshi.webp' },
   { name: 'Jobeda Khatun', role: 'Sr. Backend Developer', photo: '/images/team/jobeda-khatun.webp' },
@@ -194,15 +199,24 @@ async function subscribe() {
 
       <div class="mt-16 space-y-20">
         <article v-for="(l, i) in leaders" :key="l.name" class="grid items-center gap-10 lg:grid-cols-12 lg:gap-14">
-          <!-- Portrait with a soft gradient accent panel behind it -->
-          <div class="relative lg:col-span-5" :class="i % 2 ? 'lg:order-2' : ''">
-            <div class="absolute -inset-3 rounded-[2rem] bg-gradient-to-br from-brand-100 to-purple-100 opacity-70" :class="i % 2 ? 'rotate-2' : '-rotate-2'" aria-hidden="true"></div>
-            <div class="relative overflow-hidden rounded-[1.75rem] shadow-xl ring-1 ring-black/[0.04]">
-              <img :src="l.photo" :alt="l.name" class="aspect-[4/5] w-full object-cover" loading="lazy" decoding="async">
+          <!-- Compact portrait: gradient frame, floating name ribbon, dot accent -->
+          <div class="relative mx-auto w-full max-w-[280px] lg:col-span-4" :class="i % 2 ? 'lg:order-2' : ''">
+            <div class="absolute -inset-3 rounded-[2rem] bg-gradient-to-br from-brand-100 to-purple-100 opacity-70" :class="i % 2 ? 'rotate-3' : '-rotate-3'" aria-hidden="true"></div>
+            <!-- decorative dots -->
+            <svg class="absolute -right-8 -top-8 h-20 w-20 text-brand-200" :class="i % 2 ? '-left-8 right-auto' : ''" fill="currentColor" aria-hidden="true" viewBox="0 0 80 80">
+              <circle v-for="d in 16" :key="d" :cx="((d - 1) % 4) * 20 + 6" :cy="Math.floor((d - 1) / 4) * 20 + 6" r="2.5" />
+            </svg>
+            <div class="relative overflow-hidden rounded-[1.5rem] shadow-xl ring-1 ring-black/[0.05]">
+              <img :src="l.photo + pv" :alt="l.name" class="aspect-[4/5] w-full object-cover" loading="lazy" decoding="async">
+              <!-- name ribbon over the photo -->
+              <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent px-4 pb-3.5 pt-10">
+                <p class="font-display text-sm font-extrabold text-white">{{ l.name }}</p>
+                <p class="text-[11px] font-semibold uppercase tracking-wider text-white/80">{{ l.role }}</p>
+              </div>
             </div>
           </div>
           <!-- Content — the quote leads -->
-          <div class="lg:col-span-7" :class="i % 2 ? 'lg:order-1' : ''">
+          <div class="lg:col-span-8" :class="i % 2 ? 'lg:order-1' : ''">
             <svg class="h-10 w-10 text-brand-200" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h4v4H7c0 2 1 3 3 3v2c-3 0-5-2-5-5V7Zm8 0h4v4h-4c0 2 1 3 3 3v2c-3 0-5-2-5-5V7Z" /></svg>
             <p class="mt-3 font-display text-2xl font-semibold leading-relaxed text-ink-900 sm:text-3xl sm:leading-relaxed">{{ l.quote }}</p>
             <div class="mt-7 flex flex-wrap items-center gap-4">
@@ -231,7 +245,7 @@ async function subscribe() {
 
         <!-- Full-team meetup photo -->
         <div class="relative mt-12 overflow-hidden rounded-3xl shadow-xl">
-          <img :src="groupPhoto" alt="The RazinSoft team together at a meetup" class="h-[280px] w-full object-cover sm:h-[380px]" loading="lazy" decoding="async">
+          <img :src="groupPhoto + pv" alt="The RazinSoft team together at a meetup" class="h-[280px] w-full object-cover sm:h-[380px]" loading="lazy" decoding="async">
           <div class="absolute inset-0 bg-gradient-to-t from-ink-900/70 via-ink-900/10 to-transparent" />
           <div class="absolute bottom-0 left-0 right-0 flex flex-wrap items-end justify-between gap-4 p-6 sm:p-8">
             <div class="text-white">
@@ -245,7 +259,7 @@ async function subscribe() {
         <!-- Team grid — portrait cards with name/role overlaid (25 members → tidy 5-col grid) -->
         <div class="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
           <figure v-for="m in team" :key="m.name" class="group relative aspect-[4/5] overflow-hidden rounded-2xl bg-gray-100 shadow-sm ring-1 ring-black/[0.06]">
-            <img :src="m.photo" :alt="m.name" loading="lazy" decoding="async" class="h-full w-full object-cover transition duration-500 group-hover:scale-[1.04]">
+            <img :src="m.photo + pv" :alt="m.name" loading="lazy" decoding="async" class="h-full w-full object-cover transition duration-500 group-hover:scale-[1.04]">
             <div class="absolute inset-0 bg-gradient-to-t from-ink-900/85 via-ink-900/20 to-transparent"></div>
             <figcaption class="absolute inset-x-0 bottom-0 p-3.5 sm:p-4">
               <p class="font-display text-sm font-bold leading-tight text-white">{{ m.name }}</p>

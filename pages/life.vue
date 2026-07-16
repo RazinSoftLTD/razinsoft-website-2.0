@@ -4,28 +4,33 @@ usePageSeo({
   description: 'Take a peek inside RazinSoft — our people, culture, the everyday rhythm and the team that makes working here special.',
 })
 
-// NOTE: images reuse the current /life/ photos — swap in real ones anytime.
-const IMG = {
-  group: '/life/RazinSoft-Group-Image.webp',
-  work: '/life/RazinSoft-Work-Image.webp',
-  cricket: '/life/RazinSoft-Cricket-Image.webp',
-  tt: '/life/RazinSoft-TT-Image.webp',
-  buffer: '/life/RazinSoft-Buffer-Image.webp',
-}
+// Life page photos — /public/life/{hero,who-we-are,gallery}/
 
-const heroPhotos = [IMG.work, IMG.group, IMG.buffer, IMG.tt]
+// Top "Life @ RazinSoft" strip (in numbered order).
+const heroPhotos = [
+  '/images/life/hero/work-01.webp',
+  '/images/life/hero/ping-pong-02.webp',
+  '/images/life/hero/buffet-dinner-03.webp',
+  '/images/life/hero/event-04.webp',
+]
 
-const collage = [IMG.tt, IMG.work, IMG.group]
+// "Who We Are" collage (first one is the tall image).
+const collage = [
+  '/images/life/who-we-are/cricket-match-01.webp',
+  '/images/life/who-we-are/office-meeting-02.webp',
+  '/images/life/who-we-are/boishakh-03.webp',
+]
 
+// Photo gallery — each image with its own tag.
 const gallery = [
-  { src: IMG.work, tag: 'Engineering', span: 'sm:col-span-2' },
-  { src: IMG.buffer, tag: 'Deep Work', span: 'sm:col-span-2 sm:row-span-2' },
-  { src: IMG.group, tag: 'Strategy', span: '' },
-  { src: IMG.cricket, tag: 'Collaboration', span: '' },
-  { src: IMG.tt, tag: 'Planning', span: '' },
-  { src: IMG.buffer, tag: 'Remote', span: '' },
-  { src: IMG.cricket, tag: 'Sports Day', span: '' },
-  { src: IMG.group, tag: 'Team Event', span: '' },
+  { src: '/images/life/gallery/engineering.webp', tag: 'Engineering', span: 'sm:col-span-2' },
+  { src: '/images/life/gallery/tour.webp', tag: 'Tour', span: 'sm:col-span-2 sm:row-span-2' },
+  { src: '/images/life/gallery/strategy.webp', tag: 'Strategy', span: '' },
+  { src: '/images/life/gallery/collaboration.webp', tag: 'Collaboration', span: '' },
+  { src: '/images/life/gallery/planning.webp', tag: 'Planning', span: '' },
+  { src: '/images/life/gallery/meeting.webp', tag: 'Meeting', span: '' },
+  { src: '/images/life/gallery/sports-day.webp', tag: 'Sports Day', span: '' },
+  { src: '/images/life/gallery/team-event.webp', tag: 'Team Event', span: '' },
 ]
 
 const day = [
@@ -39,9 +44,12 @@ const day = [
 ]
 
 const stories = [
-  { name: 'Sohag Sheikh', role: 'DevOps Engineer', years: 4, avatar: 'bg-rose-500', quote: 'I run our deploy pipeline end to end — CI, staging, production. RazinSoft gave me real ownership of the infrastructure, and the room to keep making it faster and more reliable.' },
-  { name: 'Sohan Biswas', role: 'HR Manager', years: 6, avatar: 'bg-brand-600', quote: 'I’ve grown with this team for six years and counting. RazinSoft genuinely invests in people — we hire for character and give everyone room to do their best work.' },
-  { name: 'Rifat Ahamed', role: 'Product Designer', years: 3, avatar: 'bg-purple-600', quote: 'Design has a real seat at the table here. My work goes straight to clients — no watering down, no “just make the logo bigger”. Pure craft.' },
+  { name: 'Shohag Sheikh', role: 'DevOps Engineer', years: 4, avatar: 'bg-rose-500', quote: "The people here make work enjoyable. Everyone's easy to talk to, always ready to help, and there's a real team spirit. It honestly feels good coming to work every day." },
+  { name: 'Rifat Ahmed', role: 'Product Designer', years: 3, avatar: 'bg-purple-600', quote: "Seeing an idea go from a quick discussion to a real product is the best part of my job. Everyone's open to feedback, and that makes working together really enjoyable." },
+  { name: 'Nayeem Islam', role: 'Flutter Developer', years: 2, avatar: 'bg-sky-500', quote: 'One thing I really enjoy is our play area. A quick game of ping pong with teammates is a fun way to recharge, clear your mind, and get back to work with fresh energy.' },
+  { name: 'Lamiya Akter Liza', role: 'Backend Developer', years: 4, avatar: 'bg-emerald-500', quote: "What I value most is the trust. Once you're given responsibility, people believe in you and let you do your best. That kind of confidence means a lot." },
+  { name: 'Lamiya Akter Liza', role: 'Backend Developer', years: 3, avatar: 'bg-amber-500', quote: "It's not just about deadlines. We celebrate birthdays, achievements, and small wins together, which makes the workplace feel much more personal." },
+  { name: 'Md Nizam Uddin', role: 'Business Development Manager', years: 4, avatar: 'bg-brand-600', quote: "I spend a lot of time talking with clients, so it's nice to work in an environment that stays positive and relaxed. It helps you stay motivated, even on busy days." },
 ]
 
 const initials = (name: string) => name.split(' ').map((n) => n[0]).join('').slice(0, 2).toUpperCase()
@@ -159,7 +167,7 @@ const benefits = [
       <h2 class="mt-2 font-display text-4xl font-extrabold tracking-tight text-ink-900">Hear from the team</h2>
 
       <div class="mt-10 grid gap-6 md:grid-cols-3">
-        <figure v-for="s in stories" :key="s.name" class="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+        <figure v-for="(s, si) in stories" :key="si" class="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
           <div class="flex items-center gap-3">
             <span class="grid h-11 w-11 shrink-0 place-items-center rounded-full text-sm font-bold text-white" :class="s.avatar" aria-hidden="true">{{ initials(s.name) }}</span>
             <div>
