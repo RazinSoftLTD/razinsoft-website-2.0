@@ -10,15 +10,33 @@ const { items, lineKey, subtotal, coupon, discount, total, applyCoupon, clear } 
 const { $api } = useNuxtApp()
 const { user, fetchMe } = useAuth()
 
-// Prefill billing from the signed-in user.
+// Whether the signed-in user already has a complete saved billing address.
+const hasSavedBilling = ref(false)
+// When true, the form is shown (either no saved address, or the user chose to edit / add a new one).
+const editBilling = ref(false)
+
+// Prefill billing from the signed-in user, including their saved address.
 onMounted(async () => {
   await fetchMe()
   if (user.value) {
-    const [first, ...rest] = (user.value.name || '').split(' ')
+    const u = user.value as Record<string, any>
+    const [first, ...rest] = (u.name || '').split(' ')
     form.firstName ||= first || ''
     form.lastName ||= rest.join(' ')
-    form.email ||= user.value.email
-    form.phone ||= user.value.phone || ''
+    form.email ||= u.email
+    form.phone ||= u.phone || ''
+    form.company ||= u.company || ''
+    form.address ||= u.address || ''
+    form.city ||= u.city || ''
+    form.state ||= u.state || ''
+    form.zip ||= u.zip || ''
+    if (u.country) form.country = u.country
+
+    // A saved address is "complete" when the required fields are present.
+    hasSavedBilling.value = !!(form.firstName && form.lastName && form.email && form.address && form.city && form.zip)
+    editBilling.value = !hasSavedBilling.value
+  } else {
+    editBilling.value = true
   }
 })
 
@@ -62,9 +80,11 @@ async function placeOrder() {
   placeError.value = ''
   try {
     const payload = {
-      items: items.value.map((it) => (it.planId && it.planId > 0
-        ? { slug: it.slug, plan_id: it.planId, qty: it.qty }
-        : { slug: it.slug, plan_id: null, qty: it.qty, license_type: it.license })),
+      items: items.value.map((it) => (it.installationPlanId
+        ? { slug: it.slug, installation_plan_id: it.installationPlanId, qty: it.qty }
+        : it.planId && it.planId > 0
+          ? { slug: it.slug, plan_id: it.planId, qty: it.qty }
+          : { slug: it.slug, plan_id: null, qty: it.qty, license_type: it.license })),
       coupon: coupon.value || undefined,
       gateway: gatewayFor(payment.value),
       billing: {
@@ -160,11 +180,36 @@ const field = 'h-11 w-full rounded-lg border border-transparent bg-gray-100 px-4
         <div class="space-y-6">
           <!-- Billing Information -->
           <section class="rounded-2xl border border-gray-100 p-6 shadow-sm">
-            <h2 class="flex items-center gap-2 font-display text-lg font-bold text-ink-900">
-              <svg class="h-5 w-5 text-brand-600" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5" /><path stroke-linecap="round" d="M4.5 19.5a7.5 7.5 0 0 1 15 0" /></svg>
-              Billing Information
-            </h2>
-            <div class="mt-5 grid gap-4 md:grid-cols-2">
+            <div class="flex items-start justify-between gap-3">
+              <h2 class="flex items-center gap-2 font-display text-lg font-bold text-ink-900">
+                <svg class="h-5 w-5 text-brand-600" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5" /><path stroke-linecap="round" d="M4.5 19.5a7.5 7.5 0 0 1 15 0" /></svg>
+                Billing Information
+              </h2>
+              <button v-if="hasSavedBilling && editBilling" type="button" class="text-sm font-semibold text-gray-500 hover:text-ink-900" @click="editBilling = false">Use saved</button>
+            </div>
+
+            <!-- Saved address summary — shown when a complete address exists and the user hasn't chosen to edit -->
+            <div v-if="hasSavedBilling && !editBilling" class="mt-5 rounded-xl border border-gray-100 bg-gray-50/70 p-5">
+              <div class="flex items-start justify-between gap-3">
+                <div class="text-sm leading-relaxed text-ink-800">
+                  <p class="font-bold text-ink-900">{{ form.firstName }} {{ form.lastName }}</p>
+                  <p v-if="form.company" class="text-gray-500">{{ form.company }}</p>
+                  <p class="text-gray-600">{{ form.address }}</p>
+                  <p class="text-gray-600">{{ [form.city, form.state, form.zip].filter(Boolean).join(', ') }}</p>
+                  <p class="text-gray-600">{{ form.country }}</p>
+                  <p class="mt-1 text-gray-500">{{ form.email }}<span v-if="form.phone"> · {{ form.phone }}</span></p>
+                </div>
+                <span class="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-emerald-50 text-emerald-600">
+                  <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" d="m5 13 4 4L19 7" /></svg>
+                </span>
+              </div>
+              <button type="button" class="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-600 hover:text-brand-700" @click="editBilling = true">
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" d="M12 5v14M5 12h14" /></svg>
+                Use a different address
+              </button>
+            </div>
+
+            <div v-show="editBilling" class="mt-5 grid gap-4 md:grid-cols-2">
               <div>
                 <label for="fn" class="mb-1.5 block text-sm font-medium text-ink-800">First Name <span class="text-red-500">*</span></label>
                 <input id="fn" v-model="form.firstName" type="text" required autocomplete="given-name" placeholder="John" :class="field" />

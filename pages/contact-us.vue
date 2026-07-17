@@ -18,14 +18,6 @@ const salesChannels = [
   { label: 'Email', value: 'support@razinsoft.com', href: 'mailto:support@razinsoft.com', tone: 'bg-brand-600', icon: 'mail' },
 ]
 
-// Support channel buttons in the "Need Help?" card.
-const supportChannels = [
-  { label: 'WhatsApp Support', href: SALES_WA, external: true, tone: 'border-emerald-300 text-emerald-600 hover:bg-emerald-50', icon: 'wa' },
-  { label: 'Telegram Support', href: SALES_TG, external: true, tone: 'border-sky-300 text-sky-600 hover:bg-sky-50', icon: 'tg' },
-  { label: 'Email Support', href: 'mailto:support@razinsoft.com', external: true, tone: 'border-indigo-300 text-indigo-600 hover:bg-indigo-50', icon: 'mail' },
-  { label: 'Desk Support', href: '/support', external: false, tone: 'border-purple-300 text-purple-600 hover:bg-purple-50', icon: 'desk' },
-]
-
 // Brand-coloured support icons the client dropped in /public/icons.
 const iconImg: Record<string, string> = {
   wa: '/icons/Whats-App-Support.webp',
@@ -126,93 +118,77 @@ async function submit() {
         </div>
       </div>
 
-      <!-- Form + Need help -->
-      <div class="mt-8 grid gap-6 lg:grid-cols-[1fr_360px]">
-        <!-- Message form -->
-        <section class="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm sm:p-8">
-          <h2 class="font-display text-2xl font-extrabold text-ink-900">Send Us a Message</h2>
-          <p class="mt-1 text-sm text-gray-500">Fill out the form below and we'll get back to you as soon as possible.</p>
+      <!-- Message form -->
+      <section class="relative mt-8 overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
+        <span class="pointer-events-none absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-brand-500 via-brand-400 to-brand-600" aria-hidden="true" />
+        <div class="p-6 sm:p-10">
+          <div class="mx-auto max-w-2xl text-center">
+            <p class="text-sm font-bold uppercase tracking-widest text-brand-600">Get in Touch</p>
+            <h2 class="mt-2 font-display text-3xl font-extrabold text-ink-900">Send Us a Message</h2>
+            <p class="mt-2 text-sm text-gray-500">Fill out the form below and we'll get back to you within 24 hours.</p>
+            <div class="mx-auto mt-4 h-1 w-12 rounded-full bg-brand-500" />
+          </div>
 
-          <form class="mt-6 space-y-4" @submit.prevent="submit">
-            <div class="grid gap-4 sm:grid-cols-2">
-              <label class="relative block">
-                <input v-model="form.name" type="text" required placeholder="Full Name *" class="w-full rounded-lg border border-gray-200 px-4 py-3 pr-10 text-sm text-ink-800 placeholder-gray-400 focus:border-brand-400 focus:outline-none focus:ring-1 focus:ring-brand-200">
-                <svg class="pointer-events-none absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-300" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5" /><path stroke-linecap="round" d="M4.5 19.5a7.5 7.5 0 0 1 15 0" /></svg>
+          <form class="mx-auto mt-8 max-w-3xl space-y-5" @submit.prevent="submit">
+            <div class="grid gap-5 sm:grid-cols-2">
+              <label class="block">
+                <span class="mb-1.5 block text-sm font-semibold text-ink-800">Full Name <span class="text-red-500">*</span></span>
+                <div class="relative">
+                  <input v-model="form.name" type="text" required placeholder="e.g. John Doe" class="h-12 w-full rounded-xl border border-gray-200 px-4 pr-10 text-sm text-ink-800 placeholder-gray-400 focus:border-brand-400 focus:outline-none focus:ring-1 focus:ring-brand-200">
+                  <svg class="pointer-events-none absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-300" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5" /><path stroke-linecap="round" d="M4.5 19.5a7.5 7.5 0 0 1 15 0" /></svg>
+                </div>
               </label>
-              <label class="relative block">
-                <input v-model="form.email" type="email" required placeholder="Your Email *" class="w-full rounded-lg border border-gray-200 px-4 py-3 pr-10 text-sm text-ink-800 placeholder-gray-400 focus:border-brand-400 focus:outline-none focus:ring-1 focus:ring-brand-200">
-                <svg class="pointer-events-none absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-300" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2" /><path stroke-linecap="round" d="m3.5 6.5 8.5 6 8.5-6" /></svg>
+              <label class="block">
+                <span class="mb-1.5 block text-sm font-semibold text-ink-800">Your Email <span class="text-red-500">*</span></span>
+                <div class="relative">
+                  <input v-model="form.email" type="email" required placeholder="e.g. john@company.com" class="h-12 w-full rounded-xl border border-gray-200 px-4 pr-10 text-sm text-ink-800 placeholder-gray-400 focus:border-brand-400 focus:outline-none focus:ring-1 focus:ring-brand-200">
+                  <svg class="pointer-events-none absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-300" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2" /><path stroke-linecap="round" d="m3.5 6.5 8.5 6 8.5-6" /></svg>
+                </div>
+              </label>
+              <label class="block">
+                <span class="mb-1.5 block text-sm font-semibold text-ink-800">Phone Number <span class="font-normal text-gray-400">(preferably WhatsApp)</span></span>
+                <div class="relative">
+                  <input v-model="form.phone" type="text" placeholder="e.g. +880 1711-000000" class="h-12 w-full rounded-xl border border-gray-200 px-4 pr-10 text-sm text-ink-800 placeholder-gray-400 focus:border-brand-400 focus:outline-none focus:ring-1 focus:ring-brand-200">
+                  <svg class="pointer-events-none absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-300" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 11.5a8.4 8.4 0 0 1-9 8.4L3 21l1.1-3.3A8.4 8.4 0 1 1 21 11.5Z" /></svg>
+                </div>
+              </label>
+              <label class="block">
+                <span class="mb-1.5 block text-sm font-semibold text-ink-800">Company Name</span>
+                <div class="relative">
+                  <input v-model="form.company" type="text" placeholder="e.g. Acme Inc." class="h-12 w-full rounded-xl border border-gray-200 px-4 pr-10 text-sm text-ink-800 placeholder-gray-400 focus:border-brand-400 focus:outline-none focus:ring-1 focus:ring-brand-200">
+                  <svg class="pointer-events-none absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-300" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 21h18M6 21V7l7-4 7 4v14M9 9h.01M9 13h.01M9 17h.01" /></svg>
+                </div>
+              </label>
+              <label class="block">
+                <span class="mb-1.5 block text-sm font-semibold text-ink-800">Service <span class="text-red-500">*</span></span>
+                <select v-model="form.service" required class="h-12 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm focus:border-brand-400 focus:outline-none focus:ring-1 focus:ring-brand-200" :class="form.service ? 'text-ink-800' : 'text-gray-400'">
+                  <option value="" disabled>Select a service</option>
+                  <option v-for="s in services" :key="s" :value="s" class="text-ink-800">{{ s }}</option>
+                </select>
+              </label>
+              <label class="block">
+                <span class="mb-1.5 block text-sm font-semibold text-ink-800">Budget Range <span class="text-red-500">*</span></span>
+                <select v-model="form.budget" required class="h-12 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm focus:border-brand-400 focus:outline-none focus:ring-1 focus:ring-brand-200" :class="form.budget ? 'text-ink-800' : 'text-gray-400'">
+                  <option value="" disabled>Select a budget range</option>
+                  <option v-for="b in budgets" :key="b" :value="b" class="text-ink-800">{{ b }}</option>
+                </select>
               </label>
             </div>
-            <div class="grid gap-4 sm:grid-cols-2">
-              <label class="relative block">
-                <input v-model="form.phone" type="text" placeholder="Phone Number (Preferable WhatsApp)" class="w-full rounded-lg border border-gray-200 px-4 py-3 pr-10 text-sm text-ink-800 placeholder-gray-400 focus:border-brand-400 focus:outline-none focus:ring-1 focus:ring-brand-200">
-                <svg class="pointer-events-none absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-300" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 11.5a8.4 8.4 0 0 1-9 8.4L3 21l1.1-3.3A8.4 8.4 0 1 1 21 11.5Z" /></svg>
-              </label>
-              <label class="relative block">
-                <input v-model="form.company" type="text" placeholder="Company Name" class="w-full rounded-lg border border-gray-200 px-4 py-3 pr-10 text-sm text-ink-800 placeholder-gray-400 focus:border-brand-400 focus:outline-none focus:ring-1 focus:ring-brand-200">
-                <svg class="pointer-events-none absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-300" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 21h18M6 21V7l7-4 7 4v14M9 9h.01M9 13h.01M9 17h.01" /></svg>
-              </label>
-            </div>
-            <div class="grid gap-4 sm:grid-cols-2">
-              <select v-model="form.service" required class="w-full rounded-lg border border-gray-200 px-4 py-3 text-sm text-ink-800 focus:border-brand-400 focus:outline-none focus:ring-1 focus:ring-brand-200" :class="form.service ? '' : 'text-gray-400'">
-                <option value="" disabled>Select Service *</option>
-                <option v-for="s in services" :key="s" :value="s" class="text-ink-800">{{ s }}</option>
-              </select>
-              <select v-model="form.budget" required class="w-full rounded-lg border border-gray-200 px-4 py-3 text-sm text-ink-800 focus:border-brand-400 focus:outline-none focus:ring-1 focus:ring-brand-200" :class="form.budget ? '' : 'text-gray-400'">
-                <option value="" disabled>Select Budget Range *</option>
-                <option v-for="b in budgets" :key="b" :value="b" class="text-ink-800">{{ b }}</option>
-              </select>
-            </div>
-            <textarea v-model="form.message" required rows="5" placeholder="Project Details *" class="w-full resize-none rounded-lg border border-gray-200 px-4 py-3 text-sm text-ink-800 placeholder-gray-400 focus:border-brand-400 focus:outline-none focus:ring-1 focus:ring-brand-200" />
 
-            <div class="flex flex-wrap items-center gap-4">
-              <button type="submit" :disabled="!canSend || sending" class="inline-flex items-center gap-2 rounded-lg bg-brand-600 px-6 py-3 text-sm font-bold text-white transition hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-60">
+            <label class="block">
+              <span class="mb-1.5 block text-sm font-semibold text-ink-800">Project Details <span class="text-red-500">*</span></span>
+              <textarea v-model="form.message" required rows="5" placeholder="Tell us a little about your project…" class="w-full resize-none rounded-xl border border-gray-200 px-4 py-3 text-sm text-ink-800 placeholder-gray-400 focus:border-brand-400 focus:outline-none focus:ring-1 focus:ring-brand-200" />
+            </label>
+
+            <div class="flex justify-end pt-1">
+              <button type="submit" :disabled="!canSend || sending" class="inline-flex h-12 items-center gap-2 rounded-xl bg-brand-600 px-8 text-sm font-bold text-white shadow-sm transition hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-60">
                 <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m22 2-7 20-4-9-9-4 20-7Z" /></svg>
-                {{ sending ? 'Sending…' : 'SEND MESSAGE' }}
+                {{ sending ? 'Sending…' : 'Send Message' }}
               </button>
-              <span class="inline-flex items-center gap-1.5 text-sm text-gray-500">
-                <svg class="h-4 w-4 text-brand-600" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3 4.5 6v5c0 4.5 3 7.5 7.5 9 4.5-1.5 7.5-4.5 7.5-9V6L12 3Z" /><path stroke-linecap="round" stroke-linejoin="round" d="m9.5 12 1.8 1.8L15 10" /></svg>
-                Your information is secure and confidential.
-              </span>
             </div>
           </form>
-        </section>
-
-        <!-- Need help -->
-        <aside class="h-fit rounded-2xl border border-gray-100 bg-[#f4f6fb] p-6 sm:p-8">
-          <span class="grid h-14 w-14 place-items-center rounded-full bg-indigo-100 text-indigo-600" aria-hidden="true">
-            <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 14v-2a8 8 0 0 1 16 0v2M20 15a2 2 0 0 1-2 2h-1v-5h1a2 2 0 0 1 2 2ZM4 15a2 2 0 0 1 2-2h1v5H6a2 2 0 0 1-2-2ZM18 17a4 4 0 0 1-4 3h-2" /></svg>
-          </span>
-          <h3 class="mt-5 font-display text-2xl font-extrabold text-ink-900">Need Help?</h3>
-          <p class="mt-2 max-w-[220px] font-display text-lg font-bold leading-snug text-ink-900">Our support team is ready to help you.</p>
-          <div class="mt-4 h-1 w-12 rounded-full bg-brand-500" />
-          <p class="mt-4 max-w-[240px] text-sm leading-relaxed text-gray-600">Choose your preferred support channel to get instant assistance.</p>
-
-          <div class="mt-6 space-y-3">
-            <template v-for="ch in supportChannels" :key="ch.label">
-              <a
-                v-if="ch.external"
-                :href="ch.href" target="_blank" rel="noopener noreferrer"
-                class="flex w-full items-center justify-center gap-2 rounded-xl border bg-white px-5 py-3 text-sm font-bold transition" :class="ch.tone"
-              >
-                <img :src="iconImg[ch.icon]" alt="" class="h-5 w-5 shrink-0 object-contain" width="20" height="20">
-                {{ ch.label }}
-                <svg class="h-3.5 w-3.5 shrink-0 opacity-60" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5h5v5m0-5L9 15m-2-8H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-1" /></svg>
-              </a>
-              <NuxtLink
-                v-else
-                :to="ch.href"
-                class="flex w-full items-center justify-center gap-2 rounded-xl border bg-white px-5 py-3 text-sm font-bold transition" :class="ch.tone"
-              >
-                <img :src="iconImg[ch.icon]" alt="" class="h-5 w-5 shrink-0 object-contain" width="20" height="20">
-                {{ ch.label }}
-                <svg class="h-3.5 w-3.5 shrink-0 opacity-60" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5h5v5m0-5L9 15m-2-8H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-1" /></svg>
-              </NuxtLink>
-            </template>
-          </div>
-        </aside>
-      </div>
+        </div>
+      </section>
 
       <!-- Stats -->
       <div class="mt-8 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm sm:p-8">

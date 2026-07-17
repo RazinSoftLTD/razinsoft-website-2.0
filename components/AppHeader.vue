@@ -4,7 +4,15 @@ type NavItem = { label: string; to?: string; caret?: boolean; menu?: MenuItem[] 
 
 const nav: NavItem[] = [
   { label: 'Products', to: '/products', caret: false },
-  { label: 'Services', to: '/#services', caret: true },
+  {
+    label: 'Services',
+    caret: true,
+    menu: [
+      { title: 'Installation', desc: 'Get your product set up and live by our experts.', to: '/services/installation', tone: 'bg-emerald-50 text-emerald-600', arrow: 'text-emerald-500', icon: ['M12 3v12', 'm8 11 4 4 4-4', 'M4 15v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4'] },
+      { title: 'Customisation', desc: 'Tailor features, design and workflows to your needs.', to: '/services/customization', tone: 'bg-indigo-50 text-indigo-600', arrow: 'text-indigo-500', icon: ['M14.6 6.4a3.5 3.5 0 0 0-4.8 4.2L4 16.4V20h3.6l5.8-5.8a3.5 3.5 0 0 0 4.2-4.8l-2.3 2.3-2-.5-.5-2 2.3-2.3Z'] },
+      { title: 'Maintenance Services', desc: 'Ongoing support, updates and monitoring for peace of mind.', to: '/services/maintenance', tone: 'bg-amber-50 text-amber-600', arrow: 'text-amber-500', icon: ['M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z', 'M12 2.5v2M12 19.5v2M4.5 12h-2M21.5 12h-2M6 6 4.6 4.6M19.4 19.4 18 18M18 6l1.4-1.4M4.6 19.4 6 18'] },
+    ],
+  },
   {
     label: 'Company',
     caret: true,

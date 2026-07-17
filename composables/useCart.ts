@@ -5,9 +5,10 @@ export interface CartItem {
   name: string
   image?: string
   version?: string
-  label: string // "Regular License" | "Extended License" | plan name
+  label: string // "Regular License" | "Extended License" | plan name | "Installation: Basic"
   unitPrice: number // snapshot price captured at add time
   planId?: number | null // set when added from a pricing plan
+  installationPlanId?: number | null // set when added as an installation service
   license?: License | null // set when added as a regular/extended license
   qty: number
 }
@@ -22,11 +23,15 @@ export interface AddToCartInput {
   license?: License
   planId?: number
   planName?: string
+  installationPlanId?: number
+  installationPlanName?: string
 }
 
-// A line is unique per product + (plan OR license tier).
-const lineKey = (i: { slug: string; planId?: number | null; license?: License | null }) =>
-  `${i.slug}:${i.planId ?? i.license ?? 'regular'}`
+// A line is unique per product + (installation plan OR pricing plan OR license tier).
+const lineKey = (i: { slug: string; planId?: number | null; installationPlanId?: number | null; license?: License | null }) =>
+  i.installationPlanId
+    ? `${i.slug}:inst${i.installationPlanId}`
+    : `${i.slug}:${i.planId ?? i.license ?? 'regular'}`
 
 /**
  * Shared, reactive shopping-cart state (Nuxt useState → SSR-safe + shared across pages).
@@ -63,12 +68,15 @@ export function useCart() {
   }
 
   function addItem(input: AddToCartInput) {
-    const license: License | null = input.planId ? null : (input.license ?? 'regular')
-    const label = input.planId
-      ? (input.planName || 'Plan')
-      : (license === 'extended' ? 'Extended License' : 'Regular License')
+    const isInstall = !!input.installationPlanId
+    const license: License | null = (input.planId || isInstall) ? null : (input.license ?? 'regular')
+    const label = isInstall
+      ? `Installation: ${input.installationPlanName || 'Plan'}`
+      : input.planId
+        ? (input.planName || 'Plan')
+        : (license === 'extended' ? 'Extended License' : 'Regular License')
 
-    const key = lineKey({ slug: input.slug, planId: input.planId ?? null, license })
+    const key = lineKey({ slug: input.slug, planId: input.planId ?? null, installationPlanId: input.installationPlanId ?? null, license })
     const existing = items.value.find((i) => lineKey(i) === key)
     if (existing) {
       existing.qty++
@@ -81,6 +89,7 @@ export function useCart() {
         label,
         unitPrice: input.unitPrice,
         planId: input.planId ?? null,
+        installationPlanId: input.installationPlanId ?? null,
         license,
         qty: 1,
       })
