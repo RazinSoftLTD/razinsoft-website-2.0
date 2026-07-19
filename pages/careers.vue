@@ -13,18 +13,16 @@ const perks = [
   { title: 'Impact', desc: 'Ship products used by 50,000+ businesses across 40+ countries.', tone: 'bg-sky-50 text-sky-600', paths: ['M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Z', 'M3 12h18M12 3c2.5 2.5 2.5 15 0 18M12 3c-2.5 2.5-2.5 15 0 18'] },
 ]
 
-const roles = [
-  { title: 'Senior Full-Stack Engineer', dept: 'Engineering', type: 'Full-time', location: 'Dhaka / Remote' },
-  { title: 'Flutter Mobile Developer', dept: 'Engineering', type: 'Full-time', location: 'Dhaka / Remote' },
-  { title: 'Product Designer (UI/UX)', dept: 'Design', type: 'Full-time', location: 'Dhaka / Hybrid' },
-  { title: 'DevOps Engineer', dept: 'Infrastructure', type: 'Full-time', location: 'Dhaka / Remote' },
-  { title: 'Business Development Manager', dept: 'Sales', type: 'Full-time', location: 'Dhaka' },
-  { title: 'Customer Support Specialist', dept: 'Support', type: 'Full-time', location: 'Dhaka / Remote' },
-]
+// Live openings from the Laravel API — ONLY roles an admin has explicitly published
+// appear here (drafts stay internal), so nothing goes public until it's verified.
+const { $api } = useNuxtApp()
+const { data: res } = await useAsyncData('jobs', () => $api<any>('/jobs'))
+const roles = computed<any[]>(() => res.value?.data ?? [])
 
 const deptTone: Record<string, string> = {
   Engineering: 'bg-blue-50 text-blue-700', Design: 'bg-purple-50 text-purple-700', Infrastructure: 'bg-emerald-50 text-emerald-700', Sales: 'bg-orange-50 text-orange-700', Support: 'bg-rose-50 text-rose-700',
 }
+const toneFor = (dept: string) => deptTone[dept] || 'bg-gray-100 text-gray-600'
 </script>
 
 <template>
@@ -70,22 +68,34 @@ const deptTone: Record<string, string> = {
           <p class="text-xs font-bold uppercase tracking-widest text-brand-600">Open Positions</p>
           <h2 class="mt-2 font-display text-3xl font-extrabold text-ink-900 lg:text-4xl">Find your role</h2>
         </div>
-        <div class="mx-auto mt-12 max-w-3xl space-y-4">
-          <div v-for="r in roles" :key="r.title" class="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-gray-100 bg-white p-5 shadow-sm transition hover:shadow-md">
+        <div v-if="roles.length" class="mx-auto mt-12 max-w-3xl space-y-4">
+          <div v-for="r in roles" :key="r.id" class="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-gray-100 bg-white p-5 shadow-sm transition hover:shadow-md">
             <div class="min-w-0">
               <h3 class="font-display text-lg font-bold text-ink-900">{{ r.title }}</h3>
               <div class="mt-1.5 flex flex-wrap items-center gap-2 text-xs">
-                <span class="rounded-full px-2.5 py-1 font-semibold" :class="deptTone[r.dept]">{{ r.dept }}</span>
+                <span v-if="r.department" class="rounded-full px-2.5 py-1 font-semibold" :class="toneFor(r.department)">{{ r.department }}</span>
                 <span class="text-gray-400">{{ r.type }}</span>
-                <span class="text-gray-300">·</span>
-                <span class="text-gray-400">{{ r.location }}</span>
+                <template v-if="r.location"><span class="text-gray-300">·</span><span class="text-gray-400">{{ r.location }}</span></template>
               </div>
             </div>
-            <NuxtLink :to="`/contact-us?role=${encodeURIComponent(r.title)}`" class="btn border border-brand-200 bg-brand-50 text-brand-700 hover:bg-brand-100">Apply
+            <a v-if="r.apply_url" :href="r.apply_url" target="_blank" rel="noopener" class="btn border border-brand-200 bg-brand-50 text-brand-700 hover:bg-brand-100">Apply
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6" /></svg>
+            </a>
+            <NuxtLink v-else :to="`/contact-us?role=${encodeURIComponent(r.title)}`" class="btn border border-brand-200 bg-brand-50 text-brand-700 hover:bg-brand-100">Apply
               <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6" /></svg>
             </NuxtLink>
           </div>
         </div>
+
+        <!-- Empty state — no roles are published right now. -->
+        <div v-else class="mx-auto mt-12 max-w-xl rounded-2xl border border-dashed border-gray-200 bg-white p-10 text-center">
+          <span class="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-brand-50 text-brand-600">
+            <svg class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7H4a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1ZM8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /></svg>
+          </span>
+          <h3 class="mt-4 font-display text-lg font-bold text-ink-900">No open positions right now</h3>
+          <p class="mt-2 text-sm text-gray-600">We're not actively hiring at the moment, but we're always keen to meet great people.</p>
+        </div>
+
         <p class="mt-8 text-center text-sm text-gray-500">Don't see your role? <NuxtLink to="/contact-us" class="font-semibold text-brand-600 hover:underline">Send us your CV</NuxtLink> — we're always looking for great people.</p>
       </div>
     </section>

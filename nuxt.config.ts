@@ -109,7 +109,9 @@ export default defineNuxtConfig({
     '/register': { prerender: true },
     '/contact-us': { prerender: true },
     '/about-us': { prerender: true },
-    '/careers': { prerender: true },
+    // Careers renders live (published openings come from the API) — SSR + short cache,
+    // so a newly published/unpublished role shows up within a few minutes without a rebuild.
+    '/careers': { swr: 180, headers: { 'cache-control': 'public, max-age=0, must-revalidate, s-maxage=180, stale-while-revalidate=600' } },
     '/life': { prerender: true },
     '/support': { prerender: true },
     '/privacy-policy': { prerender: true },
