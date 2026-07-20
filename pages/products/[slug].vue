@@ -233,6 +233,8 @@ const demoLinks = computed(() => {
         subtitle: d.subtitle || '',
         badge: d.badge || preset.badge,
         tone: preset.tone,
+        // Admin-set per-card background (blank → keep the type's gradient preset).
+        bg: /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(d.bg_color || '') ? d.bg_color : '',
         icon: d.icon || '', // uploaded icon image; empty → fall back to the preset SVG
         paths: preset.paths,
         url: d.url || '',
@@ -249,12 +251,6 @@ const demoLinks = computed(() => {
     'iOS App': demo.ios,
   }
   return tryItLive.map((c) => ({ ...c, url: byTitle[c.title] || demo.live || '' })).filter((c) => c.url)
-})
-
-// Admin-controlled background colour for the "Try It Live" section (blank = default).
-const tryItLiveBg = computed(() => {
-  const c = api.value?.try_it_live_bg
-  return c && /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(c) ? c : ''
 })
 
 // Balance the Try It Live grid to the card count: 6→3/row, 8→4/row, 4→4/row, 3→3/row, else 4.
@@ -529,11 +525,11 @@ const { addItem } = useCart()
         </section>
 
         <!-- Try It Live -->
-        <section v-if="demoLinks.length" id="try-it-live" ref="tryItLiveEl" aria-labelledby="tryit-h" class="scroll-mt-24 rounded-3xl px-4 py-6 text-center transition-colors" :class="{ 'demo-highlight': demoHighlight }" :style="tryItLiveBg ? { backgroundColor: tryItLiveBg } : {}">
+        <section v-if="demoLinks.length" id="try-it-live" ref="tryItLiveEl" aria-labelledby="tryit-h" class="scroll-mt-24 rounded-3xl px-4 py-6 text-center transition-colors" :class="{ 'demo-highlight': demoHighlight }">
           <h2 id="tryit-h" class="font-display text-3xl font-extrabold text-ink-900">Try It Live</h2>
           <p class="mt-2 text-gray-600">Experience the product with live demos and mobile apps</p>
           <div class="mx-auto mt-8 grid max-w-5xl gap-4" :class="demoGridClass">
-            <a v-for="card in demoLinks" :key="card.title" :href="card.url || undefined" :target="card.url ? '_blank' : undefined" :rel="card.url ? 'noopener noreferrer' : undefined" :aria-disabled="!card.url" class="relative flex flex-col items-center gap-3 rounded-2xl bg-gradient-to-br p-6 text-white shadow-sm transition hover:shadow-lg" :class="[card.tone, !card.url && 'cursor-not-allowed opacity-60']">
+            <a v-for="card in demoLinks" :key="card.title" :href="card.url || undefined" :target="card.url ? '_blank' : undefined" :rel="card.url ? 'noopener noreferrer' : undefined" :aria-disabled="!card.url" class="relative flex flex-col items-center gap-3 rounded-2xl p-6 text-white shadow-sm transition hover:shadow-lg" :class="[card.bg ? '' : 'bg-gradient-to-br ' + card.tone, !card.url && 'cursor-not-allowed opacity-60']" :style="card.bg ? { backgroundColor: card.bg } : {}">
               <span class="absolute right-3 top-3 rounded-full bg-white/20 px-2 py-0.5 text-[10px] font-bold">{{ card.badge }}</span>
               <span class="grid h-12 w-12 place-items-center rounded-xl bg-white/20" aria-hidden="true">
                 <!-- Uploaded icon if set (and not broken), otherwise fall back to the type preset SVG -->
