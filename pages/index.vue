@@ -276,8 +276,8 @@ const posts = computed(() =>
           :to="`/blog/${post.slug}`"
           class="group flex cursor-pointer flex-col overflow-hidden rounded-2xl border border-border/60 bg-white transition-all duration-300 hover:border-primary/20 hover:shadow-lg"
         >
-          <div class="relative aspect-[3/2] overflow-hidden bg-gray-100">
-            <NuxtImg :src="post.image" :alt="post.title" width="600" height="400" sizes="100vw sm:50vw lg:384px" format="webp" loading="lazy" class="h-full w-full object-contain transition-transform duration-500 group-hover:scale-[1.02]" />
+          <div class="relative aspect-video overflow-hidden bg-gray-100">
+            <NuxtImg :src="post.image" :alt="post.title" width="600" height="400" sizes="100vw sm:50vw lg:384px" format="webp" loading="lazy" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" />
             <div class="absolute left-3 top-3">
               <span class="rounded-full px-2.5 py-1 text-[10px] font-bold" :class="post.tagTone">{{ post.tag }}</span>
             </div>

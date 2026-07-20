@@ -160,8 +160,8 @@ const showFeatured = computed(() => featured.value && activeCategory.value === '
             </div>
             <NuxtLink :to="`/blog/${featured.slug}`" class="group block cursor-pointer overflow-hidden rounded-2xl border border-border bg-white transition-shadow hover:shadow-lg">
               <div class="grid gap-0 md:grid-cols-2">
-                <div class="relative h-80 overflow-hidden bg-gray-50 md:h-auto">
-                  <img :src="featured.image" :alt="featured.title" class="h-full w-full object-contain transition-transform duration-500 group-hover:scale-[1.02]">
+                <div class="relative aspect-video overflow-hidden bg-gray-50 md:h-full">
+                  <img :src="featured.image" :alt="featured.title" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105">
                   <span class="absolute left-4 top-4 rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground">{{ featured.category }}</span>
                 </div>
                 <div class="flex flex-col justify-center p-8">
@@ -197,8 +197,8 @@ const showFeatured = computed(() => featured.value && activeCategory.value === '
                 :to="`/blog/${a.slug}`"
                 class="group block cursor-pointer overflow-hidden rounded-xl border border-border bg-white transition-all hover:shadow-lg"
               >
-                <div class="relative aspect-[3/2] overflow-hidden bg-gray-50">
-                  <img :src="a.image" :alt="a.title" class="h-full w-full object-contain transition-transform duration-500 group-hover:scale-[1.02]">
+                <div class="relative aspect-video overflow-hidden bg-gray-50">
+                  <img :src="a.image" :alt="a.title" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105">
                   <span class="absolute left-4 top-4 rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground">{{ a.category }}</span>
                 </div>
                 <div class="p-6">
