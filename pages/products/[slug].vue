@@ -546,11 +546,11 @@ const { addItem } = useCart()
         <section id="license-plans" ref="plansEl" aria-labelledby="pricing-h" class="scroll-mt-24 rounded-3xl px-4 py-6 text-center transition-colors" :class="{ 'demo-highlight': plansHighlight }">
           <h2 id="pricing-h" class="font-display text-3xl font-extrabold text-ink-900">Lifetime License Plans</h2>
           <p class="mt-2 text-gray-600">One-time payment, lifetime access with no recurring fees</p>
-          <div class="mt-10 grid items-stretch gap-6 text-left lg:grid-cols-3">
+          <div class="mx-auto mt-10 flex max-w-5xl flex-wrap items-stretch justify-center gap-6 text-left">
             <article
               v-for="tier in tiers"
               :key="tier.name"
-              class="relative flex h-full flex-col rounded-2xl p-7 shadow-sm"
+              class="relative flex h-full w-full flex-col rounded-2xl p-7 shadow-sm sm:w-80"
               :class="tier.popular ? 'bg-ink-900 text-white shadow-xl ring-1 ring-brand-500/40' : 'border border-gray-100 bg-white'"
             >
               <span v-if="tier.popular" class="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-brand-600 px-4 py-1 text-[11px] font-bold uppercase tracking-wide text-white">Most Popular</span>
