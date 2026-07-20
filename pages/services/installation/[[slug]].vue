@@ -23,9 +23,18 @@ function buyPlan(product: Product, plan: Plan) {
   router.push('/cart')
 }
 
-const activeId = ref<number | null>(null)
-watchEffect(() => { if (activeId.value === null && products.value.length) activeId.value = products.value[0].id })
-const active = computed(() => products.value.find(p => p.id === activeId.value) ?? null)
+// The chosen product lives in the URL: /services/installation/<slug>
+const route = useRoute()
+const routeSlug = computed(() => (route.params.slug as string | undefined) || '')
+const active = computed(() =>
+  products.value.find(p => p.slug === routeSlug.value) ?? products.value[0] ?? null,
+)
+
+function selectProduct(p: Product) {
+  if (p.slug === active.value?.slug) return
+  router.push(`/services/installation/${p.slug}`)
+}
+
 
 const money = (n: number, cur = 'USD') => (cur === 'USD' ? '$' : cur + ' ') + Number(n).toLocaleString(undefined, { maximumFractionDigits: 2 })
 
@@ -50,9 +59,20 @@ const steps = [
   { title: 'Go live', desc: 'We test every flow and hand you a live, working product.' },
 ]
 
+// Title and description follow the product in the URL, so each one is its own page.
 useSeoMeta({
-  title: 'Installation Plans — Expert Setup & Configuration | RazinSoft',
-  description: 'Choose an installation plan for your RazinSoft product. Our engineers install, configure, brand and publish your web admin, apps and website — done right, the first time.',
+  title: () => active.value
+    ? `${active.value.name} Installation Plans — Expert Setup & Configuration | RazinSoft`
+    : 'Installation Plans — Expert Setup & Configuration | RazinSoft',
+  description: () => active.value
+    ? `Installation plans for ${active.value.name}. Our engineers install, configure, brand and publish your web admin, apps and website — done right, the first time.`
+    : 'Choose an installation plan for your RazinSoft product. Our engineers install, configure, brand and publish your web admin, apps and website — done right, the first time.',
+})
+
+useHead({
+  link: () => active.value
+    ? [{ rel: 'canonical', href: `https://razinsoft.com/services/installation/${active.value.slug}` }]
+    : [],
 })
 </script>
 
@@ -78,12 +98,12 @@ useSeoMeta({
         <p class="mb-4 text-center text-sm font-semibold text-gray-500">Select your product</p>
         <div class="flex flex-wrap justify-center gap-3">
           <button
-            v-for="p in products" :key="p.id" type="button" @click="activeId = p.id"
+            v-for="p in products" :key="p.id" type="button" @click="selectProduct(p)"
             class="group inline-flex items-center gap-2.5 rounded-xl border px-4 py-2.5 text-sm font-bold transition"
-            :class="p.id === activeId ? 'border-brand-400 bg-brand-50 text-brand-700 ring-1 ring-brand-200 shadow-sm' : 'border-gray-200 bg-white text-ink-700 hover:border-brand-200 hover:bg-gray-50'"
+            :class="p.id === active?.id ? 'border-brand-400 bg-brand-50 text-brand-700 ring-1 ring-brand-200 shadow-sm' : 'border-gray-200 bg-white text-ink-700 hover:border-brand-200 hover:bg-gray-50'"
           >
             <img v-if="p.thumbnail && !brokenThumbs.has(p.id)" :src="p.thumbnail" :alt="p.name" class="h-7 w-7 rounded-lg object-cover" @error="onThumbError(p.id)">
-            <span v-else class="grid h-7 w-7 place-items-center rounded-lg text-[11px] font-bold" :class="p.id === activeId ? 'bg-brand-100 text-brand-700' : 'bg-gray-100 text-gray-500'">{{ p.name.slice(0, 2) }}</span>
+            <span v-else class="grid h-7 w-7 place-items-center rounded-lg text-[11px] font-bold" :class="p.id === active?.id ? 'bg-brand-100 text-brand-700' : 'bg-gray-100 text-gray-500'">{{ p.name.slice(0, 2) }}</span>
             {{ p.name }}
           </button>
         </div>

@@ -76,16 +76,22 @@ const posts = computed(() =>
       <p class="mt-6 max-w-lg text-lg leading-relaxed text-gray-600">
         RazinSoft builds ready and custom software solutions for eCommerce, LMS, POS, transportation, and more  — trusted by 25+ countries. 
       </p>
-      <NuxtLink to="/book-a-meeting" class="btn-dark mt-8 uppercase tracking-wide">
+      <NuxtLink to="/book-a-meeting" class="btn-brand mt-8 shadow-lg shadow-brand-600/20">
         Book a Free Consultation
         <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6" /></svg>
       </NuxtLink>
 
-      <dl class="mt-10 flex flex-wrap items-center gap-8 sm:gap-12">
-        <div v-for="r in reviews" :key="r.brand">
-          <dt class="sr-only">{{ r.brand }} — reviews {{ r.score }}</dt>
+      <dl class="mt-8 grid max-w-md grid-cols-3 divide-x divide-gray-100 rounded-2xl border border-gray-100 bg-white px-2 py-7 shadow-sm sm:px-4">
+        <div v-for="r in reviews" :key="r.brand" class="flex items-center justify-center px-2 sm:px-4">
+          <dt class="sr-only">{{ r.brand }} — rated {{ r.score }} out of 5</dt>
           <dd>
-            <img :src="r.img" :alt="`${r.brand} rating ${r.score} out of 5`" class="h-20 w-auto" width="100" height="80" loading="lazy">
+            <!-- Source files are 150x57. Fixed width (not w-full) = no reflow on load. -->
+            <img
+              :src="r.img" :alt="`${r.brand} rating ${r.score} out of 5`"
+              width="150" height="57" loading="lazy" decoding="async"
+              class="w-20"
+              style="height: auto;"
+            >
           </dd>
         </div>
       </dl>
@@ -93,14 +99,34 @@ const posts = computed(() =>
 
     <!-- Two overlapping image cards with floating stat badges -->
     <div class="relative mx-auto w-full max-w-md lg:max-w-none">
-      <div class="relative ml-auto w-[82%]">
+      <!-- Decorative dot grids tucked behind the image corners (top-left + bottom-right) -->
+      <!-- Left grid: tall, on the left above the "Countries Served" (bottom-left) image -->
+      <svg class="pointer-events-none absolute left-[8%] top-[22%] z-0 hidden h-40 w-16 -translate-y-1/2 text-brand-400/40 lg:block" aria-hidden="true">
+        <defs>
+          <pattern id="hero-dots-left" width="18" height="18" patternUnits="userSpaceOnUse">
+            <circle cx="2" cy="2" r="1.6" fill="currentColor" />
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#hero-dots-left)" />
+      </svg>
+      <!-- Right grid: centred on the right edge of the "Tech Professionals" (top-right) image -->
+      <svg class="pointer-events-none absolute right-0 top-[28%] z-0 hidden h-32 w-20 -translate-y-1/2 translate-x-[115%] text-brand-400/40 lg:block" aria-hidden="true">
+        <defs>
+          <pattern id="hero-dots-right" width="18" height="18" patternUnits="userSpaceOnUse">
+            <circle cx="2" cy="2" r="1.6" fill="currentColor" />
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#hero-dots-right)" />
+      </svg>
+
+      <div class="relative z-10 ml-auto w-[82%]">
         <NuxtImg src="/images/razinsoft-team-focus-hero-image.webp" alt="The RazinSoft team is dedicated to working" width="520" height="360" sizes="100vw lg:520px" format="webp" loading="eager" fetchpriority="high" preload class="aspect-[13/9] w-full rounded-3xl bg-gray-100 object-cover shadow-xl" />
         <div class="absolute left-4 top-4 rounded-2xl bg-white/95 px-4 py-2.5 shadow-lg backdrop-blur">
           <p class="font-display text-2xl font-extrabold text-ink-900">35+</p>
           <p class="text-xs text-gray-500">Tech Professionals</p>
         </div>
       </div>
-      <div class="relative -mt-14 w-[72%]">
+      <div class="relative z-10 -mt-14 w-[72%]">
         <NuxtImg src="/images/razinsoft-resolving-issue-together.webp" alt="RazinSoft team is resolving their issues together" width="420" height="300" sizes="100vw lg:420px" format="webp" loading="lazy" fetchpriority="low" class="aspect-[7/5] w-full rounded-3xl border-4 border-white bg-gray-100 object-cover shadow-xl" />
         <div class="absolute left-4 top-4 rounded-2xl bg-white/95 px-4 py-2.5 shadow-lg backdrop-blur">
           <p class="font-display text-2xl font-extrabold text-ink-900">25+</p>
@@ -250,8 +276,8 @@ const posts = computed(() =>
           :to="`/blog/${post.slug}`"
           class="group flex cursor-pointer flex-col overflow-hidden rounded-2xl border border-border/60 bg-white transition-all duration-300 hover:border-primary/20 hover:shadow-lg"
         >
-          <div class="relative overflow-hidden bg-muted">
-            <NuxtImg :src="post.image" :alt="post.title" width="600" height="400" sizes="100vw sm:50vw lg:384px" format="webp" loading="lazy" class="h-44 w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+          <div class="relative aspect-[3/2] overflow-hidden bg-gray-100">
+            <NuxtImg :src="post.image" :alt="post.title" width="600" height="400" sizes="100vw sm:50vw lg:384px" format="webp" loading="lazy" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" />
             <div class="absolute left-3 top-3">
               <span class="rounded-full px-2.5 py-1 text-[10px] font-bold" :class="post.tagTone">{{ post.tag }}</span>
             </div>
