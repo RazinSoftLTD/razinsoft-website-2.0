@@ -550,7 +550,7 @@ const { addItem } = useCart()
             <article
               v-for="tier in tiers"
               :key="tier.name"
-              class="relative flex h-full w-full flex-col rounded-2xl p-7 shadow-sm sm:w-80"
+              class="relative flex w-full flex-col rounded-2xl p-7 shadow-sm sm:w-80"
               :class="tier.popular ? 'bg-ink-900 text-white shadow-xl ring-1 ring-brand-500/40' : 'border border-gray-100 bg-white'"
             >
               <span v-if="tier.popular" class="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-brand-600 px-4 py-1 text-[11px] font-bold uppercase tracking-wide text-white">Most Popular</span>
@@ -574,11 +574,6 @@ const { addItem } = useCart()
               </div>
             </article>
           </div>
-          <p class="mt-8 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 rounded-2xl border border-blue-100 bg-blue-50/70 px-6 py-5 text-center text-sm text-gray-600">
-            <strong class="text-ink-900">30-Day Money Back Guarantee</strong>
-            <span class="text-gray-300" aria-hidden="true">•</span> Lifetime Updates Included
-            <!-- <span class="text-gray-300" aria-hidden="true">•</span> Free Installation Support -->
-          </p>
         </section>
 
         <!-- Powerful Features -->
