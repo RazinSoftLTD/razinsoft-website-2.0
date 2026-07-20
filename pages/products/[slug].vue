@@ -251,6 +251,12 @@ const demoLinks = computed(() => {
   return tryItLive.map((c) => ({ ...c, url: byTitle[c.title] || demo.live || '' })).filter((c) => c.url)
 })
 
+// Admin-controlled background colour for the "Try It Live" section (blank = default).
+const tryItLiveBg = computed(() => {
+  const c = api.value?.try_it_live_bg
+  return c && /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(c) ? c : ''
+})
+
 // Balance the Try It Live grid to the card count: 6→3/row, 8→4/row, 4→4/row, 3→3/row, else 4.
 const demoGridClass = computed(() => {
   const n = demoLinks.value.length
@@ -523,7 +529,7 @@ const { addItem } = useCart()
         </section>
 
         <!-- Try It Live -->
-        <section v-if="demoLinks.length" id="try-it-live" ref="tryItLiveEl" aria-labelledby="tryit-h" class="scroll-mt-24 rounded-3xl px-4 py-6 text-center transition-colors" :class="{ 'demo-highlight': demoHighlight }">
+        <section v-if="demoLinks.length" id="try-it-live" ref="tryItLiveEl" aria-labelledby="tryit-h" class="scroll-mt-24 rounded-3xl px-4 py-6 text-center transition-colors" :class="{ 'demo-highlight': demoHighlight }" :style="tryItLiveBg ? { backgroundColor: tryItLiveBg } : {}">
           <h2 id="tryit-h" class="font-display text-3xl font-extrabold text-ink-900">Try It Live</h2>
           <p class="mt-2 text-gray-600">Experience the product with live demos and mobile apps</p>
           <div class="mx-auto mt-8 grid max-w-5xl gap-4" :class="demoGridClass">
