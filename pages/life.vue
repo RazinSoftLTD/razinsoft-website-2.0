@@ -16,7 +16,7 @@ const heroPhotos = [
 
 // "Who We Are" collage (first one is the tall image).
 const collage = [
-  '/images/life/who-we-are/cricket-match-01.webp',
+  '/images/life/who-we-are/cricket-match-01-2.webp',
   '/images/life/who-we-are/office-meeting-02.webp',
   '/images/life/who-we-are/boishakh-03.webp',
 ]
