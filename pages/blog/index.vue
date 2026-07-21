@@ -160,7 +160,7 @@ const showFeatured = computed(() => featured.value && activeCategory.value === '
             </div>
             <NuxtLink :to="`/blog/${featured.slug}`" class="group block cursor-pointer overflow-hidden rounded-2xl border border-border bg-white transition-shadow hover:shadow-lg">
               <div class="grid gap-0 md:grid-cols-2">
-                <div class="relative aspect-video overflow-hidden bg-gray-50 md:h-full">
+                <div class="relative aspect-video w-full min-w-0 overflow-hidden bg-gray-50 md:aspect-auto md:h-full">
                   <img :src="featured.image" :alt="featured.title" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105">
                   <span class="absolute left-4 top-4 rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground">{{ featured.category }}</span>
                 </div>
