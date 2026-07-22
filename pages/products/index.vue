@@ -22,7 +22,6 @@ const sorts = [
   { key: 'best', label: 'Best Match' },
   { key: 'sellers', label: 'Best Sellers' },
   { key: 'rated', label: 'Best Rated' },
-  { key: 'free', label: 'Free' },
   { key: 'price', label: 'Price' },
 ]
 
@@ -77,7 +76,6 @@ const filtered = computed(() => {
     case 'sellers': list.sort((a, b) => b.sales - a.sales); break
     case 'rated': list.sort((a, b) => b.rating - a.rating); break
     case 'price': list.sort((a, b) => (priceDir.value === 'desc' ? b.price - a.price : a.price - b.price)); break
-    case 'free': list = list.filter((p) => p.price === 0); break
   }
   return list
 })
@@ -127,7 +125,7 @@ const badgeClass: Record<string, string> = {
         <div class="hidden h-6 w-px bg-gray-200 sm:block" />
 
         <div class="flex flex-wrap items-center gap-1">
-          <button v-for="s in sorts" :key="s.key" type="button" class="flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-semibold transition" :class="sort === s.key ? 'bg-ink-900 text-white' : 'text-gray-500 hover:bg-gray-50'" @click="setSort(s.key)">
+          <button v-for="s in sorts" :key="s.key" type="button" class="flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-semibold transition" :class="sort === s.key ? 'bg-brand-600 text-white' : 'text-gray-500 hover:bg-gray-50'" @click="setSort(s.key)">
             {{ s.label }}
             <!-- Price arrow: inactive = both, active desc = down (high → low), active asc = up (low → high) -->
             <svg v-if="s.key === 'price' && sort !== 'price'" class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M7 4v16m0 0-3-3m3 3 3-3M17 20V4m0 0-3 3m3-3 3 3" /></svg>
