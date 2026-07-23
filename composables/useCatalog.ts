@@ -14,6 +14,9 @@ export interface ApiProduct {
   // Products have no direct price — the card shows the first plan's price.
   from_price?: number | null
   from_plan?: { id: number; name: string; price: number } | null
+  // Present only while the product has an active offer (see Product::hasActiveOffer on the backend).
+  sale_from_price?: number | null
+  percent_off?: number | null
 }
 
 /** Card-ready product shape used by ProductCard, the listing and the home grid. */
@@ -22,8 +25,12 @@ export interface CardProduct {
   name: string
   tagline: string
   version: string
-  /** First plan's price (what the card shows). */
+  /** First plan's price (what the card shows). Original price when an offer is active. */
   price: number
+  /** Discounted price while an offer is active, else null. */
+  salePrice: number | null
+  /** Percent-off for the badge (e.g. 50), else null. */
+  percentOff: number | null
   planId: number | null
   planName: string | null
   rating: number
@@ -45,6 +52,8 @@ export function toCardProduct(p: ApiProduct): CardProduct {
     tagline: p.tagline,
     version: p.version,
     price: Number(p.from_price ?? p.from_plan?.price ?? 0),
+    salePrice: p.sale_from_price != null ? Number(p.sale_from_price) : null,
+    percentOff: p.percent_off != null ? Number(p.percent_off) : null,
     planId: p.from_plan?.id ?? null,
     planName: p.from_plan?.name ?? null,
     rating: Number(p.rating),

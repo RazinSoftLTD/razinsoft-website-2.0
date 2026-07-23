@@ -38,6 +38,8 @@ const product = computed(() => {
     version: p.version,
     // No standalone price — use the first plan's price.
     price: Number(p.from_price ?? p.plans?.[0]?.price ?? 0),
+    salePrice: p.sale_from_price != null ? Number(p.sale_from_price) : null,
+    percentOff: p.percent_off != null ? Number(p.percent_off) : null,
     rating: Number(p.rating),
     reviews: p.reviews_count ?? 0,
     sales: p.sales_count ?? 0,
@@ -73,8 +75,16 @@ const showAllFeatures = ref(false)
 
 const tiers = computed(() => {
   const pl = api.value.plans
-  if (!pl?.length) return pricingFallback.map((t: any, i: number) => ({ ...t, id: -(i + 1) }))
-  return pl.map((x: any) => ({ id: x.id, name: x.name, blurb: x.blurb, price: Number(x.price), popular: x.is_popular, perks: x.perks || [] }))
+  if (!pl?.length) return pricingFallback.map((t: any, i: number) => ({ ...t, id: -(i + 1), salePrice: null }))
+  return pl.map((x: any) => ({
+    id: x.id,
+    name: x.name,
+    blurb: x.blurb,
+    price: Number(x.price),
+    salePrice: x.sale_price != null ? Number(x.sale_price) : null,
+    popular: x.is_popular,
+    perks: x.perks || [],
+  }))
 })
 
 const galleryImageFallback = ['/images/blog/blog-2.jpg', '/images/blog/blog-1.jpg', '/images/blog/blog-3.jpg', '/images/hero-1.jpg', '/images/hero-2.jpg']
@@ -307,7 +317,7 @@ useSchemaOrg([
     sku: seo.value.sku || product.value.slug,
     brand: { name: seo.value.brand || 'RazinSoft' },
     offers: [{
-      price: (tiers.value[0]?.price ?? product.value.price).toFixed(2),
+      price: (tiers.value[0]?.salePrice ?? tiers.value[0]?.price ?? product.value.salePrice ?? product.value.price).toFixed(2),
       priceCurrency: 'USD',
       availability: 'https://schema.org/InStock',
       url: `${base}/products/${product.value.slug}`,
@@ -332,7 +342,7 @@ const softwareLd = computed(() => ({
   operatingSystem: seo.value.operating_system || 'Web, Android, iOS',
   applicationCategory: 'https://schema.org/' + (seo.value.application_category || 'BusinessApplication'),
   softwareVersion: seo.value.software_version || product.value.version,
-  offers: { '@type': 'Offer', price: (tiers.value[0]?.price ?? product.value.price).toFixed(2), priceCurrency: 'USD' },
+  offers: { '@type': 'Offer', price: (tiers.value[0]?.salePrice ?? tiers.value[0]?.price ?? product.value.salePrice ?? product.value.price).toFixed(2), priceCurrency: 'USD' },
   aggregateRating: { '@type': 'AggregateRating', ratingValue: product.value.rating, reviewCount: product.value.reviews },
 }))
 const faqLd = computed(() => ({
@@ -554,10 +564,12 @@ const { addItem } = useCart()
               :class="tier.popular ? 'bg-ink-900 text-white shadow-xl ring-1 ring-brand-500/40' : 'border border-gray-100 bg-white'"
             >
               <span v-if="tier.popular" class="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-brand-600 px-4 py-1 text-[11px] font-bold uppercase tracking-wide text-white">Most Popular</span>
+              <span v-if="tier.salePrice != null && product.percentOff" class="absolute -top-3 right-4 rounded-full bg-red-600 px-3 py-1 text-[11px] font-bold text-white">{{ product.percentOff }}% OFF</span>
               <h3 class="text-center font-display text-2xl font-extrabold" :class="tier.popular ? 'text-white' : 'text-ink-900'">{{ tier.name }}</h3>
               <p class="text-center text-sm" :class="tier.popular ? 'text-gray-400' : 'text-gray-500'">{{ tier.blurb }}</p>
-              <p class="mt-4 text-center">
-                <span class="font-display text-4xl font-extrabold" :class="tier.popular ? 'text-brand-400' : 'text-ink-900'">${{ tier.price }}</span>
+              <p class="mt-4 flex flex-wrap items-baseline justify-center gap-2">
+                <span class="font-display text-4xl font-extrabold" :class="tier.popular ? 'text-brand-400' : 'text-ink-900'">${{ tier.salePrice ?? tier.price }}</span>
+                <span v-if="tier.salePrice != null" class="text-base font-medium line-through" :class="tier.popular ? 'text-gray-400' : 'text-gray-400'">${{ tier.price }}</span>
               </p>
               <p class="text-center text-sm text-emerald-500">one-time</p>
               <ul class="mt-6 space-y-3 border-t pt-6 text-sm" :class="tier.popular ? 'border-white/10' : 'border-gray-100'">
@@ -567,9 +579,9 @@ const { addItem } = useCart()
                 </li>
               </ul>
               <div class="mt-auto pt-7">
-                <button type="button" class="flex w-full items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold" :class="tier.popular ? 'bg-brand-600 text-white hover:bg-brand-700' : 'border border-gray-200 text-ink-800 hover:bg-gray-50'" @click="addItem({ slug: product.slug, name: product.name, unitPrice: tier.price, image: product.image, version: product.version, planId: tier.id, planName: tier.name })">
+                <button type="button" class="flex w-full items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold" :class="tier.popular ? 'bg-brand-600 text-white hover:bg-brand-700' : 'border border-gray-200 text-ink-800 hover:bg-gray-50'" @click="addItem({ slug: product.slug, name: product.name, unitPrice: tier.salePrice ?? tier.price, image: product.image, version: product.version, planId: tier.id, planName: tier.name })">
                   <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.5l1.5 13.5h12l1.5-9H6" /><circle cx="9" cy="20" r="1.25" /><circle cx="17" cy="20" r="1.25" /></svg>
-                  {{ tier.popular ? 'Add to Cart' : 'Select & Add' }} - ${{ tier.price }}
+                  {{ tier.popular ? 'Add to Cart' : 'Select & Add' }} - ${{ tier.salePrice ?? tier.price }}
                 </button>
               </div>
             </article>

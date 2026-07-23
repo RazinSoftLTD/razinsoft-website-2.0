@@ -11,9 +11,10 @@ const badgeClass: Record<string, string> = {
 }
 
 // Adding from a card buys the first plan (products have no standalone price).
+// Charges the sale price while an offer is active, else the regular price.
 function add() {
   const p = props.product
-  addItem({ slug: p.slug, name: p.name, unitPrice: p.price, image: p.image, version: p.version, planId: p.planId ?? undefined, planName: p.planName ?? undefined })
+  addItem({ slug: p.slug, name: p.name, unitPrice: p.salePrice ?? p.price, image: p.image, version: p.version, planId: p.planId ?? undefined, planName: p.planName ?? undefined })
 }
 </script>
 
@@ -33,10 +34,11 @@ function add() {
           class="aspect-[3/2] w-full bg-gray-50 object-contain transition group-hover:scale-[1.02]"
         />
       </NuxtLink>
+      <OfferRibbon v-if="product.percentOff" :percent-off="product.percentOff" />
       <span
         v-if="product.badge"
-        class="absolute left-3 top-3 rounded-full px-2.5 py-1 text-[11px] font-bold"
-        :class="badgeClass[product.badge]"
+        class="absolute left-3 rounded-full px-2.5 py-1 text-[11px] font-bold"
+        :class="[badgeClass[product.badge], product.percentOff ? 'top-11' : 'top-3']"
       >{{ product.badge }}</span>
       <span class="absolute right-3 top-3 rounded-md bg-black/70 px-2 py-0.5 text-[11px] font-medium text-white">
         V {{ product.version }}
@@ -52,10 +54,7 @@ function add() {
       <p class="mt-1 text-sm text-gray-600">{{ product.tagline }}</p>
 
       <div class="mt-4 flex items-end justify-between">
-        <p>
-          <span class="text-xs text-gray-600">From</span>
-          <span class="ml-1 font-display text-2xl font-extrabold text-ink-900">${{ product.price }}</span>
-        </p>
+        <ProductPrice :price="product.price" :sale-price="product.salePrice" :percent-off="product.percentOff" />
         <span v-if="product.planName" class="rounded-full bg-brand-50 px-2.5 py-1 text-xs font-semibold text-brand-700">{{ product.planName }}</span>
       </div>
 

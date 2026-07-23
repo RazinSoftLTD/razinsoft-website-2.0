@@ -158,7 +158,7 @@ const posts = computed(() =>
       </div>
 
       <div class="mt-12 text-center">
-        <NuxtLink to="/products" class="btn-dark uppercase tracking-wide">View all products
+        <NuxtLink to="/products" class="btn-brand uppercase tracking-wide">View all products
           <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m9 6 6 6-6 6" /></svg>
         </NuxtLink>
       </div>

@@ -75,7 +75,12 @@ const filtered = computed(() => {
   switch (sort.value) {
     case 'sellers': list.sort((a, b) => b.sales - a.sales); break
     case 'rated': list.sort((a, b) => b.rating - a.rating); break
-    case 'price': list.sort((a, b) => (priceDir.value === 'desc' ? b.price - a.price : a.price - b.price)); break
+    case 'price': {
+      // Sort by what the customer actually pays right now (sale price when an offer is active).
+      const effective = (p: (typeof list)[number]) => p.salePrice ?? p.price
+      list.sort((a, b) => (priceDir.value === 'desc' ? effective(b) - effective(a) : effective(a) - effective(b)))
+      break
+    }
   }
   return list
 })
@@ -160,7 +165,8 @@ const badgeClass: Record<string, string> = {
         >
           <NuxtLink :to="`/products/${p.slug}`" class="relative block shrink-0" :class="view === 'list' ? 'sm:w-72' : ''">
             <NuxtImg :src="p.image" :alt="`${p.name} — ${p.tagline}`" :width="p.imageWidth" :height="p.imageHeight" sizes="100vw sm:50vw lg:384px" format="webp" loading="lazy" class="h-44 w-full bg-gray-100 object-cover" :class="view === 'list' ? 'sm:h-full' : ''" />
-            <span v-if="p.badge" class="absolute left-3 top-3 rounded-full px-2.5 py-1 text-[11px] font-bold" :class="badgeClass[p.badge]">{{ p.badge }}</span>
+            <OfferRibbon v-if="p.percentOff" :percent-off="p.percentOff" />
+            <span v-if="p.badge" class="absolute left-3 rounded-full px-2.5 py-1 text-[11px] font-bold" :class="[badgeClass[p.badge], p.percentOff ? 'top-11' : 'top-3']">{{ p.badge }}</span>
             <span class="absolute right-3 top-3 rounded-md bg-amber-400 px-2 py-0.5 text-[11px] font-bold text-ink-900">V {{ p.version }}</span>
           </NuxtLink>
 
@@ -171,10 +177,7 @@ const badgeClass: Record<string, string> = {
             <p class="mt-1 text-sm text-gray-600">{{ p.tagline }}</p>
 
             <div class="mt-3 flex items-center justify-between gap-2">
-              <p>
-                <span class="text-xs text-gray-500">From</span>
-                <span class="ml-1 font-display text-2xl font-extrabold text-ink-900">${{ p.price }}</span>
-              </p>
+              <ProductPrice :price="p.price" :sale-price="p.salePrice" :percent-off="p.percentOff" />
               <span v-if="p.planName" class="rounded-full bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-700">{{ p.planName }}</span>
             </div>
 
@@ -188,7 +191,7 @@ const badgeClass: Record<string, string> = {
             </div>
 
             <div class="mt-auto flex items-center gap-2 pt-5">
-              <button type="button" class="grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-gray-200 text-ink-700 hover:bg-gray-50" :aria-label="`Add ${p.name} to cart`" @click="addItem({ slug: p.slug, name: p.name, unitPrice: p.price, image: p.image, version: p.version, planId: p.planId ?? undefined, planName: p.planName ?? undefined })">
+              <button type="button" class="grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-gray-200 text-ink-700 hover:bg-gray-50" :aria-label="`Add ${p.name} to cart`" @click="addItem({ slug: p.slug, name: p.name, unitPrice: p.salePrice ?? p.price, image: p.image, version: p.version, planId: p.planId ?? undefined, planName: p.planName ?? undefined })">
                 <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.5l1.5 13.5h12l1.5-9H6" /><circle cx="9" cy="20" r="1.25" /><circle cx="17" cy="20" r="1.25" /></svg>
               </button>
               <NuxtLink :to="`/products/${p.slug}`" class="btn-outline flex-1" :aria-label="`View ${p.name}`">
