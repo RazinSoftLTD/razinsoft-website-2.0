@@ -135,7 +135,7 @@ const open = reactive<Record<string, boolean>>({ company: false, quick: false })
             </span>
             <div>
               <p class="font-semibold text-white">WhatsApp Support</p>
-              <p class="text-xs text-gray-400">Mon-Sat: 9 AM - 9 PM (GMT+6)</p>
+              <p class="text-xs text-gray-400">Mon–Sat: 10:00 AM – 7:00 PM (GMT+6, Asia/Dhaka)</p>
             </div>
           </div>
           <div class="mt-3 grid gap-3 sm:grid-cols-2">

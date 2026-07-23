@@ -2,6 +2,11 @@
 export interface TopBanner {
   image: string
   ends_at: string | null
+  countdown_enabled: boolean
+  /** null/blank = admin deliberately cleared the title; hide it, don't fall back to default text. */
+  countdown_label: string | null
+  countdown_title_color: string
+  countdown_value_color: string
 }
 export interface PromoPopup {
   image: string
