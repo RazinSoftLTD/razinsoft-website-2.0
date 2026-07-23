@@ -44,11 +44,11 @@ const units = computed(() => [
 
     <div
       v-if="banner.countdown_enabled && banner.ends_at"
-      class="absolute left-2 top-1/2 flex -translate-y-1/2 items-center gap-1.5 sm:left-4 sm:gap-2 md:left-8"
+      class="absolute right-2 top-1/2 flex -translate-y-1/2 flex-col items-center gap-1 sm:right-4 md:right-8"
     >
       <div
         v-if="banner.countdown_label"
-        class="hidden flex-col items-center gap-0.5 pr-1 text-[9px] font-bold uppercase leading-tight tracking-wide sm:flex md:text-[10px]"
+        class="hidden items-center gap-1 text-[9px] font-bold uppercase leading-tight tracking-wide sm:flex md:text-[10px]"
         :style="{ color: banner.countdown_title_color }"
       >
         <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
@@ -57,13 +57,15 @@ const units = computed(() => [
         <span>{{ banner.countdown_label }}</span>
       </div>
 
-      <template v-for="(unit, i) in units" :key="unit.key">
-        <div class="flex min-w-[34px] flex-col items-center rounded-md bg-white/95 px-1.5 py-1 shadow-sm sm:min-w-[44px] sm:px-2 sm:py-1.5">
-          <span class="text-sm font-extrabold leading-none sm:text-lg" :style="{ color: banner.countdown_value_color }">{{ pad(unit.value) }}</span>
-          <span class="mt-0.5 text-[7px] font-semibold uppercase leading-none text-gray-500 sm:text-[8px]">{{ unit.label }}</span>
-        </div>
-        <span v-if="i < units.length - 1" class="text-xs font-bold sm:text-sm" :style="{ color: banner.countdown_value_color }">:</span>
-      </template>
+      <div class="flex items-center gap-1.5 sm:gap-2">
+        <template v-for="(unit, i) in units" :key="unit.key">
+          <div class="flex min-w-[34px] flex-col items-center rounded-md bg-white/95 px-1.5 py-1 shadow-sm sm:min-w-[44px] sm:px-2 sm:py-1.5">
+            <span class="text-sm font-extrabold leading-none sm:text-lg" :style="{ color: banner.countdown_value_color }">{{ pad(unit.value) }}</span>
+            <span class="mt-0.5 text-[7px] font-semibold uppercase leading-none text-gray-500 sm:text-[8px]">{{ unit.label }}</span>
+          </div>
+          <span v-if="i < units.length - 1" class="text-xs font-bold sm:text-sm" :style="{ color: banner.countdown_value_color }">:</span>
+        </template>
+      </div>
     </div>
   </NuxtLink>
 </template>

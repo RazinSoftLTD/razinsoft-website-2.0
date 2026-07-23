@@ -1,5 +1,5 @@
 <script setup lang="ts">
-withDefaults(
+const props = withDefaults(
   defineProps<{
     price: number
     salePrice?: number | null
@@ -8,13 +8,16 @@ withDefaults(
   }>(),
   { salePrice: null, percentOff: null, size: 'card' },
 )
+
+// A discount price should never show cents (e.g. "$79.5") — always a whole number, rounded down.
+const displayPrice = computed(() => Math.floor(props.salePrice ?? props.price))
 </script>
 
 <template>
   <span class="inline-flex flex-wrap items-baseline gap-2">
     <span class="text-xs text-gray-600">From</span>
     <span class="font-display font-extrabold text-ink-900" :class="size === 'lg' ? 'text-3xl' : 'text-2xl'">
-      ${{ salePrice ?? price }}
+      ${{ displayPrice }}
     </span>
     <template v-if="salePrice != null">
       <span class="text-sm font-medium text-gray-400 line-through">${{ price }}</span>

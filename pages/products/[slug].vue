@@ -73,6 +73,11 @@ const featureList = computed(() => {
 const FEATURE_LIMIT = 6
 const showAllFeatures = ref(false)
 
+// A discount price should never show cents (e.g. "$79.5") — always a whole number, rounded down.
+function displayPrice(tier: { price: number; salePrice: number | null }): number {
+  return Math.floor(tier.salePrice ?? tier.price)
+}
+
 const tiers = computed(() => {
   const pl = api.value.plans
   if (!pl?.length) return pricingFallback.map((t: any, i: number) => ({ ...t, id: -(i + 1), salePrice: null }))
@@ -568,7 +573,7 @@ const { addItem } = useCart()
               <h3 class="text-center font-display text-2xl font-extrabold" :class="tier.popular ? 'text-white' : 'text-ink-900'">{{ tier.name }}</h3>
               <p class="text-center text-sm" :class="tier.popular ? 'text-gray-400' : 'text-gray-500'">{{ tier.blurb }}</p>
               <p class="mt-4 flex flex-wrap items-baseline justify-center gap-2">
-                <span class="font-display text-4xl font-extrabold" :class="tier.popular ? 'text-brand-400' : 'text-ink-900'">${{ tier.salePrice ?? tier.price }}</span>
+                <span class="font-display text-4xl font-extrabold" :class="tier.popular ? 'text-brand-400' : 'text-ink-900'">${{ displayPrice(tier) }}</span>
                 <span v-if="tier.salePrice != null" class="text-base font-medium line-through" :class="tier.popular ? 'text-gray-400' : 'text-gray-400'">${{ tier.price }}</span>
               </p>
               <p class="text-center text-sm text-emerald-500">one-time</p>
@@ -581,7 +586,7 @@ const { addItem } = useCart()
               <div class="mt-auto pt-7">
                 <button type="button" class="flex w-full items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold" :class="tier.popular ? 'bg-brand-600 text-white hover:bg-brand-700' : 'border border-gray-200 text-ink-800 hover:bg-gray-50'" @click="addItem({ slug: product.slug, name: product.name, unitPrice: tier.salePrice ?? tier.price, image: product.image, version: product.version, planId: tier.id, planName: tier.name })">
                   <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.5l1.5 13.5h12l1.5-9H6" /><circle cx="9" cy="20" r="1.25" /><circle cx="17" cy="20" r="1.25" /></svg>
-                  {{ tier.popular ? 'Add to Cart' : 'Select & Add' }} - ${{ tier.salePrice ?? tier.price }}
+                  {{ tier.popular ? 'Add to Cart' : 'Select & Add' }} - ${{ displayPrice(tier) }}
                 </button>
               </div>
             </article>
