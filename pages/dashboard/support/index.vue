@@ -6,22 +6,14 @@ const { data: res, refresh } = await useAsyncData('support-tickets', () => $api<
 
 const tickets = computed<any[]>(() => res.value?.data || [])
 const counts = computed<any>(() => res.value?.counts || { all: 0, open: 0, pending: 0, resolved: 0, closed: 0 })
-const categories = computed<Record<string, string>>(() => res.value?.categories || {})
-
-// Category cards (icon per category).
-const catIcons: Record<string, string> = {
-  technical_support: 'M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM4 12h2M18 12h2M12 4v2M12 18v2',
-  billing: 'M3 7h18v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Zm0 4h18',
-  product_download: 'M12 3v12m0 0 4-4m-4 4-4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2',
-  activation_key: 'M15 7a4 4 0 1 0-3.9 5H14l2 2 2-2 1-1-1-1a4 4 0 0 0-4-4Z',
-  other: 'M4 5h16v12H7l-3 3V5Z',
-}
+// Dynamic — sourced from the admin's Ticket Types, id -> name.
+const types = computed<Record<string, string>>(() => res.value?.types || {})
 
 const filter = ref<'all' | 'open' | 'pending' | 'resolved' | 'closed'>('all')
 const filtered = computed(() => (filter.value === 'all' ? tickets.value : tickets.value.filter((t) => t.status === filter.value)))
 
 const showForm = ref(false)
-const form = reactive({ subject: '', category: '', message: '' })
+const form = reactive({ subject: '', type_id: '', message: '' })
 const file = ref<File | null>(null)
 const submitting = ref(false)
 const error = ref('')
@@ -33,17 +25,17 @@ function onFile(e: Event) {
 async function submit() {
   error.value = ''
   if (!form.subject.trim()) { error.value = 'Please enter a subject.'; return }
-  if (!form.category) { error.value = 'Please select a category.'; return }
+  if (!form.type_id) { error.value = 'Please select a category.'; return }
   if (!form.message.trim()) { error.value = 'Please describe your issue.'; return }
   submitting.value = true
   try {
     const fd = new FormData()
     fd.append('subject', form.subject)
-    fd.append('category', form.category)
+    fd.append('type_id', form.type_id)
     fd.append('message', form.message)
     if (file.value) fd.append('attachment', file.value)
     await $api('/support/tickets', { method: 'POST', body: fd })
-    form.subject = ''; form.category = ''; form.message = ''; file.value = null
+    form.subject = ''; form.type_id = ''; form.message = ''; file.value = null
     showForm.value = false
     await refresh()
   } catch (e: any) {
@@ -114,10 +106,10 @@ const timeAgo = (s?: string) => {
         <div>
           <label class="mb-1.5 block text-sm font-semibold text-ink-800">Select Category</label>
           <div class="grid grid-cols-2 gap-3 sm:grid-cols-5">
-            <button v-for="(label, key) in categories" :key="key" type="button" @click="form.category = key"
+            <button v-for="(label, id) in types" :key="id" type="button" @click="form.type_id = String(id)"
               class="flex flex-col items-center gap-2 rounded-xl border px-3 py-4 text-center text-sm transition"
-              :class="form.category === key ? 'border-brand-500 bg-brand-50 text-brand-700 ring-1 ring-brand-500' : 'border-gray-200 text-gray-600 hover:bg-gray-50'">
-              <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" :d="catIcons[key] || catIcons.other" /></svg>
+              :class="form.type_id === String(id) ? 'border-brand-500 bg-brand-50 text-brand-700 ring-1 ring-brand-500' : 'border-gray-200 text-gray-600 hover:bg-gray-50'">
+              <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 5h16v12H7l-3 3V5Z" /></svg>
               <span class="font-medium leading-tight">{{ label }}</span>
             </button>
           </div>
