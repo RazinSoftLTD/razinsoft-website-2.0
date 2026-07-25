@@ -3,7 +3,7 @@
 // managed from admin (Products › Installation Plans).
 type Feature = { id: number; label: string }
 type Plan = { id: number; name: string; tagline: string | null; price: number; sale_price: number | null; note: string | null; is_popular: boolean; feature_ids: number[] }
-type Product = { id: number; name: string; slug: string; thumbnail: string | null; currency: string; features: Feature[]; plans: Plan[] }
+type Product = { id: number; name: string; slug: string; thumbnail: string | null; icon: string | null; currency: string; features: Feature[]; plans: Plan[] }
 
 const { $api } = useNuxtApp()
 const { data } = await useAsyncData('installation-plans', () => $api<{ products: Product[] }>('/installation-plans'))
@@ -102,7 +102,7 @@ useHead({
             class="group inline-flex items-center gap-2.5 rounded-xl border px-4 py-2.5 text-sm font-bold transition"
             :class="p.id === active?.id ? 'border-brand-400 bg-brand-50 text-brand-700 ring-1 ring-brand-200 shadow-sm' : 'border-gray-200 bg-white text-ink-700 hover:border-brand-200 hover:bg-gray-50'"
           >
-            <img v-if="p.thumbnail && !brokenThumbs.has(p.id)" :src="p.thumbnail" :alt="p.name" class="h-7 w-7 rounded-lg object-cover" @error="onThumbError(p.id)">
+            <img v-if="(p.icon || p.thumbnail) && !brokenThumbs.has(p.id)" :src="p.icon || p.thumbnail || undefined" :alt="p.name" class="h-7 w-7 rounded-lg object-cover" @error="onThumbError(p.id)">
             <span v-else class="grid h-7 w-7 place-items-center rounded-lg text-[11px] font-bold" :class="p.id === active?.id ? 'bg-brand-100 text-brand-700' : 'bg-gray-100 text-gray-500'">{{ p.name.slice(0, 2) }}</span>
             {{ p.name }}
           </button>
