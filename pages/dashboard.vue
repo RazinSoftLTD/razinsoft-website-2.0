@@ -44,6 +44,7 @@ const nav = [
   { label: 'My Meetings', to: '/dashboard/meetings', match: (p: string) => p.startsWith('/dashboard/meetings'), paths: ['M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z', 'M9 16l2 2 4-4'] },
   { label: 'Messages', to: '/dashboard/messages', match: (p: string) => p.startsWith('/dashboard/messages'), paths: ['M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2v10Z'] },
   { label: 'Support / Tickets', to: '/dashboard/support', match: (p: string) => p.startsWith('/dashboard/support'), paths: ['M4 13a8 8 0 0 1 16 0v5a2 2 0 0 1-2 2h-1v-6h3M4 13v5a2 2 0 0 0 2 2h1v-6H4'] },
+  { label: 'Bills Information', to: '/dashboard/billing', match: (p: string) => p.startsWith('/dashboard/billing'), paths: ['M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z', 'M3 11h18', 'M7 15h4'] },
   { label: 'Profile', to: '/dashboard/profile', match: (p: string) => p.startsWith('/dashboard/profile'), paths: ['M12 8a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z', 'M4.5 20a7.5 7.5 0 0 1 15 0'] },
 ]
 </script>

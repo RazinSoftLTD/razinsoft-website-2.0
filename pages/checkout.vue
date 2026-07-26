@@ -10,40 +10,62 @@ const { items, lineKey, subtotal, coupon, discount, total, applyCoupon, clear } 
 const { $api } = useNuxtApp()
 const { user, fetchMe } = useAuth()
 
-// Whether the signed-in user already has a complete saved billing address.
-const hasSavedBilling = ref(false)
-// When true, the form is shown (either no saved address, or the user chose to edit / add a new one).
-const editBilling = ref(false)
+// The customer's saved billing addresses (Dashboard > Bills Information). While one is chosen
+// the form stays hidden — the address is asked for once, not on every order.
+interface SavedAddress {
+  id: number; label: string | null; full_name: string | null; company: string | null; phone: string | null
+  address: string; city: string | null; state: string | null; zip: string | null; country: string
+  is_default: boolean; one_line: string
+}
+const savedAddresses = ref<SavedAddress[]>([])
+// The <select> value: a saved address id, or 'new' for "enter a different address".
+const addressChoice = ref<string>('new')
+const hasSavedBilling = computed(() => savedAddresses.value.length > 0)
+// The form is only shown when there is nothing saved, or the customer picked "a different address".
+const editBilling = computed(() => addressChoice.value === 'new')
+const chosenAddress = computed(() => savedAddresses.value.find((a) => String(a.id) === addressChoice.value) || null)
 
-// Prefill billing from the signed-in user, including their saved address.
+/** Copy a saved address into the posted form, so the order carries the same fields as before. */
+function applyAddress(a: SavedAddress) {
+  form.company = a.company || form.company
+  form.phone = a.phone || form.phone
+  form.address = a.address
+  form.city = a.city || ''
+  form.state = a.state || ''
+  form.zip = a.zip || ''
+  form.country = a.country
+}
+watch(chosenAddress, (a) => { if (a) applyAddress(a) })
+
+// Prefill billing from the signed-in user and load their saved addresses.
 onMounted(async () => {
   await fetchMe()
-  if (user.value) {
-    const u = user.value as Record<string, any>
-    const [first, ...rest] = (u.name || '').split(' ')
-    form.firstName ||= first || ''
-    form.lastName ||= rest.join(' ')
-    form.email ||= u.email
-    form.phone ||= u.phone || ''
-    form.company ||= u.company || ''
-    form.address ||= u.address || ''
-    form.city ||= u.city || ''
-    form.state ||= u.state || ''
-    form.zip ||= u.zip || ''
-    if (u.country) form.country = u.country
+  if (!user.value) return
 
-    // A saved address is "complete" when the required fields are present.
-    hasSavedBilling.value = !!(form.firstName && form.lastName && form.email && form.address && form.city && form.zip)
-    editBilling.value = !hasSavedBilling.value
-  } else {
-    editBilling.value = true
+  const u = user.value as Record<string, any>
+  const [first, ...rest] = (u.name || '').split(' ')
+  form.firstName ||= first || ''
+  form.lastName ||= rest.join(' ')
+  form.email ||= u.email
+  form.phone ||= u.phone || ''
+  form.company ||= u.company || ''
+
+  try {
+    const res = await $api<{ data: SavedAddress[] }>('/account/billing-addresses')
+    savedAddresses.value = res.data || []
+  } catch {
+    savedAddresses.value = []          // not fatal — the form is still there to fill in
+  }
+
+  const preferred = savedAddresses.value.find((a) => a.is_default) || savedAddresses.value[0]
+  if (preferred) {
+    addressChoice.value = String(preferred.id)
+    applyAddress(preferred)
   }
 })
 
-const form = reactive({ firstName: '', lastName: '', email: '', phone: '', company: '', address: '', city: '', state: '', zip: '', country: 'United States' })
+const form = reactive({ firstName: '', lastName: '', email: '', phone: '', company: '', address: '', city: '', state: '', zip: '', country: 'Bangladesh' })
 const payment = ref<'card' | 'paypal' | 'bank'>('card')
-// 'United States' first so the prerendered <select> default matches the v-model default (no flash).
-const countries = ['United States', 'United Kingdom', 'Bangladesh', 'India', 'Canada', 'Australia', 'United Arab Emirates', 'Germany', 'Other']
 
 const methods = [
   { id: 'card', name: 'Credit / Debit Card', paths: ['M3 6h18a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1Z', 'M2 10h20'] },
@@ -68,7 +90,8 @@ const stripeData = ref<{ client_secret: string; publishable_key: string } | null
 const orderNo = ref('')
 
 const canPlace = computed(
-  () => !!form.firstName && !!form.lastName && !!form.email && !!form.address && !!form.city && !!form.zip,
+  // Address, postal code and country are what a card payment needs; city and state are not.
+  () => !!form.firstName && !!form.lastName && !!form.email && !!form.address && !!form.zip && !!form.country,
 )
 
 // Map the chosen UI method to a gateway the API understands.
@@ -185,28 +208,33 @@ const field = 'h-11 w-full rounded-lg border border-transparent bg-gray-100 px-4
                 <svg class="h-5 w-5 text-brand-600" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5" /><path stroke-linecap="round" d="M4.5 19.5a7.5 7.5 0 0 1 15 0" /></svg>
                 Billing Information
               </h2>
-              <button v-if="hasSavedBilling && editBilling" type="button" class="text-sm font-semibold text-gray-500 hover:text-ink-900" @click="editBilling = false">Use saved</button>
             </div>
 
-            <!-- Saved address summary — shown when a complete address exists and the user hasn't chosen to edit -->
-            <div v-if="hasSavedBilling && !editBilling" class="mt-5 rounded-xl border border-gray-100 bg-gray-50/70 p-5">
-              <div class="flex items-start justify-between gap-3">
-                <div class="text-sm leading-relaxed text-ink-800">
-                  <p class="font-bold text-ink-900">{{ form.firstName }} {{ form.lastName }}</p>
-                  <p v-if="form.company" class="text-gray-500">{{ form.company }}</p>
-                  <p class="text-gray-600">{{ form.address }}</p>
-                  <p class="text-gray-600">{{ [form.city, form.state, form.zip].filter(Boolean).join(', ') }}</p>
-                  <p class="text-gray-600">{{ form.country }}</p>
-                  <p class="mt-1 text-gray-500">{{ form.email }}<span v-if="form.phone"> · {{ form.phone }}</span></p>
+            <!-- Pick a saved address, or choose to type a different one. Only "a different
+                 address" opens the form below, so a returning customer is not asked again. -->
+            <div v-if="hasSavedBilling" class="mt-5">
+              <label for="addr-choice" class="mb-1.5 block text-sm font-medium text-ink-800">Billing address</label>
+              <select id="addr-choice" v-model="addressChoice" :class="field">
+                <option v-for="a in savedAddresses" :key="a.id" :value="String(a.id)">
+                  {{ a.label || a.full_name || 'Saved address' }}{{ a.is_default ? ' (default)' : '' }} — {{ a.one_line }}
+                </option>
+                <option value="new">Use a different address…</option>
+              </select>
+
+              <div v-if="chosenAddress" class="mt-4 rounded-xl border border-gray-100 bg-gray-50/70 p-5">
+                <div class="flex items-start justify-between gap-3">
+                  <div class="text-sm leading-relaxed text-ink-800">
+                    <p class="font-bold text-ink-900">{{ chosenAddress.full_name || `${form.firstName} ${form.lastName}` }}</p>
+                    <p v-if="chosenAddress.company" class="text-gray-500">{{ chosenAddress.company }}</p>
+                    <p class="text-gray-600">{{ chosenAddress.one_line }}</p>
+                    <p class="mt-1 text-gray-500">{{ form.email }}<span v-if="chosenAddress.phone"> · {{ chosenAddress.phone }}</span></p>
+                  </div>
+                  <span class="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-emerald-50 text-emerald-600">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" d="m5 13 4 4L19 7" /></svg>
+                  </span>
                 </div>
-                <span class="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-emerald-50 text-emerald-600">
-                  <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" d="m5 13 4 4L19 7" /></svg>
-                </span>
+                <NuxtLink to="/dashboard/billing" class="mt-3 inline-block text-sm font-semibold text-brand-600 hover:text-brand-700">Manage saved addresses</NuxtLink>
               </div>
-              <button type="button" class="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-600 hover:text-brand-700" @click="editBilling = true">
-                <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" d="M12 5v14M5 12h14" /></svg>
-                Use a different address
-              </button>
             </div>
 
             <div v-show="editBilling" class="mt-5 grid gap-4 md:grid-cols-2">
@@ -241,8 +269,8 @@ const field = 'h-11 w-full rounded-lg border border-transparent bg-gray-100 px-4
                 </div>
               </div>
               <div>
-                <label for="city" class="mb-1.5 block text-sm font-medium text-ink-800">City <span class="text-red-500">*</span></label>
-                <input id="city" v-model="form.city" type="text" required autocomplete="address-level2" placeholder="New York" :class="field" />
+                <label for="city" class="mb-1.5 block text-sm font-medium text-ink-800">City</label>
+                <input id="city" v-model="form.city" type="text" autocomplete="address-level2" placeholder="New York" :class="field" />
               </div>
               <div>
                 <label for="zip" class="mb-1.5 block text-sm font-medium text-ink-800">ZIP / Postal Code <span class="text-red-500">*</span></label>
@@ -254,9 +282,7 @@ const field = 'h-11 w-full rounded-lg border border-transparent bg-gray-100 px-4
               </div>
               <div>
                 <label for="country" class="mb-1.5 block text-sm font-medium text-ink-800">Country <span class="text-red-500">*</span></label>
-                <select id="country" v-model="form.country" autocomplete="country-name" :class="field">
-                  <option v-for="c in countries" :key="c">{{ c }}</option>
-                </select>
+                <CountryNameSelect id="country" v-model="form.country" />
               </div>
             </div>
           </section>
