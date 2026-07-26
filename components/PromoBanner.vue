@@ -46,42 +46,53 @@ const hasMobileArt = computed(() => Boolean(banner.value?.mobile_image))
 </script>
 
 <template>
-  <NuxtLink v-if="banner" to="/products" aria-label="View all products" class="relative block w-full">
-    <picture>
-      <!-- Phones get the 6:1 artwork when there is one; everything else uses the wide banner. -->
-      <source v-if="banner.mobile_image" media="(max-width: 639px)" :srcset="banner.mobile_image" />
-      <img
-        :src="banner.image"
-        alt=""
-        class="w-full object-cover sm:h-auto sm:aspect-[16/1]"
-        :class="hasMobileArt ? 'aspect-[6/1]' : 'h-16'"
-      />
-    </picture>
+  <!-- The band runs edge to edge; the artwork inside it is held to the same container as the
+       header, so the sale graphic starts on the logo and the countdown ends on the account
+       icon at every width. bg_color is the artwork's own edge colour, so the join is invisible. -->
+  <NuxtLink
+    v-if="banner"
+    to="/products"
+    aria-label="View all products"
+    class="block w-full"
+    :style="banner.bg_color ? { backgroundColor: banner.bg_color } : undefined"
+  >
+    <div class="container-page relative px-0 sm:px-6 lg:px-8">
+      <picture>
+        <!-- Phones get the 6:1 artwork when there is one; everything else uses the wide banner. -->
+        <source v-if="banner.mobile_image" media="(max-width: 639px)" :srcset="banner.mobile_image" />
+        <img
+          :src="banner.image"
+          alt=""
+          class="w-full object-cover sm:h-auto sm:aspect-[16/1]"
+          :class="hasMobileArt ? 'aspect-[6/1]' : 'h-16'"
+        />
+      </picture>
 
-    <div
-      v-if="banner.countdown_enabled && banner.ends_at"
-      class="absolute right-2 top-1/2 flex -translate-y-1/2 flex-col items-center gap-0.5 sm:right-4 sm:gap-1 md:right-[7%]"
-    >
       <div
-        v-if="banner.countdown_label"
-        class="items-center gap-1 text-[9px] font-bold uppercase leading-tight tracking-wide md:text-[10px]"
-        :class="hasMobileArt ? 'flex' : 'hidden sm:flex'"
-        :style="{ color: banner.countdown_title_color }"
+        v-if="banner.countdown_enabled && banner.ends_at"
+        class="absolute right-2 top-1/2 flex -translate-y-1/2 flex-col items-center gap-0.5 sm:right-6 sm:gap-1 lg:right-8"
       >
-        <svg class="h-3 w-3 xl:h-3.5 xl:w-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
-          <circle cx="12" cy="12" r="9" /><path stroke-linecap="round" d="M12 7v5l3 2" />
-        </svg>
-        <span>{{ banner.countdown_label }}</span>
-      </div>
+        <div
+          v-if="banner.countdown_label"
+          class="items-center gap-1 text-[9px] font-bold uppercase leading-tight tracking-wide md:text-[10px]"
+          :class="hasMobileArt ? 'flex' : 'hidden sm:flex'"
+          :style="{ color: banner.countdown_title_color }"
+        >
+          <svg class="h-3 w-3 xl:h-3.5 xl:w-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" /><path stroke-linecap="round" d="M12 7v5l3 2" />
+          </svg>
+          <span>{{ banner.countdown_label }}</span>
+        </div>
 
-      <div class="flex items-center gap-1 xl:gap-2">
-        <template v-for="(unit, i) in units" :key="unit.key">
-          <div class="flex min-w-[30px] flex-col items-center rounded-md bg-white/95 px-1 py-0.5 shadow-sm xl:min-w-[44px] xl:px-2 xl:py-1.5">
-            <span class="text-xs font-extrabold leading-none xl:text-lg" :style="{ color: banner.countdown_value_color }">{{ pad(unit.value) }}</span>
-            <span class="mt-0.5 text-[7px] font-semibold uppercase leading-none text-gray-500 xl:text-[8px]">{{ unit.label }}</span>
-          </div>
-          <span v-if="i < units.length - 1" class="text-[10px] font-bold xl:text-sm" :style="{ color: banner.countdown_value_color }">:</span>
-        </template>
+        <div class="flex items-center gap-1 xl:gap-2">
+          <template v-for="(unit, i) in units" :key="unit.key">
+            <div class="flex min-w-[30px] flex-col items-center rounded-md bg-white/95 px-1 py-0.5 shadow-sm xl:min-w-[44px] xl:px-2 xl:py-1.5">
+              <span class="text-xs font-extrabold leading-none xl:text-lg" :style="{ color: banner.countdown_value_color }">{{ pad(unit.value) }}</span>
+              <span class="mt-0.5 text-[7px] font-semibold uppercase leading-none text-gray-500 xl:text-[8px]">{{ unit.label }}</span>
+            </div>
+            <span v-if="i < units.length - 1" class="text-[10px] font-bold xl:text-sm" :style="{ color: banner.countdown_value_color }">:</span>
+          </template>
+        </div>
       </div>
     </div>
   </NuxtLink>

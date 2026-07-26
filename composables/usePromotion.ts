@@ -1,8 +1,10 @@
 /** The site-wide Top Banner (shown above the nav) and Popup (shown once per page load). */
 export interface TopBanner {
   image: string
-  /** Optional 3:1 phone artwork; null = phones use the wide `image`. */
+  /** Optional 6:1 phone artwork; null = phones use the wide `image`. */
   mobile_image: string | null
+  /** Fills the strip either side of the container-width artwork on wide screens. */
+  bg_color: string | null
   ends_at: string | null
   countdown_enabled: boolean
   /** null/blank = admin deliberately cleared the title; hide it, don't fall back to default text. */
