@@ -2,6 +2,9 @@
 usePageSeo({
   title: 'Life @ RazinSoft — Our Culture, People & Workplace',
   description: 'Take a peek inside RazinSoft — our people, culture, the everyday rhythm and the team that makes working here special.',
+  // Share card: the four hero photos as one 1200x630 collage, so the link previews the office
+  // rather than the generic home image. Rebuild it with scripts/build-life-og.php if they change.
+  image: '/images/life-at-razinsoft-og.jpg',
 })
 
 // Life page photos — /public/life/{hero,who-we-are,gallery}/

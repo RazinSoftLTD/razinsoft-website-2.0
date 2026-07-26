@@ -61,7 +61,7 @@ export default defineEventHandler(async (event) => {
   L.push(`- [All Products](${url('/products')}): Full catalogue with search, category filters and sorting.`)
   L.push(`- [Blog / Insights](${url('/blog')}): Articles on software, SaaS, eCommerce, EdTech, security and business.`)
   L.push(`- [About Us](${url('/about-us')}): Company, leadership and the team behind the products.`)
-  L.push(`- [Life @ RazinSoft](${url('/life')}): Culture, workplace and everyday moments.`)
+  L.push(`- [Life @ RazinSoft](${url('/life-at-razinsoft')}): Culture, workplace and everyday moments.`)
   L.push(`- [Careers](${url('/careers')}): Open roles and how to join the team.`)
   L.push(`- [Contact Us](${url('/contact-us')}): Get in touch with the team.`)
   L.push(`- [Support](${url('/support')}): Help centre and support requests.`)

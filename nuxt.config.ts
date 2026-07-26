@@ -112,7 +112,9 @@ export default defineNuxtConfig({
     // Careers renders live (published openings come from the API) — SSR + short cache,
     // so a newly published/unpublished role shows up within a few minutes without a rebuild.
     '/careers': { swr: 180, headers: { 'cache-control': 'public, max-age=0, must-revalidate, s-maxage=180, stale-while-revalidate=600' } },
-    '/life': { prerender: true },
+    '/life-at-razinsoft': { prerender: true },
+    // The page used to live at /life — keep those links (and their search ranking) working.
+    '/life': { redirect: { to: '/life-at-razinsoft', statusCode: 301 } },
     '/support': { prerender: true },
     '/privacy-policy': { prerender: true },
     '/refund-policy': { prerender: true },

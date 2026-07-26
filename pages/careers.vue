@@ -107,7 +107,7 @@ const toneFor = (dept: string) => deptTone[dept] || 'bg-gray-100 text-gray-600'
         <h2 class="font-display text-3xl font-extrabold sm:text-4xl">Ready to grow with us?</h2>
         <p class="mx-auto mt-4 max-w-xl text-gray-300">Explore life at RazinSoft or reach out — we'd love to meet you.</p>
         <div class="mt-8 flex flex-wrap justify-center gap-3">
-          <NuxtLink to="/life" class="btn bg-brand-600 text-white shadow-lg shadow-brand-600/20 hover:bg-brand-700">Life at RazinSoft</NuxtLink>
+          <NuxtLink to="/life-at-razinsoft" class="btn bg-brand-600 text-white shadow-lg shadow-brand-600/20 hover:bg-brand-700">Life at RazinSoft</NuxtLink>
           <NuxtLink to="/contact-us" class="btn border border-white/25 bg-white/5 text-white hover:bg-white/10">Get in touch</NuxtLink>
         </div>
       </div>
