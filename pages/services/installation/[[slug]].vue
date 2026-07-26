@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // Public Installation Plans page — dynamic products + per-product comparison matrix,
 // managed from admin (Products › Installation Plans).
-type Feature = { id: number; label: string }
+type Feature = { id: number; label: string; highlighted?: boolean }
 type Plan = { id: number; name: string; tagline: string | null; price: number; sale_price: number | null; note: string | null; is_popular: boolean; feature_ids: number[] }
 type Product = { id: number; name: string; slug: string; thumbnail: string | null; icon: string | null; currency: string; features: Feature[]; plans: Plan[] }
 
@@ -140,7 +140,11 @@ useHead({
             </thead>
             <tbody>
               <tr v-for="(feature, ri) in active.features" :key="feature.id" class="transition">
-                <td class="px-6 py-3.5 text-sm font-medium text-ink-800" :class="ri % 2 ? 'bg-gray-50/70' : 'bg-white'">{{ feature.label }}</td>
+                <!-- Features the admin starred are bold, with a warm tint so the row reads first. -->
+                <td
+                  class="px-6 py-3.5 text-sm text-ink-800"
+                  :class="[feature.highlighted ? 'font-bold' : 'font-medium', feature.highlighted ? 'bg-amber-50' : (ri % 2 ? 'bg-gray-50/70' : 'bg-white')]"
+                >{{ feature.label }}</td>
                 <td
                   v-for="plan in active.plans" :key="plan.id"
                   class="px-6 py-3.5 text-center"
