@@ -39,7 +39,9 @@ const units = computed(() => [
 
 // The desktop artwork is 16:1, so on a phone it can only ever show a cropped fragment.
 // When the admin supplies a 6:1 phone version we render it whole (aspect-[6/1]); otherwise
-// we keep the old cropped strip.
+// we keep the old cropped strip. From `sm` up the height follows the 16:1 ratio rather than a
+// fixed 80/100px: at 1280px a 100px-tall box is 12.6:1, so object-cover was shaving about a
+// fifth off the artwork's width.
 const hasMobileArt = computed(() => Boolean(banner.value?.mobile_image))
 </script>
 
@@ -51,14 +53,14 @@ const hasMobileArt = computed(() => Boolean(banner.value?.mobile_image))
       <img
         :src="banner.image"
         alt=""
-        class="w-full object-cover sm:h-20 md:h-[100px]"
-        :class="hasMobileArt ? 'aspect-[6/1] sm:aspect-auto' : 'h-16'"
+        class="w-full object-cover sm:h-auto sm:aspect-[16/1]"
+        :class="hasMobileArt ? 'aspect-[6/1]' : 'h-16'"
       />
     </picture>
 
     <div
       v-if="banner.countdown_enabled && banner.ends_at"
-      class="absolute right-2 top-1/2 flex -translate-y-1/2 flex-col items-center gap-0.5 sm:right-4 sm:gap-1 md:right-8"
+      class="absolute right-2 top-1/2 flex -translate-y-1/2 flex-col items-center gap-0.5 sm:right-4 sm:gap-1 md:right-[7%]"
     >
       <div
         v-if="banner.countdown_label"
@@ -66,19 +68,19 @@ const hasMobileArt = computed(() => Boolean(banner.value?.mobile_image))
         :class="hasMobileArt ? 'flex' : 'hidden sm:flex'"
         :style="{ color: banner.countdown_title_color }"
       >
-        <svg class="h-3 w-3 sm:h-3.5 sm:w-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+        <svg class="h-3 w-3 xl:h-3.5 xl:w-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
           <circle cx="12" cy="12" r="9" /><path stroke-linecap="round" d="M12 7v5l3 2" />
         </svg>
         <span>{{ banner.countdown_label }}</span>
       </div>
 
-      <div class="flex items-center gap-1 sm:gap-2">
+      <div class="flex items-center gap-1 xl:gap-2">
         <template v-for="(unit, i) in units" :key="unit.key">
-          <div class="flex min-w-[30px] flex-col items-center rounded-md bg-white/95 px-1 py-0.5 shadow-sm sm:min-w-[44px] sm:px-2 sm:py-1.5">
-            <span class="text-xs font-extrabold leading-none sm:text-lg" :style="{ color: banner.countdown_value_color }">{{ pad(unit.value) }}</span>
-            <span class="mt-0.5 text-[7px] font-semibold uppercase leading-none text-gray-500 sm:text-[8px]">{{ unit.label }}</span>
+          <div class="flex min-w-[30px] flex-col items-center rounded-md bg-white/95 px-1 py-0.5 shadow-sm xl:min-w-[44px] xl:px-2 xl:py-1.5">
+            <span class="text-xs font-extrabold leading-none xl:text-lg" :style="{ color: banner.countdown_value_color }">{{ pad(unit.value) }}</span>
+            <span class="mt-0.5 text-[7px] font-semibold uppercase leading-none text-gray-500 xl:text-[8px]">{{ unit.label }}</span>
           </div>
-          <span v-if="i < units.length - 1" class="text-[10px] font-bold sm:text-sm" :style="{ color: banner.countdown_value_color }">:</span>
+          <span v-if="i < units.length - 1" class="text-[10px] font-bold xl:text-sm" :style="{ color: banner.countdown_value_color }">:</span>
         </template>
       </div>
     </div>
