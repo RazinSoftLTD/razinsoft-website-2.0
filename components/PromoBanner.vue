@@ -38,7 +38,7 @@ const units = computed(() => [
 ])
 
 // The desktop artwork is 16:1, so on a phone it can only ever show a cropped fragment.
-// When the admin supplies a 3:1 phone version we render it whole (aspect-[3/1]); otherwise
+// When the admin supplies a 6:1 phone version we render it whole (aspect-[6/1]); otherwise
 // we keep the old cropped strip.
 const hasMobileArt = computed(() => Boolean(banner.value?.mobile_image))
 </script>
@@ -46,13 +46,13 @@ const hasMobileArt = computed(() => Boolean(banner.value?.mobile_image))
 <template>
   <NuxtLink v-if="banner" to="/products" aria-label="View all products" class="relative block w-full">
     <picture>
-      <!-- Phones get the 3:1 artwork when there is one; everything else uses the wide banner. -->
+      <!-- Phones get the 6:1 artwork when there is one; everything else uses the wide banner. -->
       <source v-if="banner.mobile_image" media="(max-width: 639px)" :srcset="banner.mobile_image" />
       <img
         :src="banner.image"
         alt=""
         class="w-full object-cover sm:h-20 md:h-[100px]"
-        :class="hasMobileArt ? 'aspect-[3/1] sm:aspect-auto' : 'h-16'"
+        :class="hasMobileArt ? 'aspect-[6/1] sm:aspect-auto' : 'h-16'"
       />
     </picture>
 
