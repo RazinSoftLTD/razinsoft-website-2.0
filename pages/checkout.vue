@@ -13,7 +13,7 @@ const { user, fetchMe } = useAuth()
 // The customer's saved billing addresses (Dashboard > Bills Information). While one is chosen
 // the form stays hidden — the address is asked for once, not on every order.
 interface SavedAddress {
-  id: number; label: string | null; full_name: string | null; company: string | null; phone: string | null
+  id: number; label: string; display_label: string; full_name: string | null; company: string | null; phone: string | null
   address: string; city: string | null; state: string | null; zip: string | null; country: string
   is_default: boolean; one_line: string
 }
@@ -216,7 +216,7 @@ const field = 'h-11 w-full rounded-lg border border-transparent bg-gray-100 px-4
               <label for="addr-choice" class="mb-1.5 block text-sm font-medium text-ink-800">Billing address</label>
               <select id="addr-choice" v-model="addressChoice" :class="field">
                 <option v-for="a in savedAddresses" :key="a.id" :value="String(a.id)">
-                  {{ a.label || a.full_name || 'Saved address' }}{{ a.is_default ? ' (default)' : '' }} — {{ a.one_line }}
+                  {{ a.display_label }}{{ a.is_default ? ' (default)' : '' }} — {{ a.one_line }}
                 </option>
                 <option value="new">Use a different address…</option>
               </select>
@@ -224,7 +224,10 @@ const field = 'h-11 w-full rounded-lg border border-transparent bg-gray-100 px-4
               <div v-if="chosenAddress" class="mt-4 rounded-xl border border-gray-100 bg-gray-50/70 p-5">
                 <div class="flex items-start justify-between gap-3">
                   <div class="text-sm leading-relaxed text-ink-800">
-                    <p class="font-bold text-ink-900">{{ chosenAddress.full_name || `${form.firstName} ${form.lastName}` }}</p>
+                    <p class="font-bold text-ink-900">
+                      {{ chosenAddress.full_name || `${form.firstName} ${form.lastName}` }}
+                      <span class="ml-1 rounded-full bg-white px-2 py-0.5 text-[11px] font-semibold text-gray-500">{{ chosenAddress.display_label }}</span>
+                    </p>
                     <p v-if="chosenAddress.company" class="text-gray-500">{{ chosenAddress.company }}</p>
                     <p class="text-gray-600">{{ chosenAddress.one_line }}</p>
                     <p class="mt-1 text-gray-500">{{ form.email }}<span v-if="chosenAddress.phone"> · {{ chosenAddress.phone }}</span></p>

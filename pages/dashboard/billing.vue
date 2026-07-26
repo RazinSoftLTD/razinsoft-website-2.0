@@ -1,9 +1,17 @@
 <script setup lang="ts">
 usePageSeo({ title: 'Bills Information', description: 'Your saved billing addresses.' })
 
+const LABELS = [
+  { value: 'home', text: 'Home' },
+  { value: 'office', text: 'Office' },
+  { value: 'other', text: 'Other' },
+]
+
 interface BillingAddress {
   id: number
-  label: string | null
+  label: string
+  /** "Home", or "Home 1"/"Home 2" once that type repeats — worked out by the API. */
+  display_label: string
   full_name: string | null
   company: string | null
   phone: string | null
@@ -23,7 +31,7 @@ const { data: res, refresh } = await useAsyncData('account-billing-addresses', (
 const addresses = computed<BillingAddress[]>(() => res.value?.data || [])
 
 const blank = () => ({
-  label: '', full_name: '', company: '', phone: '',
+  label: 'home', full_name: '', company: '', phone: '',
   address: '', city: '', state: '', zip: '', country: 'Bangladesh', is_default: false,
 })
 
@@ -44,7 +52,7 @@ function startAdd() {
 
 function startEdit(a: BillingAddress) {
   Object.assign(form, {
-    label: a.label || '', full_name: a.full_name || '', company: a.company || '', phone: a.phone || '',
+    label: a.label || 'other', full_name: a.full_name || '', company: a.company || '', phone: a.phone || '',
     address: a.address, city: a.city || '', state: a.state || '', zip: a.zip || '',
     country: a.country, is_default: a.is_default,
   })
@@ -109,7 +117,7 @@ async function remove(a: BillingAddress) {
         <div class="flex items-start justify-between gap-3">
           <div class="min-w-0">
             <p class="flex items-center gap-2 font-bold text-ink-900">
-              <span class="truncate">{{ a.label || a.full_name || 'Billing address' }}</span>
+              <span class="truncate">{{ a.display_label }}</span>
               <span v-if="a.is_default" class="shrink-0 rounded-full bg-brand-600 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">Default</span>
             </p>
             <p v-if="a.company" class="mt-0.5 text-sm text-gray-500">{{ a.company }}</p>
@@ -139,8 +147,10 @@ async function remove(a: BillingAddress) {
 
       <form class="mt-5 grid gap-4 md:grid-cols-2" @submit.prevent="save">
         <div>
-          <label class="mb-1.5 block text-sm font-medium text-ink-800">Label <span class="text-gray-400">(Optional)</span></label>
-          <input v-model="form.label" type="text" placeholder="Home, Office…" :class="field" />
+          <label class="mb-1.5 block text-sm font-medium text-ink-800">Label <span class="text-red-500">*</span></label>
+          <select v-model="form.label" required :class="field">
+            <option v-for="l in LABELS" :key="l.value" :value="l.value">{{ l.text }}</option>
+          </select>
         </div>
         <div>
           <label class="mb-1.5 block text-sm font-medium text-ink-800">Full Name</label>
