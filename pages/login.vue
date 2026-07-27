@@ -1,5 +1,5 @@
 <script setup lang="ts">
-definePageMeta({ layout: 'auth' })
+definePageMeta({ layout: 'auth', middleware: 'guest' })
 usePageSeo({ title: 'Sign In', description: 'Sign in to your RazinSoft account to manage your products, licenses and downloads.' })
 useSeoMeta({ robots: 'noindex, follow' })
 
