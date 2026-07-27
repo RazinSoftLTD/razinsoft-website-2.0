@@ -2,31 +2,24 @@
 type MenuItem = { title: string; desc: string; to: string; icon: string[]; tone: string; arrow: string }
 type NavItem = { label: string; to?: string; caret?: boolean; menu?: MenuItem[] }
 
+/**
+ * A product site's nav, not an agency's. A buyer arrives asking what it does, what it costs and
+ * whether it will run on their host — so those are the four links, and nothing else competes with
+ * them. Services and portfolio pages belong to the agency site, not here.
+ */
 const nav: NavItem[] = [
-  { label: 'Products', to: '/products', caret: false },
-  {
-    label: 'Services',
-    caret: true,
-    menu: [
-      { title: 'Installation', desc: 'Get your product set up and live by our experts.', to: '/services/installation', tone: 'bg-emerald-50 text-emerald-600', arrow: 'text-emerald-500', icon: ['M12 3v12', 'm8 11 4 4 4-4', 'M4 15v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4'] },
-      { title: 'Customisation', desc: 'Tailor features, design and workflows to your needs.', to: '/services/customization', tone: 'bg-indigo-50 text-indigo-600', arrow: 'text-indigo-500', icon: ['M14.6 6.4a3.5 3.5 0 0 0-4.8 4.2L4 16.4V20h3.6l5.8-5.8a3.5 3.5 0 0 0 4.2-4.8l-2.3 2.3-2-.5-.5-2 2.3-2.3Z'] },
-      { title: 'Maintenance Services', desc: 'Ongoing support, updates and monitoring for peace of mind.', to: '/services/maintenance', tone: 'bg-amber-50 text-amber-600', arrow: 'text-amber-500', icon: ['M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z', 'M12 2.5v2M12 19.5v2M4.5 12h-2M21.5 12h-2M6 6 4.6 4.6M19.4 19.4 18 18M18 6l1.4-1.4M4.6 19.4 6 18'] },
-    ],
-  },
+  { label: 'Modules', to: '/#modules', caret: false },
+  { label: 'Pricing', to: '/#pricing', caret: false },
   {
     label: 'Company',
     caret: true,
     menu: [
-      { title: 'About Us', desc: 'Learn more about our journey and values.', to: '/about-us', tone: 'bg-blue-50 text-blue-600', arrow: 'text-blue-500', icon: ['M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Z', 'M12 11v5', 'M12 7.5h.01'] },
-      // Hidden for now — may be re-enabled later:
-      // { title: 'Contact Us', desc: 'Get in touch — we reply within 24 hours.', to: '/contact-us', tone: 'bg-sky-50 text-sky-600', arrow: 'text-sky-500', icon: ['M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z', 'm3.5 6.5 8.5 6 8.5-6'] },
-      { title: 'Life@RazinSoft', desc: 'Explore our life, culture and workplace.', to: '/life-at-razinsoft', tone: 'bg-brand-50 text-brand-600', arrow: 'text-brand-500', icon: ['M9 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z', 'M17 11a3 3 0 1 0 0-6', 'M3 20a6 6 0 0 1 12 0', 'M16.5 14.5A6 6 0 0 1 21 20'] },
-      { title: 'Careers', desc: 'Join our team and build your future.', to: '/careers', tone: 'bg-purple-50 text-purple-600', arrow: 'text-purple-500', icon: ['M3 8h18v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8Z', 'M8 8V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2', 'M3 13h18'] },
-      { title: 'Blog', desc: 'Read our latest news and insights.', to: '/blog', tone: 'bg-orange-50 text-orange-600', arrow: 'text-orange-500', icon: ['M7 3h7l5 5v13H7z', 'M14 3v5h5', 'M9 13h6', 'M9 17h4'] },
-      { title: 'Support', desc: 'Get help and support from our team.', to: '/support', tone: 'bg-rose-50 text-rose-600', arrow: 'text-rose-500', icon: ['M4 14v-2a8 8 0 0 1 16 0v2', 'M20 15a2 2 0 0 1-2 2h-1v-5h1a2 2 0 0 1 2 2Z', 'M4 15a2 2 0 0 1 2-2h1v5H6a2 2 0 0 1-2-2Z', 'M18 17a4 4 0 0 1-4 3h-2'] },
+      { title: 'About SmartDesk', desc: 'Who builds it, and why it works this way.', to: '/about-us', tone: 'bg-blue-50 text-blue-600', arrow: 'text-blue-500', icon: ['M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Z', 'M12 11v5', 'M12 7.5h.01'] },
+      { title: 'Support', desc: 'Questions before or after you buy.', to: '/support', tone: 'bg-rose-50 text-rose-600', arrow: 'text-rose-500', icon: ['M4 14v-2a8 8 0 0 1 16 0v2', 'M20 15a2 2 0 0 1-2 2h-1v-5h1a2 2 0 0 1 2 2Z', 'M4 15a2 2 0 0 1 2-2h1v5H6a2 2 0 0 1-2-2Z', 'M18 17a4 4 0 0 1-4 3h-2'] },
+      { title: 'Blog', desc: 'Release notes and how-to guides.', to: '/blog', tone: 'bg-orange-50 text-orange-600', arrow: 'text-orange-500', icon: ['M7 3h7l5 5v13H7z', 'M14 3v5h5', 'M9 13h6', 'M9 17h4'] },
     ],
   },
-  { label: 'Contact Us', to: '/contact-us', caret: false },
+  { label: 'Contact', to: '/contact-us', caret: false },
 ]
 
 const open = ref(false)
@@ -46,9 +39,9 @@ onMounted(() => {
 <template>
   <header class="sticky top-0 z-50 border-b border-gray-100 bg-white/90 backdrop-blur">
     <div class="container-page flex h-16 items-center justify-between gap-4">
-      <NuxtLink to="/" class="flex shrink-0 items-center gap-2" aria-label="RazinSoft home">
+      <NuxtLink to="/" class="flex shrink-0 items-center gap-2" aria-label="SmartDesk home">
         <!-- Brand logo (shrinks on ultra-narrow phones so the header never overflows). -->
-        <img src="/images/Razinsoft-logo.webp" alt="RazinSoft" width="1772" height="384" class="h-8 w-auto max-[379px]:h-6">
+        <img src="/images/smartdesk-logo.svg" alt="SmartDesk" width="760" height="180" class="h-8 w-auto max-[379px]:h-6">
       </NuxtLink>
 
       <nav class="hidden items-center gap-1 lg:flex" aria-label="Primary">

@@ -1,15 +1,15 @@
 <script setup lang="ts">
 const company = [
-  { label: 'About Us', to: '/about-us' },
-  { label: 'Contact Us', to: '/contact-us' },
-  { label: 'Career & Positions', to: '/careers' },
+  { label: 'About SmartDesk', to: '/about-us' },
+  { label: 'Contact', to: '/contact-us' },
   { label: 'Terms & Conditions', to: '/terms-and-conditions' },
+  { label: 'Refund Policy', to: '/refund-policy' },
 ]
 const quick = [
+  { label: 'Modules', to: '/#modules' },
+  { label: 'Pricing', to: '/#pricing' },
+  { label: 'Blog', to: '/blog' },
   { label: 'Login', to: '/login' },
-  { label: 'Products', to: '/products' },
-  { label: 'Services', to: '/#services' },
-  { label: 'Blogs', to: '/blog' },
   { label: 'Get Support', to: '/dashboard/support', action: 'support' },
 ]
 
@@ -45,7 +45,7 @@ const open = reactive<Record<string, boolean>>({ company: false, quick: false })
       <!-- Brand -->
       <div class="lg:col-span-3">
         <!-- White-inverted brand logo for the dark footer. -->
-        <img src="/images/Razinsoft-logo.webp" alt="RazinSoft" width="1772" height="384" loading="lazy" class="h-9 w-auto brightness-0 invert">
+        <img src="/images/smartdesk-logo.svg" alt="SmartDesk" width="760" height="180" loading="lazy" class="h-9 w-auto brightness-0 invert">
         <p class="mt-4 max-w-xs text-sm leading-relaxed text-gray-400">
           Elevate Your Business with Innovative Web, App, and Software Solutions. Partner for Excellence in Tech.
         </p>
@@ -183,7 +183,7 @@ const open = reactive<Record<string, boolean>>({ company: false, quick: false })
     <!-- Bottom bar -->
     <div class="border-t border-white/10">
       <div class="container-page flex flex-col items-center justify-between gap-3 py-5 text-xs text-gray-400 sm:flex-row">
-        <p>© 2026 RazinSoft. All rights reserved.</p>
+        <p>© {{ new Date().getFullYear() }} SmartDesk — a product by <a href="https://www.razinsoft.com" target="_blank" rel="noopener" class="hover:text-white">RazinSoft</a>. All rights reserved.</p>
         <div class="flex flex-wrap justify-center gap-x-5 gap-y-2">
           <NuxtLink to="/terms-and-conditions" class="hover:text-white">Terms &amp; Conditions</NuxtLink>
           <NuxtLink to="/refund-policy" class="hover:text-white">Refund Policy</NuxtLink>
