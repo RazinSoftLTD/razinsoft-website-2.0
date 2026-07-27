@@ -90,6 +90,14 @@ const faqs = [
   },
 ]
 
+/** Captured from the demo install by tools/gen-screens (admin repo), never from a live one. */
+const screens = [
+  { file: 'deals', title: 'Deals', caption: 'a pipeline you drag cards across, with milestones on each' },
+  { file: 'whatsapp', title: 'WhatsApp inbox', caption: 'every number your team answers, in one place' },
+  { file: 'clients', title: 'Clients', caption: 'the book everything else hangs off' },
+  { file: 'email-templates', title: 'Email templates', caption: 'edit the wording, switch one off, see what sent' },
+]
+
 const stack = ['Laravel 12', 'Nuxt 3', 'Tailwind CSS', 'MySQL 8', 'Alpine.js', 'Stripe & PayPal']
 
 const openFaq = ref<number | null>(0)
@@ -131,8 +139,8 @@ const openFaq = ref<number | null>(0)
 
         <div class="relative">
           <div class="absolute -inset-6 rounded-[2rem] bg-gradient-to-tr from-[#3aa6ff]/20 to-[#7b4bff]/20 blur-2xl"></div>
-          <img src="/images/smartdesk-hero.png" alt="The SmartDesk dashboard"
-               class="relative w-full rounded-2xl shadow-2xl ring-1 ring-white/10" width="1000" height="640" />
+          <img src="/images/screens/dashboard.png" alt="The SmartDesk dashboard"
+               class="relative w-full rounded-2xl shadow-2xl ring-1 ring-white/10" width="1440" height="813" />
         </div>
       </div>
     </section>
@@ -187,6 +195,30 @@ const openFaq = ref<number | null>(0)
               </li>
             </ul>
           </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────── Screens ───────── -->
+    <section class="bg-white py-20">
+      <div class="container-page">
+        <div class="mx-auto max-w-2xl text-center">
+          <h2 class="font-display text-3xl font-extrabold text-ink-900 sm:text-4xl">What it looks like</h2>
+          <p class="mt-3 text-gray-600">
+            Real screens from the panel. Every name and figure in them is invented — the demo runs on
+            its own database.
+          </p>
+        </div>
+
+        <div class="mt-12 grid gap-6 lg:grid-cols-2">
+          <figure v-for="sc in screens" :key="sc.file" class="overflow-hidden rounded-2xl border border-gray-100 bg-gray-50">
+            <img :src="`/images/screens/${sc.file}.png`" :alt="sc.caption" loading="lazy"
+                 class="w-full" width="1440" height="813" />
+            <figcaption class="border-t border-gray-100 bg-white px-5 py-3.5 text-sm">
+              <span class="font-bold text-ink-900">{{ sc.title }}</span>
+              <span class="text-gray-500"> — {{ sc.caption }}</span>
+            </figcaption>
+          </figure>
         </div>
       </div>
     </section>
