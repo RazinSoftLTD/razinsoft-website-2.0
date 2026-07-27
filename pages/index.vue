@@ -1,358 +1,312 @@
 <script setup lang="ts">
-// Homepage products (admin-flagged for_home, max 6) + the latest articles teaser both come
-// from the API — fetch them IN PARALLEL so SSR waits once (max of the two), not one-after-another.
-const { $api } = useNuxtApp()
-const [{ data: homeProducts }, { data: articlesRes }] = await Promise.all([
-  useHomeProducts(),
-  useAsyncData('home-articles', () => $api<any>('/articles')),
-])
-const products = computed(() => homeProducts.value ?? [])
-
 usePageSeo({
-  title: 'RazinSoft | Custom Software Development & Ready-Made Business Solutions',
+  title: 'SmartDesk — CRM, HRM, Projects, WhatsApp & Email in one business hub',
   description:
-    'RazinSoft delivers custom software development, SaaS platforms, and ready-made eCommerce, LMS, POS & ride-sharing scripts — trusted in 25+ countries. Book a free consultation.',
+    'SmartDesk is a self-hosted business hub: CRM, HRM, project management, WhatsApp and email management, internal messaging, analytics and a full REST API. One install, one login, no per-seat fees.',
+  ogType: 'product',
 })
-useSchemaOrg([defineWebPage({ '@type': 'CollectionPage' })])
 
-const reviews = [
-  { brand: 'Google', img: '/home/Google.webp', score: '5.0' },
-  { brand: 'CodeCanyon', img: '/home/Code-Canyon.webp', score: '4.9' },
-  { brand: 'Clutch', img: '/home/Clutch.webp', score: '4.9' },
+/**
+ * The modules, in the order a business meets them: win the work, deliver it, keep in touch, then
+ * measure it. Each one is a real screen in the panel, not a roadmap item — a buyer who reads this
+ * list and then opens the demo has to find the same thing there.
+ */
+const modules = [
+  {
+    name: 'CRM',
+    blurb: 'Leads, deals, follow-ups and a client book that remembers every conversation.',
+    points: ['Pipeline with stages & probability', 'Follow-up reminders', 'Import & export'],
+    icon: 'M4.5 20a7.5 7.5 0 0 1 15 0M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z',
+  },
+  {
+    name: 'HRM',
+    blurb: 'Staff records, attendance, leave, payroll and documents — the whole employee file.',
+    points: ['Attendance & shifts', 'Leave approvals', 'Payslips & documents'],
+    icon: 'M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2m1-2h6v4H9V2Z',
+  },
+  {
+    name: 'Project Management',
+    blurb: 'Projects, milestones, tasks and timers, with what was billed against what was done.',
+    points: ['Milestones & tasks', 'Built-in time tracking', 'Client-visible progress'],
+    icon: 'M9 11l3 3 5-6M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z',
+  },
+  {
+    name: 'WhatsApp Management',
+    blurb: 'A shared inbox for every number — QR-paired phones and Meta Cloud API side by side.',
+    points: ['Several numbers, one inbox', 'Quick replies & labels', 'Approved template sending'],
+    icon: 'M12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.4A10 10 0 1 0 12 2Z',
+  },
+  {
+    name: 'Email Management',
+    blurb: 'Several SMTP accounts, editable templates, a real queue, and every message logged.',
+    points: ['Templates with variables', 'Bounce & complaint handling', 'Opens, clicks, analytics'],
+    icon: 'M3 6h18v12H3zM3 7l9 6 9-6',
+  },
+  {
+    name: 'Internal Messaging',
+    blurb: 'Your team talks where the work lives, so the context never leaves the room.',
+    points: ['Direct & group threads', 'Live, without a refresh', 'Unread badges everywhere'],
+    icon: 'M8 10h8M8 14h5M21 12a8 8 0 0 1-8 8H7l-4 3v-4.5A8 8 0 1 1 21 12Z',
+  },
+  {
+    name: 'Analytics',
+    blurb: 'Revenue, pipeline, staff and support on one board — the numbers, not a data export.',
+    points: ['Revenue & orders', 'Pipeline health', 'Support response times'],
+    icon: 'M4 19V9m6 10V5m6 14v-7M3 21h18',
+  },
+  {
+    name: 'REST API & data conversion',
+    blurb: 'A documented API and import tools, so whatever you already have comes with you.',
+    points: ['Token-authenticated REST API', 'CSV import & export', 'Webhooks for events'],
+    icon: 'm9 8-5 4 5 4M15 8l5 4-5 4M13.5 5l-3 14',
+  },
 ]
 
-const whyFeatures = [
-  { title: 'Rapid Deployment', desc: 'Launch production-ready software quickly with pre-built modules, optimized workflows, and expert implementation support.', paths: ['m13 2-8 12h6l-2 8 8-12h-6l2-8Z'] },
-  { title: 'Enterprise Security', desc: 'Protect your business with secure architecture, encrypted data handling, and reliability standards built into every solution.', paths: ['M12 2.5l7.5 3v5.25c0 5.02-3.43 8.06-7.5 9.5-4.07-1.44-7.5-4.48-7.5-9.5V5.5l7.5-3Z', 'm9 12 2 2 4-4'] },
-  { title: '24/7 Expert Support', desc: 'Work with experienced engineers who provide fast responses, technical guidance, and long-term support when you need it.', paths: ['M4 13a8 8 0 0 1 16 0v5a2 2 0 0 1-2 2h-1v-6h3M4 13v5a2 2 0 0 0 2 2h1v-6H4'] },
-  { title: 'Global Infrastructure', desc: 'Built for growing businesses with high-performance infrastructure that scales smoothly as users, orders, and traffic increase.', paths: ['M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Z', 'M12 3c2.5 2.5 2.5 15 0 18M12 3c-2.5 2.5-2.5 15 0 18M3.5 9h17M3.5 15h17'] },
+/** The questions a CodeCanyon buyer actually asks before clicking buy. */
+const faqs = [
+  {
+    q: 'Is this a one-time payment?',
+    a: 'Yes. You buy the licence once and host it on your own server. There are no per-user fees and no monthly bill from us.',
+  },
+  {
+    q: 'What do I need to run it?',
+    a: 'A host with PHP 8.3 or newer, MySQL 8 and Node. A standard VPS or cPanel account is enough. Installation instructions are included.',
+  },
+  {
+    q: 'Can I change the branding?',
+    a: 'The name, logo and colours are set from inside the admin panel — no code and no rebuild. The panel your team signs in to is yours, not ours.',
+  },
+  {
+    q: 'Do I get the source code?',
+    a: 'Yes, the complete Laravel and Nuxt source. You can extend it, and your developer can read every line of it.',
+  },
+  {
+    q: 'What about updates?',
+    a: 'Updates are free for the life of the licence and downloaded from your CodeCanyon account.',
+  },
+  {
+    q: 'Is support included?',
+    a: 'Six months of support comes with the purchase and can be extended. Bug fixes are not time-limited.',
+  },
 ]
 
-const services = [
-  { title: 'Custom Software Development', desc: 'Scalable custom software built around your unique business needs - secure, reliable, and ready for growth.', tone: 'bg-blue-50 text-blue-600', paths: ['M9 12h6m-6 4h6M8 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h6.6a1 1 0 0 1 .7.3l5.4 5.4a1 1 0 0 1 .3.7V19a2 2 0 0 1-2 2h-1'] },
-  { title: 'eCommerce Development', desc: 'Conversion-focused eCommerce platforms designed to increase sales and deliver exceptional customer experiences.', tone: 'bg-emerald-50 text-emerald-600', paths: ['M3 6h17l-1.4 12a2 2 0 0 1-2 1.7H6.4a2 2 0 0 1-2-1.7L3 6Z', 'M8 6a4 4 0 1 1 8 0'] },
-  { title: 'AI & SaaS Development', desc: 'Smart software powered by AI and automation to improve efficiency, decision-making, and business performance.', tone: 'bg-purple-50 text-purple-600', paths: ['m13 2-8 12h6l-2 8 8-12h-6l2-8Z'] },
-  { title: 'Cloud & DevOps Solutions', desc: 'Modern cloud infrastructure and DevOps practices for faster deployments, stronger security, and reliable performance.', tone: 'bg-amber-50 text-amber-600', paths: ['M7 18a4 4 0 0 1-.5-7.97A6 6 0 0 1 18 9a4.5 4.5 0 0 1-.5 9H7Z'] },
-  { title: 'Marketing & Creative Solutions', desc: 'Data-driven marketing and creative strategies that increase visibility, generate leads, and strengthen your brand.', tone: 'bg-rose-50 text-rose-600', paths: ['M3 17l6-6 4 4 7-7', 'M16 8h5v5'] },
-  { title: 'Maintenance & Support', desc: 'Reliable monitoring, regular updates, and expert technical support to keep your business running smoothly.', tone: 'bg-teal-50 text-teal-600', paths: ['M4 13a8 8 0 0 1 16 0v5a2 2 0 0 1-2 2h-1v-6h3M4 13v5a2 2 0 0 0 2 2h1v-6H4'] },
-]
+const stack = ['Laravel 12', 'Nuxt 3', 'Tailwind CSS', 'MySQL 8', 'Alpine.js', 'Stripe & PayPal']
 
-const testimonials = [
-  { quote: "ReadyRide helped us launch much faster than building everything from scratch. The apps run smoothly, and the admin panel is easy to manage.", name: 'Araf khan', role: 'CTO, MetroRide Technologies', initials: 'AK', avatar: 'bg-blue-600' },
-  { quote: 'We wanted an eCommerce solution that could be launched quickly. The setup was straightforward, and the platform has been a great fit for our business.', name: 'Pedro van', role: 'HR Manager, NovaCart Commerce', initials: 'PV', avatar: 'bg-emerald-600' },
-  { quote: "The software has been reliable, and the support team is responsive whenever we need help. It's a solution we can depend on every day.", name: 'David Müller', role: 'Founder, RetailHub Stores', initials: 'DM', avatar: 'bg-orange-500' },
-  { quote: "ReadyLMS gave us most of the features we needed from day one. The platform is easy to use, and both instructors and students adapted quickly.", name: 'Pradip kulkarni', role: 'CEO, SkillBridge Academy', initials: 'PK', avatar: 'bg-violet-600' },
-  { quote: "The platform made our laundry operations much easier to manage. Order tracking is smoother, and daily tasks take less time than before.", name: 'Michael Carter', role: 'CEO, FreshFold Laundry Services', initials: 'MC', avatar: 'bg-rose-500' },
-  { quote: "We needed a system to manage properties, tenants, and payments in one place. The platform was easy to use, and the support team was always helpful when needed.", name: 'Thomas Becker', role: 'AM, UrbanSpace Management', initials: 'TB', avatar: 'bg-cyan-600' },
-]
-// Duplicated set for a seamless infinite marquee (loops at -50%).
-const reviewsLoop = [...testimonials, ...testimonials, ...testimonials, ...testimonials]
-
-// Latest published articles for the "Insights & updates" teaser (fetched in parallel above).
-const tagTones =['bg-blue-100 text-blue-700', 'bg-emerald-100 text-emerald-700', 'bg-purple-100 text-purple-700', 'bg-orange-100 text-orange-700', 'bg-rose-100 text-rose-700']
-const posts = computed(() =>
-  (articlesRes.value?.data ?? []).slice(0, 3).map((a: any, i: number) => ({
-    slug: a.slug,
-    title: a.title,
-    excerpt: a.excerpt,
-    author: a.author,
-    date: a.date,
-    read: a.readTime,
-    tag: a.category,
-    tagTone: tagTones[i % tagTones.length],
-    image: a.image,
-  })),
-)
+const openFaq = ref<number | null>(0)
 </script>
 
 <template>
-  <!-- ============ HERO ============ -->
-  <section class="container-page grid items-center gap-12 py-14 lg:grid-cols-2 lg:py-20">
-    <div>
-      <h1 class="font-display text-5xl font-extrabold leading-[1.05] tracking-tight text-ink-900 sm:text-6xl">
-        Scalable
-        <span class="block w-fit text-brand-600 underline decoration-brand-600/40 decoration-4 underline-offset-4">Software Solutions</span>
-      </h1>
-      <p class="mt-6 max-w-lg text-lg leading-relaxed text-gray-600">
-        RazinSoft builds ready and custom software solutions for eCommerce, LMS, POS, transportation, and more  — trusted by 25+ countries. 
-      </p>
-      <NuxtLink to="/book-a-meeting" class="btn-brand mt-8 shadow-lg shadow-brand-600/20">
-        Book a Free Consultation
-        <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6" /></svg>
-      </NuxtLink>
-
-      <dl class="mt-8 grid max-w-md grid-cols-3 divide-x divide-gray-100 rounded-2xl border border-gray-100 bg-white px-2 py-7 shadow-sm sm:px-4">
-        <div v-for="r in reviews" :key="r.brand" class="flex items-center justify-center px-2 sm:px-4">
-          <dt class="sr-only">{{ r.brand }} — rated {{ r.score }} out of 5</dt>
-          <dd>
-            <!-- Source files are 150x57. Fixed width (not w-full) = no reflow on load. -->
-            <img
-              :src="r.img" :alt="`${r.brand} rating ${r.score} out of 5`"
-              width="150" height="57" loading="lazy" decoding="async"
-              class="w-20"
-              style="height: auto;"
-            >
-          </dd>
-        </div>
-      </dl>
-    </div>
-
-    <!-- Two overlapping image cards with floating stat badges -->
-    <div class="relative mx-auto w-full max-w-md lg:max-w-none">
-      <!-- Decorative dot grids tucked behind the image corners (top-left + bottom-right) -->
-      <!-- Left grid: tall, on the left above the "Countries Served" (bottom-left) image -->
-      <svg class="pointer-events-none absolute left-[8%] top-[22%] z-0 hidden h-40 w-16 -translate-y-1/2 text-brand-400/40 lg:block" aria-hidden="true">
-        <defs>
-          <pattern id="hero-dots-left" width="18" height="18" patternUnits="userSpaceOnUse">
-            <circle cx="2" cy="2" r="1.6" fill="currentColor" />
-          </pattern>
-        </defs>
-        <rect width="100%" height="100%" fill="url(#hero-dots-left)" />
-      </svg>
-      <!-- Right grid: centred on the right edge of the "Tech Professionals" (top-right) image -->
-      <svg class="pointer-events-none absolute right-0 top-[28%] z-0 hidden h-32 w-20 -translate-y-1/2 translate-x-[115%] text-brand-400/40 lg:block" aria-hidden="true">
-        <defs>
-          <pattern id="hero-dots-right" width="18" height="18" patternUnits="userSpaceOnUse">
-            <circle cx="2" cy="2" r="1.6" fill="currentColor" />
-          </pattern>
-        </defs>
-        <rect width="100%" height="100%" fill="url(#hero-dots-right)" />
-      </svg>
-
-      <div class="relative z-10 ml-auto w-[82%]">
-        <NuxtImg src="/images/razinsoft-team-focus-hero-image.webp" alt="The RazinSoft team is dedicated to working" width="520" height="360" sizes="100vw lg:520px" format="webp" loading="eager" fetchpriority="high" preload class="aspect-[13/9] w-full rounded-3xl bg-gray-100 object-cover shadow-xl" />
-        <div class="absolute left-4 top-4 rounded-2xl bg-white/95 px-4 py-2.5 shadow-lg backdrop-blur">
-          <p class="font-display text-2xl font-extrabold text-ink-900">35+</p>
-          <p class="text-xs text-gray-500">Tech Professionals</p>
-        </div>
-      </div>
-      <div class="relative z-10 -mt-14 w-[72%]">
-        <NuxtImg src="/images/razinsoft-resolving-issue-together.webp" alt="RazinSoft team is resolving their issues together" width="420" height="300" sizes="100vw lg:420px" format="webp" loading="lazy" fetchpriority="low" class="aspect-[7/5] w-full rounded-3xl border-4 border-white bg-gray-100 object-cover shadow-xl" />
-        <div class="absolute left-4 top-4 rounded-2xl bg-white/95 px-4 py-2.5 shadow-lg backdrop-blur">
-          <p class="font-display text-2xl font-extrabold text-ink-900">25+</p>
-          <p class="text-xs text-gray-500">Countries Served</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ TRUSTED-BY LOGOS ============ -->
-  <TrustedLogos />
-
-  <!-- ============ PRODUCTS ============ -->
-  <section id="products" class="scroll-mt-20 bg-gray-50 py-20">
-    <div class="container-page">
-      <div class="flex flex-wrap items-end justify-between gap-4">
+  <div>
+    <!-- ───────── Hero ───────── -->
+    <section class="relative overflow-hidden bg-gradient-to-br from-[#0f172a] via-[#1e2b52] to-[#0f172a] text-white">
+      <div class="container-page grid items-center gap-14 py-20 lg:grid-cols-2 lg:py-28">
         <div>
-          <p class="text-xs font-bold uppercase tracking-widest text-brand-600">Our Products</p>
-          <h2 class="mt-2 font-display text-4xl font-extrabold text-ink-900">Explore Our Products</h2>
-          <p class="mt-2 text-gray-600">Ready-to-Deploy Software Solutions for growing businesses.</p>
+          <p class="inline-flex items-center gap-2 rounded-full bg-white/10 px-3.5 py-1.5 text-xs font-semibold tracking-wide">
+            <span class="h-1.5 w-1.5 rounded-full bg-emerald-400"></span>
+            Self-hosted · One-time licence
+          </p>
+
+          <h1 class="mt-5 font-display text-4xl font-extrabold leading-tight sm:text-5xl lg:text-6xl">
+            Everything your business
+            <span class="bg-gradient-to-r from-[#3aa6ff] to-[#a78bfa] bg-clip-text text-transparent">runs on</span>,
+            in one place.
+          </h1>
+
+          <p class="mt-5 max-w-xl text-lg leading-relaxed text-gray-300">
+            SmartDesk is a business hub you install on your own server. CRM, HR, projects, WhatsApp,
+            email, internal chat and analytics — one login, one database, no per-seat pricing.
+          </p>
+
+          <div class="mt-8 flex flex-wrap gap-3">
+            <a href="#pricing" class="rounded-xl bg-white px-6 py-3.5 text-sm font-bold text-ink-900 transition hover:bg-gray-100">
+              Buy on CodeCanyon
+            </a>
+            <a href="#modules" class="rounded-xl border border-white/25 px-6 py-3.5 text-sm font-bold text-white transition hover:bg-white/10">
+              See the modules
+            </a>
+          </div>
+
+          <p class="mt-5 text-sm text-gray-400">Full source code · Free lifetime updates · 6 months support</p>
         </div>
-        <NuxtLink to="/products" class="btn-outline">View All
-          <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m9 6 6 6-6 6" /></svg>
-        </NuxtLink>
-      </div>
 
-      <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        <ProductCard v-for="p in products" :key="p.slug" :product="p" />
-      </div>
-
-      <div class="mt-12 text-center">
-        <NuxtLink to="/products" class="btn-brand uppercase tracking-wide">View all products
-          <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m9 6 6 6-6 6" /></svg>
-        </NuxtLink>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ WHY RAZINSOFT ============ -->
-  <section id="why" class="container-page scroll-mt-20 py-20">
-    <div class="grid items-center gap-12 lg:grid-cols-2">
-      <div class="relative">
-        <NuxtImg src="/images/RazinSoft-production-team.webp" alt="RazinSoft team collaborating in the office" width="600" height="460" sizes="100vw lg:600px" format="webp" loading="lazy" class="aspect-[4/3] w-full rounded-3xl bg-gray-100 object-cover shadow-lg" />
-        <div class="absolute -bottom-6 right-4 rounded-2xl bg-white px-5 py-3 shadow-xl ring-1 ring-gray-100 sm:right-8">
-          <p class="flex items-center gap-2 text-sm font-semibold text-emerald-600"><span class="h-2 w-2 rounded-full bg-emerald-500" aria-hidden="true" />Live Support Active</p>
-          <p class="mt-1 text-xs text-gray-500">Average response time</p>
-          <p class="font-display text-2xl font-extrabold text-ink-900">&lt;2 min</p>
+        <div class="relative">
+          <div class="absolute -inset-6 rounded-[2rem] bg-gradient-to-tr from-[#3aa6ff]/20 to-[#7b4bff]/20 blur-2xl"></div>
+          <img src="/images/smartdesk-hero.png" alt="The SmartDesk dashboard"
+               class="relative w-full rounded-2xl shadow-2xl ring-1 ring-white/10" width="1000" height="640" />
         </div>
       </div>
+    </section>
 
-      <div>
-        <p class="text-xs font-bold uppercase tracking-widest text-brand-600">Why RazinSoft</p>
-        <h2 class="mt-2 font-display text-4xl font-extrabold leading-tight text-ink-900">
-          Your Trusted Technology Partner for Affordable, High-Quality Software 
-        </h2>
-        <p class="mt-4 text-gray-600">
-          Built from real client feedback. Tested for reliability. Backed by experts. We don't just deliver software; we become your technology partner for long-term growth. 
+    <!-- ───────── What it replaces ───────── -->
+    <section class="border-b border-gray-100 bg-white py-14">
+      <div class="container-page">
+        <p class="text-center text-sm font-semibold uppercase tracking-widest text-gray-400">
+          One install instead of six subscriptions
         </p>
-        <div class="mt-8 grid gap-4 sm:grid-cols-2">
-          <article v-for="f in whyFeatures" :key="f.title" class="rounded-2xl border border-gray-100 p-5 shadow-sm">
-            <div class="grid h-10 w-10 place-items-center rounded-xl bg-brand-50 text-brand-600" aria-hidden="true">
-              <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path v-for="d in f.paths" :key="d" stroke-linecap="round" stroke-linejoin="round" :d="d" /></svg>
-            </div>
-            <h3 class="mt-4 font-display text-base font-bold text-ink-900">{{ f.title }}</h3>
-            <p class="mt-1.5 text-sm text-gray-600">{{ f.desc }}</p>
+        <div class="mt-7 grid gap-6 text-center sm:grid-cols-2 lg:grid-cols-4">
+          <div v-for="s in [
+            { n: '8', l: 'modules, one login' },
+            { n: '0', l: 'per-user fees' },
+            { n: '100%', l: 'source code included' },
+            { n: 'Your', l: 'server, your data' },
+          ]" :key="s.l">
+            <p class="font-display text-4xl font-extrabold text-ink-900">{{ s.n }}</p>
+            <p class="mt-1 text-sm text-gray-500">{{ s.l }}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────── Modules ───────── -->
+    <section id="modules" class="scroll-mt-20 bg-gray-50 py-20">
+      <div class="container-page">
+        <div class="mx-auto max-w-2xl text-center">
+          <h2 class="font-display text-3xl font-extrabold text-ink-900 sm:text-4xl">Eight modules, one system</h2>
+          <p class="mt-3 text-gray-600">
+            They share the same clients, the same staff and the same numbers — so a lead becoming a
+            project becoming an invoice never leaves the building.
+          </p>
+        </div>
+
+        <div class="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+          <article v-for="m in modules" :key="m.name"
+                   class="group rounded-2xl border border-gray-100 bg-white p-6 transition hover:border-brand-200 hover:shadow-lg">
+            <span class="grid h-11 w-11 place-items-center rounded-xl bg-brand-50 text-brand-600 transition group-hover:bg-brand-600 group-hover:text-white">
+              <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" :d="m.icon" />
+              </svg>
+            </span>
+            <h3 class="mt-4 font-display text-lg font-bold text-ink-900">{{ m.name }}</h3>
+            <p class="mt-1.5 text-sm leading-relaxed text-gray-600">{{ m.blurb }}</p>
+            <ul class="mt-4 space-y-1.5">
+              <li v-for="p in m.points" :key="p" class="flex items-start gap-2 text-sm text-gray-500">
+                <svg class="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="m5 13 4 4L19 7" />
+                </svg>
+                {{ p }}
+              </li>
+            </ul>
           </article>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ============ SERVICES ============ -->
-  <section id="services" class="container-page scroll-mt-20 py-20">
-    <div class="flex flex-wrap items-end justify-between gap-4">
-      <div>
-        <p class="text-xs font-bold uppercase tracking-widest text-brand-600">Our Service</p>
-        <h2 class="mt-2 max-w-2xl font-display text-4xl font-extrabold leading-tight text-ink-900">
-          Innovative Software Services Designed to Power Business Growth 
-        </h2>
-      </div>
-      <NuxtLink to="/#services" class="btn-outline">All Services
-        <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m9 6 6 6-6 6" /></svg>
-      </NuxtLink>
-    </div>
-
-    <div class="mt-12 grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
-      <article v-for="s in services" :key="s.title" class="group flex gap-4">
-        <div class="mt-0.5 grid h-12 w-12 shrink-0 place-items-center rounded-xl transition-transform duration-200 group-hover:scale-110" :class="s.tone" aria-hidden="true">
-          <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path v-for="d in s.paths" :key="d" stroke-linecap="round" stroke-linejoin="round" :d="d" /></svg>
-        </div>
+    <!-- ───────── Why ───────── -->
+    <section class="bg-white py-20">
+      <div class="container-page grid items-center gap-14 lg:grid-cols-2">
         <div>
-          <h3 class="font-display text-lg font-bold text-ink-900 transition-colors group-hover:text-brand-600">{{ s.title }}</h3>
-          <p class="mt-2 text-sm leading-relaxed text-gray-600">{{ s.desc }}</p>
-        </div>
-      </article>
-    </div>
-  </section>
+          <h2 class="font-display text-3xl font-extrabold text-ink-900 sm:text-4xl">Built to be owned, not rented</h2>
+          <p class="mt-4 leading-relaxed text-gray-600">
+            Most business tools charge per person, per month, and keep your data on their servers.
+            SmartDesk is bought once and installed on yours. The database is yours, the source is
+            yours, and adding the tenth member of staff costs nothing.
+          </p>
 
-  <!-- ============ TESTIMONIALS ============ -->
-  <section class="overflow-hidden bg-gray-50 py-20">
-    <div class="container-page">
-      <div class="text-center">
-        <p class="text-xs font-bold uppercase tracking-widest text-brand-600">Customer Stories</p>
-        <h2 class="mt-2 font-display text-4xl font-extrabold text-ink-900">Trusted by teams worldwide.</h2>
-      </div>
-    </div>
-
-    <!-- Infinite left→right marquee -->
-    <div class="marquee mt-12">
-      <ul class="marquee-track">
-        <li v-for="(t, i) in reviewsLoop" :key="i" class="w-[300px] shrink-0 sm:w-[380px]">
-          <figure class="flex h-full flex-col rounded-2xl border border-gray-100 bg-white p-7 shadow-sm">
-            <div class="flex gap-1 text-amber-400" aria-hidden="true">
-              <svg v-for="n in 5" :key="n" class="h-5 w-5 fill-current" viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.3 5.9.9-4.2 4.1 1 5.8L10 15l-5.3 2.6 1-5.8L1.5 7.7l5.9-.9z" /></svg>
-            </div>
-            <blockquote class="mt-4 flex-1 text-[15px] leading-relaxed text-ink-700">"{{ t.quote }}"</blockquote>
-            <figcaption class="mt-6 flex items-center gap-3 border-t border-gray-200/70 pt-5">
-              <span class="grid h-10 w-10 place-items-center rounded-full text-sm font-bold text-white" :class="t.avatar" aria-hidden="true">{{ t.initials }}</span>
-              <span>
-                <span class="block font-semibold text-ink-900">{{ t.name }}</span>
-                <span class="block text-sm text-gray-500">{{ t.role }}</span>
+          <div class="mt-8 space-y-5">
+            <div v-for="w in [
+              { t: 'Brand it as your own', d: 'Name, logo and colours are set in the admin panel. Your team signs in to your product, not to ours.' },
+              { t: 'It all talks to itself', d: 'A lead becomes a client, the client gets a project, the project raises an invoice — no exports, no copying between tools.' },
+              { t: 'Real code, not a black box', d: 'Laravel and Nuxt, documented and readable. Your developer can extend it the day you buy it.' },
+            ]" :key="w.t" class="flex gap-4">
+              <span class="mt-1 grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-emerald-50 text-emerald-600">
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="m5 13 4 4L19 7" />
+                </svg>
               </span>
-            </figcaption>
-          </figure>
-        </li>
-      </ul>
-    </div>
-  </section>
-
-  <!-- ============ BLOG / INSIGHTS ============ -->
-  <section id="blog" class="scroll-mt-20 bg-[#f8fafc] py-20">
-    <div class="container-page">
-      <div class="mb-12 flex items-end justify-between">
-        <div>
-          <p class="mb-3 text-xs font-bold uppercase tracking-widest text-primary">From the Blog</p>
-          <h2 class="text-3xl font-extrabold leading-tight text-foreground lg:text-4xl">Insights &amp; updates.</h2>
+              <div>
+                <p class="font-bold text-ink-900">{{ w.t }}</p>
+                <p class="mt-0.5 text-sm leading-relaxed text-gray-600">{{ w.d }}</p>
+              </div>
+            </div>
+          </div>
         </div>
-        <NuxtLink to="/blog" class="hidden items-center gap-1.5 text-sm font-semibold text-primary hover:underline md:flex">View all posts
-          <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6" /></svg>
-        </NuxtLink>
-      </div>
 
-      <div class="grid gap-6 md:grid-cols-3">
-        <NuxtLink
-          v-for="post in posts"
-          :key="post.slug"
-          :to="`/blog/${post.slug}`"
-          class="group flex cursor-pointer flex-col overflow-hidden rounded-2xl border border-border/60 bg-white transition-all duration-300 hover:border-primary/20 hover:shadow-lg"
-        >
-          <div class="relative aspect-video overflow-hidden bg-gray-100">
-            <NuxtImg :src="post.image" :alt="post.title" width="640" height="360" sizes="100vw sm:50vw lg:384px" format="webp" loading="lazy" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" />
-            <div class="absolute left-3 top-3">
-              <span class="rounded-full px-2.5 py-1 text-[10px] font-bold" :class="post.tagTone">{{ post.tag }}</span>
-            </div>
+        <div class="rounded-2xl border border-gray-100 bg-gray-50 p-8">
+          <p class="text-sm font-semibold uppercase tracking-widest text-gray-400">Built with</p>
+          <div class="mt-5 flex flex-wrap gap-2.5">
+            <span v-for="t in stack" :key="t"
+                  class="rounded-lg border border-gray-200 bg-white px-3.5 py-2 text-sm font-semibold text-ink-800">{{ t }}</span>
           </div>
-          <div class="flex flex-1 flex-col gap-3 p-5">
-            <h3 class="line-clamp-2 text-sm font-bold leading-snug text-foreground transition-colors group-hover:text-primary">{{ post.title }}</h3>
-            <p class="line-clamp-3 flex-1 text-xs leading-relaxed text-muted-foreground">{{ post.excerpt }}</p>
-            <div class="flex items-center justify-between border-t border-border/40 pt-3 text-[11px] text-muted-foreground">
-              <span>{{ post.author }}</span>
-              <div class="flex items-center gap-2"><span>{{ post.date }}</span><span>·</span><span>{{ post.read }}</span></div>
-            </div>
+          <p class="mt-6 text-sm leading-relaxed text-gray-600">
+            Standard, current versions — the kind any PHP developer can pick up. It runs on a normal
+            VPS or cPanel host, with nothing to learn before it will start.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────── Pricing ───────── -->
+    <section id="pricing" class="scroll-mt-20 bg-gray-50 py-20">
+      <div class="container-page">
+        <div class="mx-auto max-w-2xl text-center">
+          <h2 class="font-display text-3xl font-extrabold text-ink-900 sm:text-4xl">One purchase, yours to keep</h2>
+          <p class="mt-3 text-gray-600">Licensed through CodeCanyon. Pick the one that matches how you will use it.</p>
+        </div>
+
+        <div class="mx-auto mt-12 grid max-w-3xl gap-6 md:grid-cols-2">
+          <div v-for="(p, i) in [
+            { name: 'Regular Licence', for: 'Use it in your own business, or in one project whose end users are not charged to access it.',
+              perks: ['Full source code', 'All eight modules', 'Free lifetime updates', '6 months support'] },
+            { name: 'Extended Licence', for: 'Use it in a product your end users pay to access.',
+              perks: ['Everything in Regular', 'Charge your end users', 'Free lifetime updates', '6 months support'] },
+          ]" :key="p.name"
+               class="rounded-2xl border bg-white p-8"
+               :class="i === 1 ? 'border-brand-600 shadow-lg' : 'border-gray-100'">
+            <p v-if="i === 1" class="mb-3 inline-block rounded-full bg-brand-50 px-3 py-1 text-xs font-bold text-brand-700">For SaaS</p>
+            <h3 class="font-display text-xl font-extrabold text-ink-900">{{ p.name }}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-gray-600">{{ p.for }}</p>
+            <ul class="mt-6 space-y-2.5">
+              <li v-for="k in p.perks" :key="k" class="flex items-start gap-2 text-sm text-ink-800">
+                <svg class="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="m5 13 4 4L19 7" />
+                </svg>
+                {{ k }}
+              </li>
+            </ul>
+            <a href="#" class="mt-7 block rounded-xl px-5 py-3 text-center text-sm font-bold transition"
+               :class="i === 1 ? 'bg-brand-600 text-white hover:bg-brand-700' : 'border border-gray-200 text-ink-900 hover:bg-gray-50'">
+              Buy on CodeCanyon
+            </a>
           </div>
-        </NuxtLink>
-      </div>
+        </div>
 
-      <div class="mt-8 flex justify-center md:hidden">
-        <NuxtLink to="/blog" class="flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline">View all posts
-          <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6" /></svg>
-        </NuxtLink>
+        <p class="mt-6 text-center text-sm text-gray-500">The price and the licence itself are handled on CodeCanyon.</p>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ============ CTA ============ -->
-  <section class="relative overflow-hidden bg-gradient-to-br from-[#0f172a] via-[#1e3a5f] to-[#0f172a] py-24 text-white">
-    <!-- Full-bleed grid-line overlay -->
-    <div class="pointer-events-none absolute inset-0 opacity-[0.05]" aria-hidden="true" style="background-image: linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px); background-size: 60px 60px;" />
-    <div class="container-page relative text-center">
-      <h2 class="font-display text-4xl font-extrabold sm:text-5xl">
-        Ready to build something <span class="text-brand-400">great?</span>
-      </h2>
-      <p class="mx-auto mt-5 max-w-xl text-gray-300">
-        Join 3,000+ businesses already running on RazinSoft. Book a free consultation today.
-      </p>
-      <div class="mt-8 flex flex-wrap justify-center gap-3">
-        <NuxtLink to="/book-a-meeting" class="btn bg-brand-600 text-white shadow-lg shadow-brand-600/20 hover:bg-brand-700">Book a Free Consultation
-          <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6" /></svg>
-        </NuxtLink>
-        <!-- Auth middleware sends logged-out users to /login (with redirect back to the dashboard). -->
-        <NuxtLink to="/dashboard" class="btn border border-white/25 bg-white/5 text-white hover:bg-white/10">Sign in to dashboard</NuxtLink>
+    <!-- ───────── FAQ ───────── -->
+    <section class="bg-white py-20">
+      <div class="container-page mx-auto max-w-3xl">
+        <h2 class="text-center font-display text-3xl font-extrabold text-ink-900 sm:text-4xl">Before you buy</h2>
+
+        <div class="mt-10 divide-y divide-gray-100 rounded-2xl border border-gray-100">
+          <div v-for="(f, i) in faqs" :key="f.q">
+            <button type="button" class="flex w-full items-center justify-between gap-4 px-6 py-5 text-left"
+                    @click="openFaq = openFaq === i ? null : i">
+              <span class="font-semibold text-ink-900">{{ f.q }}</span>
+              <svg class="h-5 w-5 shrink-0 text-gray-400 transition" :class="openFaq === i ? 'rotate-45' : ''"
+                   fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" d="M12 5v14M5 12h14" />
+              </svg>
+            </button>
+            <p v-show="openFaq === i" class="px-6 pb-5 text-sm leading-relaxed text-gray-600">{{ f.a }}</p>
+          </div>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
+
+    <!-- ───────── Close ───────── -->
+    <section class="bg-gradient-to-br from-[#0f172a] via-[#1e2b52] to-[#0f172a] py-20 text-white">
+      <div class="container-page text-center">
+        <h2 class="font-display text-3xl font-extrabold sm:text-4xl">Stop paying rent on your own data</h2>
+        <p class="mx-auto mt-4 max-w-xl text-gray-300">
+          One licence, your server, and every part of the business in the same place.
+        </p>
+        <div class="mt-8 flex flex-wrap justify-center gap-3">
+          <a href="#pricing" class="rounded-xl bg-white px-7 py-3.5 text-sm font-bold text-ink-900 transition hover:bg-gray-100">Buy on CodeCanyon</a>
+          <NuxtLink to="/contact-us" class="rounded-xl border border-white/25 px-7 py-3.5 text-sm font-bold transition hover:bg-white/10">Ask a question</NuxtLink>
+        </div>
+      </div>
+    </section>
+  </div>
 </template>
-
-<style scoped>
-.marquee {
-  /* Fade the cards in/out at the edges. */
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
-  mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
-}
-.marquee-track {
-  display: flex;
-  width: max-content;
-  padding-block: 0.5rem;
-  animation: marquee-ltr 45s linear infinite;
-}
-/* Uniform trailing margin (incl. last card) keeps the -50% loop seamless. */
-.marquee-track > li {
-  margin-right: 1.5rem;
-}
-.marquee:hover .marquee-track {
-  animation-play-state: paused;
-}
-@keyframes marquee-ltr {
-  from {
-    transform: translateX(-50%);
-  }
-  to {
-    transform: translateX(0);
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .marquee-track {
-    animation: none;
-  }
-}
-</style>
