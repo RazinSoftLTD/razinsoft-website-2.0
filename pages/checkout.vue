@@ -65,6 +65,50 @@ onMounted(async () => {
 })
 
 const form = reactive({ firstName: '', lastName: '', email: '', phone: '', company: '', address: '', city: '', state: '', zip: '', country: 'Bangladesh' })
+
+// Same three labels the dashboard offers, so an address typed here is filed the same way as one
+// added there — and shows up under the same name in both.
+const LABELS = [
+  { value: 'home', text: 'Home' },
+  { value: 'office', text: 'Office' },
+  { value: 'other', text: 'Other' },
+]
+const newLabel = ref('home')
+// A returning customer with nothing saved almost always wants this kept; someone deliberately
+// using a one-off address can turn it off.
+const saveAddress = ref(true)
+const makeDefaultAddress = ref(false)
+
+/**
+ * Keep an address typed at checkout.
+ *
+ * Without this the customer types it, buys, and is asked for the whole thing again next time —
+ * while the dashboard shows an empty address book. Saving is best-effort: a failure here must not
+ * cost the order that has already been paid for.
+ */
+async function persistBillingAddress() {
+  if (!saveAddress.value || !user.value) return
+
+  try {
+    await $api('/account/billing-addresses', {
+      method: 'POST',
+      body: {
+        label: newLabel.value,
+        full_name: `${form.firstName} ${form.lastName}`.trim(),
+        company: form.company,
+        phone: form.phone,
+        address: form.address,
+        city: form.city,
+        state: form.state,
+        zip: form.zip,
+        country: form.country,
+        is_default: makeDefaultAddress.value || !hasSavedBilling.value,
+      },
+    })
+  } catch {
+    /* the order matters more than the address book */
+  }
+}
 const payment = ref<'card' | 'paypal' | 'bank'>('card')
 
 const methods = [
@@ -118,6 +162,9 @@ async function placeOrder() {
 
     const res = await $api<{ order_number: string; provider?: string; checkout_url?: string; stripe?: { client_secret: string; publishable_key: string } }>('/checkout', { method: 'POST', body: payload })
     orderNo.value = res.order_number
+
+    // Keep the address once the order is accepted, so the book matches what was actually used.
+    if (editBilling.value) await persistBillingAddress()
 
     if (res.stripe?.client_secret) {
       // Stripe card → mount Embedded Checkout inside the page.
@@ -241,6 +288,15 @@ const field = 'h-11 w-full rounded-lg border border-transparent bg-gray-100 px-4
             </div>
 
             <div v-show="editBilling" class="mt-5 grid gap-4 md:grid-cols-2">
+              <!-- Same label set as Dashboard › Bills Information, so an address added here is
+                   filed under the same name as one added there. -->
+              <div v-if="user" class="md:col-span-2">
+                <label for="addr-label" class="mb-1.5 block text-sm font-medium text-ink-800">Label <span class="text-red-500">*</span></label>
+                <select id="addr-label" v-model="newLabel" :class="field">
+                  <option v-for="l in LABELS" :key="l.value" :value="l.value">{{ l.text }}</option>
+                </select>
+                <p class="mt-1 text-xs text-gray-400">A second Home becomes “Home 2”, so they stay tellable apart.</p>
+              </div>
               <div>
                 <label for="fn" class="mb-1.5 block text-sm font-medium text-ink-800">First Name <span class="text-red-500">*</span></label>
                 <input id="fn" v-model="form.firstName" type="text" required autocomplete="given-name" placeholder="John" :class="field" />
@@ -286,6 +342,22 @@ const field = 'h-11 w-full rounded-lg border border-transparent bg-gray-100 px-4
               <div>
                 <label for="country" class="mb-1.5 block text-sm font-medium text-ink-800">Country <span class="text-red-500">*</span></label>
                 <CountryNameSelect id="country" v-model="form.country" />
+              </div>
+
+              <!-- Kept once the order goes through. Without this the customer types the whole
+                   address again next time, while their address book sits empty. -->
+              <div v-if="user" class="md:col-span-2 rounded-xl border border-gray-100 bg-gray-50/70 p-4">
+                <label class="flex cursor-pointer items-start gap-2.5 text-sm text-ink-800">
+                  <input v-model="saveAddress" type="checkbox" class="mt-0.5 h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500" />
+                  <span>
+                    Save this address to my account
+                    <span class="mt-0.5 block text-xs text-gray-500">It will appear under Bills Information, ready for next time.</span>
+                  </span>
+                </label>
+                <label v-if="saveAddress && hasSavedBilling" class="mt-3 flex cursor-pointer items-start gap-2.5 text-sm text-ink-800">
+                  <input v-model="makeDefaultAddress" type="checkbox" class="mt-0.5 h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500" />
+                  <span>Make it my default billing address</span>
+                </label>
               </div>
             </div>
           </section>
