@@ -9,6 +9,46 @@ const { data: inv, error } = await useAsyncData(`invoice-${token}`, () => $api<a
 
 const paid = computed(() => route.query.paid === '1' || inv.value?.status === 'paid')
 
+// When the invoice was raised without a billing address, the person paying can supply it here —
+// the pay link is the same authorisation that lets them pay. It is then kept against their
+// account, so the next invoice already has it.
+const LABELS = [
+  { value: 'home', text: 'Home' },
+  { value: 'office', text: 'Office' },
+  { value: 'other', text: 'Other' },
+]
+const needsAddress = computed(() => !!inv.value && !inv.value.bill_to?.has_address && !paid.value)
+const addrOpen = ref(false)
+const savingAddr = ref(false)
+const addrError = ref('')
+const addr = reactive({
+  label: 'office',
+  full_name: '', company: '', phone: '',
+  address: '', city: '', state: '', zip: '', country: 'Bangladesh',
+})
+
+async function saveAddress() {
+  addrError.value = ''
+  savingAddr.value = true
+  try {
+    const res = await $api<{ address: string }>(`/invoice/pay/${token}/billing-address`, { method: 'POST', body: { ...addr } })
+    // Show it straight away rather than making them reload to see their own answer.
+    if (inv.value) {
+      inv.value.bill_to.address = res.address
+      inv.value.bill_to.has_address = true
+      inv.value.bill_to.name ||= addr.full_name
+    }
+    addrOpen.value = false
+  } catch (e: any) {
+    const errs = e?.data?.errors
+    addrError.value = errs ? Object.values(errs).flat().join(' ') : (e?.data?.error || 'Could not save that address.')
+  } finally {
+    savingAddr.value = false
+  }
+}
+
+const addrField = 'h-11 w-full rounded-xl border border-gray-200 px-3.5 text-sm text-ink-900 transition placeholder:text-gray-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20'
+
 const money = (n: number) => (inv.value?.currency_symbol || '') + Number(n || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 const fmtDate = (s?: string) => (s ? new Date(s).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }).replace(/(\d+ \w+) (\d{4})/, '$1, $2') : '—')
 
@@ -126,7 +166,74 @@ useHead({ title: () => (inv.value ? `Pay ${inv.value.invoice_number} — RazinSo
               <p v-if="inv.bill_to.email" class="text-gray-600">{{ inv.bill_to.email }}</p>
               <p v-if="inv.bill_to.phone" class="text-gray-600">{{ inv.bill_to.phone }}</p>
               <p v-if="inv.bill_to.address" class="text-gray-600">{{ inv.bill_to.address }}</p>
+
+              <!-- No address on the bill: ask for one here rather than sending the customer away
+                   to find it. Only while it is unpaid and only when there is nothing there. -->
+              <button v-if="needsAddress && !addrOpen" type="button"
+                      class="mt-1 text-sm font-semibold text-brand-600 hover:text-brand-700"
+                      @click="addrOpen = true">
+                + Add billing address
+              </button>
+
               <span class="mt-3 inline-block rounded-md border px-5 py-2 text-base font-bold" :class="statusPill.cls">{{ statusPill.label }}</span>
+            </div>
+          </div>
+
+          <!-- Billing address, when the invoice was raised without one -->
+          <div v-if="needsAddress && addrOpen" class="mt-6 rounded-2xl border border-gray-200 bg-gray-50/70 p-5 text-left">
+            <p class="font-display text-base font-bold text-ink-900">Billing address</p>
+            <p class="mt-0.5 text-sm text-gray-500">We will use this on the invoice and keep it for next time.</p>
+
+            <p v-if="addrError" class="mt-3 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">{{ addrError }}</p>
+
+            <div class="mt-4 grid gap-4 md:grid-cols-2">
+              <div class="md:col-span-2">
+                <label class="mb-1.5 block text-sm font-medium text-ink-800">Label</label>
+                <select v-model="addr.label" :class="addrField">
+                  <option v-for="l in LABELS" :key="l.value" :value="l.value">{{ l.text }}</option>
+                </select>
+              </div>
+              <div>
+                <label class="mb-1.5 block text-sm font-medium text-ink-800">Full Name</label>
+                <input v-model="addr.full_name" type="text" autocomplete="name" :class="addrField" />
+              </div>
+              <div>
+                <label class="mb-1.5 block text-sm font-medium text-ink-800">Company <span class="text-gray-400">(Optional)</span></label>
+                <input v-model="addr.company" type="text" autocomplete="organization" :class="addrField" />
+              </div>
+              <div>
+                <label class="mb-1.5 block text-sm font-medium text-ink-800">Phone</label>
+                <input v-model="addr.phone" type="tel" autocomplete="tel" :class="addrField" />
+              </div>
+              <div>
+                <label class="mb-1.5 block text-sm font-medium text-ink-800">ZIP / Postal Code <span class="text-red-500">*</span></label>
+                <input v-model="addr.zip" type="text" required autocomplete="postal-code" :class="addrField" />
+              </div>
+              <div class="md:col-span-2">
+                <label class="mb-1.5 block text-sm font-medium text-ink-800">Address <span class="text-red-500">*</span></label>
+                <input v-model="addr.address" type="text" required autocomplete="street-address" placeholder="123 Main Street" :class="addrField" />
+              </div>
+              <div>
+                <label class="mb-1.5 block text-sm font-medium text-ink-800">City</label>
+                <input v-model="addr.city" type="text" autocomplete="address-level2" :class="addrField" />
+              </div>
+              <div>
+                <label class="mb-1.5 block text-sm font-medium text-ink-800">State / Province</label>
+                <input v-model="addr.state" type="text" autocomplete="address-level1" :class="addrField" />
+              </div>
+              <div class="md:col-span-2">
+                <label class="mb-1.5 block text-sm font-medium text-ink-800">Country <span class="text-red-500">*</span></label>
+                <CountryNameSelect v-model="addr.country" />
+              </div>
+            </div>
+
+            <div class="mt-4 flex flex-wrap items-center gap-2">
+              <button type="button" :disabled="savingAddr || !addr.address || !addr.zip || !addr.country"
+                      class="rounded-xl bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-700 disabled:opacity-50"
+                      @click="saveAddress()">
+                {{ savingAddr ? 'Saving…' : 'Save address' }}
+              </button>
+              <button type="button" class="px-3 text-sm text-gray-500 hover:text-ink-900" @click="addrOpen = false">Cancel</button>
             </div>
           </div>
 
