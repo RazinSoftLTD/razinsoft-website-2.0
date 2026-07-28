@@ -1,5 +1,5 @@
 <script setup lang="ts">
-type Sub = { label: string; desc: string; to: string }
+type Sub = { label: string; desc: string; to?: string; soon?: boolean }
 type NavItem = { label: string; to?: string; menu?: Sub[] }
 
 /**
@@ -12,10 +12,14 @@ type NavItem = { label: string; to?: string; menu?: Sub[] }
 const nav: NavItem[] = [
   { label: 'Home', to: '/' },
   {
+    // The four surfaces the licence ships, not the four things it does — "Modules" already
+    // covers that further down the page.
     label: 'Platform',
     menu: [
-      { label: 'Modules', desc: 'The twenty-plus tools it replaces.', to: '/#modules' },
-      { label: 'REST API', desc: 'Tokens, webhooks and CSV import.', to: '/#modules' },
+      { label: 'Website', desc: 'The public site your customers arrive on.', to: '/' },
+      { label: 'Client Dashboard', desc: 'Where your customers see invoices, orders and tickets.', to: '/dashboard' },
+      { label: 'Admin Panel', desc: 'The staff side: CRM, HR, projects, finance and messaging.', to: '/#modules' },
+      { label: 'Admin & Client apps', desc: 'Mobile, for both sides.', soon: true },
     ],
   },
   {
@@ -79,12 +83,24 @@ const { theme, toggle } = useTheme()
             <div class="absolute left-1/2 top-full z-50 w-[340px] -translate-x-1/2 pt-3 transition-all duration-200"
                  :class="openDropdown === item.label ? 'visible translate-y-0 opacity-100' : 'invisible translate-y-1 opacity-0'">
               <div class="rounded-2xl border border-gray-100 bg-white p-2 shadow-xl shadow-gray-200/60 dark:border-white/10 dark:bg-slate-900 dark:shadow-black/40">
-                <NuxtLink v-for="s in item.menu" :key="s.label" :to="s.to"
-                          class="block rounded-xl px-4 py-3 transition-colors hover:bg-gray-50 dark:hover:bg-white/5"
-                          @click="openDropdown = null">
-                  <span class="block text-sm font-bold text-ink-900 dark:text-white">{{ s.label }}</span>
-                  <span class="block text-xs text-gray-500 dark:text-slate-400">{{ s.desc }}</span>
-                </NuxtLink>
+                <template v-for="s in item.menu" :key="s.label">
+                  <!-- Not shipped yet, so not a link. A menu entry that looks clickable and
+                       goes nowhere is worse than one that says why. -->
+                  <span v-if="s.soon" class="block cursor-default rounded-xl px-4 py-3">
+                    <span class="flex items-center gap-2">
+                      <span class="text-sm font-bold text-gray-400 dark:text-slate-500">{{ s.label }}</span>
+                      <span class="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:bg-white/10 dark:text-slate-400">Soon</span>
+                    </span>
+                    <span class="block text-xs text-gray-400 dark:text-slate-500">{{ s.desc }}</span>
+                  </span>
+
+                  <NuxtLink v-else :to="s.to!"
+                            class="block rounded-xl px-4 py-3 transition-colors hover:bg-gray-50 dark:hover:bg-white/5"
+                            @click="openDropdown = null">
+                    <span class="block text-sm font-bold text-ink-900 dark:text-white">{{ s.label }}</span>
+                    <span class="block text-xs text-gray-500 dark:text-slate-400">{{ s.desc }}</span>
+                  </NuxtLink>
+                </template>
               </div>
             </div>
           </div>
@@ -166,7 +182,15 @@ const { theme, toggle } = useTheme()
               <div class="grid overflow-hidden transition-all duration-300 ease-out" :class="mobileSub === item.label ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'">
                 <ul class="min-h-0 overflow-hidden pl-3">
                   <li v-for="s in item.menu" :key="s.label">
-                    <NuxtLink :to="s.to" class="block rounded-lg px-3 py-2.5 hover:bg-gray-50 dark:hover:bg-white/5">
+                    <span v-if="s.soon" class="block px-3 py-2.5">
+                      <span class="flex items-center gap-2">
+                        <span class="text-sm font-semibold text-gray-400 dark:text-slate-500">{{ s.label }}</span>
+                        <span class="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:bg-white/10 dark:text-slate-400">Soon</span>
+                      </span>
+                      <span class="block text-xs text-gray-400 dark:text-slate-500">{{ s.desc }}</span>
+                    </span>
+
+                    <NuxtLink v-else :to="s.to!" class="block rounded-lg px-3 py-2.5 hover:bg-gray-50 dark:hover:bg-white/5">
                       <span class="block text-sm font-semibold text-ink-900 dark:text-white">{{ s.label }}</span>
                       <span class="block text-xs text-gray-500 dark:text-slate-400">{{ s.desc }}</span>
                     </NuxtLink>
