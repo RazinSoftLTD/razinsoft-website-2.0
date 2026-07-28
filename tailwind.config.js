@@ -1,5 +1,8 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  // The header and footer both carry a theme switch, so dark is a deliberate choice the visitor
+  // makes and keeps — not something that follows their OS behind their back.
+  darkMode: 'class',
   content: [
     './components/**/*.{vue,js,ts}',
     './layouts/**/*.vue',

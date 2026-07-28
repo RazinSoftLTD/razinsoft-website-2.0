@@ -54,6 +54,16 @@ const gtmBodyNoscript = gtmEnabled
     }]
   : []
 
+// ---- Theme, before first paint.
+// Runs synchronously in <head>, ahead of any stylesheet, so a visitor who chose dark never sees a
+// white flash. Vue reads the class back afterwards rather than deciding again — see useTheme.
+const themeScript = {
+  innerHTML:
+    `(function(){try{if(localStorage.getItem('smartdesk-theme')==='dark')` +
+    `document.documentElement.classList.add('dark');}catch(e){}})();`,
+  tagPosition: 'head' as const,
+}
+
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
   devtools: { enabled: true },
@@ -220,7 +230,7 @@ export default defineNuxtConfig({
         ...(apiOrigin ? [{ rel: 'preconnect', href: apiOrigin, crossorigin: '' as const }, { rel: 'dns-prefetch', href: apiOrigin }] : []),
       ],
       // Google Tag Manager (production only) — loader in <head>, noscript iframe right after <body>.
-      script: gtmHeadScript,
+      script: [themeScript, ...gtmHeadScript],
       noscript: gtmBodyNoscript,
     },
   },
