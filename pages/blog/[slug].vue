@@ -103,6 +103,9 @@ function share(kind: string) {
   }
   window.open(links[kind], '_blank', 'noopener,noreferrer')
 }
+
+/** Shown when a post has no cover of its own — a broken-image glyph reads as a broken site. */
+const FALLBACK_COVER = '/images/blog-cover-fallback.svg'
 </script>
 
 <template>
@@ -173,7 +176,7 @@ function share(kind: string) {
       <div class="container mx-auto px-6 py-12">
         <div class="mx-auto max-w-5xl">
           <div class="relative mb-16 h-96 w-full overflow-hidden rounded-2xl shadow-lg md:h-[520px]">
-            <img :src="article.image" :alt="article.image_alt || article.title" class="h-full w-full object-cover">
+            <img :src="article.image || FALLBACK_COVER" :alt="article.image_alt || article.title" class="h-full w-full object-cover">
           </div>
 
           <div :class="hasProducts ? 'grid gap-12 lg:grid-cols-12' : ''">
@@ -296,7 +299,7 @@ function share(kind: string) {
                 class="group block cursor-pointer overflow-hidden rounded-2xl border border-border bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
               >
                 <div class="relative h-56 overflow-hidden">
-                  <img :src="r.image" :alt="r.title" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110">
+                  <img :src="r.image || FALLBACK_COVER" :alt="r.title" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110">
                   <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-transparent" />
                   <span class="absolute left-4 top-4 rounded-full border-0 bg-white px-3 py-1 text-xs font-semibold text-foreground shadow-md">{{ r.category }}</span>
                 </div>
