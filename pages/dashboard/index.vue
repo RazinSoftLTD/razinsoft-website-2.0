@@ -2,7 +2,6 @@
 usePageSeo({ title: 'Dashboard', description: 'Your RazinSoft account overview.' })
 
 const { $api } = useNuxtApp()
-const { count: cartCount } = useCart()
 
 const { data: dash } = await useAsyncData('account-dashboard', () => $api<any>('/account/dashboard'))
 const d = computed<any>(() => dash.value || {})
@@ -32,7 +31,7 @@ const orders = computed(() => (d.value.recent_orders || []).map((o: any) => ({
 })))
 
 const actions = [
-  { label: 'Browse Products', to: '/products', tone: 'bg-blue-50 text-blue-600', paths: ['M2.25 3h1.5l1.5 13.5h12l1.5-9H6', 'M9 20a1 1 0 1 0 .01 0M17 20a1 1 0 1 0 .01 0'] },
+  { label: 'Get Support', to: '/support', tone: 'bg-blue-50 text-blue-600', paths: ['M2.25 3h1.5l1.5 13.5h12l1.5-9H6', 'M9 20a1 1 0 1 0 .01 0M17 20a1 1 0 1 0 .01 0'] },
   { label: 'My Orders', to: '/dashboard/orders', tone: 'bg-emerald-50 text-emerald-600', paths: ['M3 7h18l-1.4 12a2 2 0 0 1-2 1.8H6.4a2 2 0 0 1-2-1.8L3 7Z', 'M8 7a4 4 0 1 1 8 0'] },
   { label: 'Get Support', to: 'mailto:info@razinsoft.com', tone: 'bg-purple-50 text-purple-600', paths: ['M7 7h.01M3 5a2 2 0 0 1 2-2h6l9 9-8 8-9-9V5Z'] },
 ]
@@ -66,7 +65,7 @@ const actions = [
       </div>
 
       <p v-if="!orders.length" class="mt-4 rounded-2xl border border-dashed border-gray-200 py-12 text-center text-gray-500">
-        No orders yet. <NuxtLink to="/products" class="font-semibold text-brand-600 hover:text-brand-700">Browse products</NuxtLink> to get started.
+        No orders yet. Anything you are invoiced for will appear here.
       </p>
 
       <ul v-else class="mt-4 space-y-4">

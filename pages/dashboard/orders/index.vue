@@ -18,7 +18,7 @@ const label = (s: string) => (isPaid(s) ? 'Paid' : 'Unpaid')
     <p class="mt-1 text-gray-500">All your purchases, invoices and downloads</p>
 
     <p v-if="!orders.length" class="mt-6 rounded-2xl border border-dashed border-gray-200 py-16 text-center text-gray-500">
-      No orders yet. <NuxtLink to="/products" class="font-semibold text-brand-600 hover:text-brand-700">Browse products</NuxtLink> to get started.
+      No orders yet. Anything you are invoiced for will appear here.
     </p>
 
     <ul v-else class="mt-6 space-y-4">

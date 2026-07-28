@@ -113,7 +113,7 @@ export default defineNuxtConfig({
     // Live content pages: the CDN/edge caches the HTML (s-maxage) for a fast load, but the
     // BROWSER is told max-age=0 so a normal reload always revalidates and shows current data.
     // Without max-age=0 browsers heuristically cache the HTML → only a HARD refresh shows new data.
-    // Home shows LIVE product + blog data from the API.
+    // Home shows LIVE blog data from the API.
     // swr: Nitro also caches the rendered HTML in-process, so repeat SSR hits skip the
     // render + API round-trip entirely (TTFB ~120ms → ~15ms at the origin).
     '/': { swr: 300, headers: { 'cache-control': 'public, max-age=0, must-revalidate, s-maxage=300, stale-while-revalidate=600' } },
@@ -134,18 +134,12 @@ export default defineNuxtConfig({
     '/terms-and-conditions': { prerender: true },
     '/service-policy': { prerender: true },
     '/support-policy': { prerender: true },
-    // Catalogue: SSR + stale-while-revalidate cache. Crawlers still get full server-rendered
-    // HTML (SEO-safe) but repeat visitors get it instantly from cache; revalidated in background.
-    '/products': { swr: 180, headers: { 'cache-control': 'public, max-age=0, must-revalidate, s-maxage=180, stale-while-revalidate=600' } },
-    '/products/**': { swr: 300, headers: { 'cache-control': 'public, max-age=0, must-revalidate, s-maxage=300, stale-while-revalidate=600' } },
     // Insights / blog: edge-cached, browser revalidates (articles change rarely).
     '/blog': { swr: 180, headers: { 'cache-control': 'public, max-age=0, must-revalidate, s-maxage=180, stale-while-revalidate=600' } },
     '/blog/**': { swr: 600, headers: { 'cache-control': 'public, max-age=0, must-revalidate, s-maxage=600, stale-while-revalidate=600' } },
     // Auth-gated, per-user pages: client-rendered (token lives in a cookie).
     '/dashboard': { ssr: false },
     '/dashboard/**': { ssr: false },
-    '/checkout': { ssr: false },
-    '/cart': { ssr: false },
     // Long-lived immutable caching for hashed/static assets. Improves: repeat-visit LCP, Best Practices.
     '/_nuxt/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } },
     '/images/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } },
@@ -215,7 +209,7 @@ export default defineNuxtConfig({
   robots: {
     allow: '/',
     // Keep private / transactional pages out of crawl budget (also noindex-tagged in-page).
-    disallow: ['/dashboard', '/checkout', '/cart', '/payment'],
+    disallow: ['/dashboard', '/payment'],
   },
 
   app: {

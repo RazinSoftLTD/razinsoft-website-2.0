@@ -10,12 +10,7 @@ export default defineEventHandler(async (event) => {
   const url = (path: string) => `${site}${path}`
 
   // ---- live data (best-effort; the file still renders if the API is unreachable) ----
-  let products: any[] = []
   let articles: any[] = []
-  try {
-    const r = await $fetch<any>(`${api}/products?per_page=48`)
-    products = r?.data ?? []
-  } catch { /* ignore */ }
   try {
     const r = await $fetch<any>(`${api}/articles`)
     articles = r?.data ?? []
@@ -37,15 +32,6 @@ export default defineEventHandler(async (event) => {
 
   // ---- Products ----
   L.push('## Products')
-  if (products.length) {
-    for (const p of products) {
-      const cat = p.category ? ` [${p.category}]` : ''
-      const tag = p.tagline ? ` — ${p.tagline}` : ''
-      L.push(`- [${p.name}](${url('/products/' + p.slug)})${tag}${cat}`)
-    }
-  } else {
-    L.push(`- [All Products](${url('/products')}): Browse the full catalogue of ready-made software products.`)
-  }
   L.push('')
 
   // ---- Services ----
@@ -58,9 +44,8 @@ export default defineEventHandler(async (event) => {
 
   // ---- Main pages ----
   L.push('## Main pages')
-  L.push(`- [All Products](${url('/products')}): Full catalogue with search, category filters and sorting.`)
   L.push(`- [Blog / Insights](${url('/blog')}): Articles on software, SaaS, eCommerce, EdTech, security and business.`)
-  L.push(`- [About Us](${url('/about-us')}): Company, leadership and the team behind the products.`)
+  L.push(`- [About Us](${url('/about-us')}): Who builds SmartDesk, and why it works this way.`)
   L.push(`- [Life @ RazinSoft](${url('/life-at-razinsoft')}): Culture, workplace and everyday moments.`)
   L.push(`- [Careers](${url('/careers')}): Open roles and how to join the team.`)
   L.push(`- [Contact Us](${url('/contact-us')}): Get in touch with the team.`)

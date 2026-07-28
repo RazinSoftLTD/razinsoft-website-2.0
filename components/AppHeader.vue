@@ -48,7 +48,6 @@ const openDropdown = ref<string | null>(null)
 const route = useRoute()
 watch(() => route.fullPath, () => { open.value = false; mobileSub.value = null; openDropdown.value = null })
 
-const { count } = useCart()
 const { isLoggedIn } = useAuth()
 const { theme, toggle } = useTheme()
 </script>
@@ -118,16 +117,6 @@ const { theme, toggle } = useTheme()
       <!-- ───────── Right ───────── -->
       <div class="flex items-center gap-2 sm:gap-3">
         <AppSearch />
-
-        <!-- Cart, only once there is something in it — an always-empty basket is just clutter here. -->
-        <ClientOnly>
-          <NuxtLink v-if="count" to="/cart" class="relative rounded-lg p-2 text-ink-700 hover:bg-gray-50 dark:text-slate-300 dark:hover:bg-white/5" :aria-label="`View cart, ${count} items`">
-            <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.5l1.5 13.5h12l1.5-9H6" /><circle cx="9" cy="20" r="1.25" /><circle cx="17" cy="20" r="1.25" />
-            </svg>
-            <span class="absolute -right-0.5 -top-0.5 grid h-4 min-w-4 place-items-center rounded-full bg-brand-600 px-1 text-[10px] font-bold text-white">{{ count }}</span>
-          </NuxtLink>
-        </ClientOnly>
 
         <ClientOnly>
           <button type="button" class="rounded-lg p-2 text-ink-700 transition hover:bg-gray-50 dark:text-slate-300 dark:hover:bg-white/5"

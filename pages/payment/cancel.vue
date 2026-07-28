@@ -7,7 +7,6 @@ useSeoMeta({ robots: 'noindex, nofollow', title: 'Payment cancelled' })
 const route = useRoute()
 const order = ref((route.query.order as string) || '')
 const { $api } = useNuxtApp()
-const { clear } = useCart()
 
 const inIframe = ref(false)
 const repaying = ref(false)
@@ -46,7 +45,6 @@ async function repay() {
 
 function onSuccess() {
   showFrame.value = false
-  clear()
   navigateTo({ path: '/dashboard', hash: '#orders' })
 }
 function onCancel() {
@@ -75,7 +73,7 @@ function onCancel() {
           <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12a9 9 0 1 0 9-9 9 9 0 0 0-6.7 3M3 3v5h5" /></svg>
           {{ repaying ? 'Starting…' : 'Re-pay now' }}
         </button>
-        <NuxtLink to="/cart" class="btn-outline">Back to cart</NuxtLink>
+        <NuxtLink to="/dashboard/orders" class="btn-outline">Back to orders</NuxtLink>
       </div>
     </div>
 

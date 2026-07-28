@@ -240,7 +240,7 @@ const FALLBACK_COVER = '/images/blog-cover-fallback.svg'
           <h2 class="mb-4 text-3xl font-bold text-foreground">Ready to Transform Your Business?</h2>
           <p class="mb-8 text-lg text-muted-foreground">Explore our software solutions and take your business to the next level.</p>
           <div class="flex items-center justify-center gap-4">
-            <NuxtLink to="/products" class="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:bg-[#2563c9]">View Products
+            <NuxtLink to="/#pricing" class="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:bg-[#2563c9]">View Products
               <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6" /></svg>
             </NuxtLink>
             <NuxtLink to="/#company" class="inline-flex items-center gap-2 rounded-lg border border-border px-6 py-3 text-sm font-semibold text-foreground hover:bg-muted">Contact Sales</NuxtLink>

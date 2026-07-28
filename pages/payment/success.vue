@@ -10,7 +10,6 @@ const sessionId = (route.query.session_id as string) || ''
 // PayPal appends ?token=<paypal-order-id> to the return URL — the backend captures it.
 const token = (route.query.token as string) || ''
 const { $api } = useNuxtApp()
-const { clear } = useCart()
 
 onMounted(async () => {
   // Inside the dev-pay iframe → tell the parent window to finish.
@@ -27,7 +26,6 @@ onMounted(async () => {
       // webhook will fulfil even if this confirm call fails
     }
   }
-  clear()
   navigateTo({ path: '/dashboard', hash: '#orders' }, { replace: true })
 })
 </script>
