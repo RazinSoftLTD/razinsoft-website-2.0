@@ -66,23 +66,14 @@ const FALLBACK_COVER = '/images/blog-cover-fallback.svg'
 
 <template>
   <div class="min-h-screen bg-[#f7f8fa]">
-    <!-- Hero -->
-    <div class="bg-gradient-to-br from-primary via-primary to-[#2563eb] text-white">
-      <div class="container mx-auto px-6 py-20">
-        <div class="mx-auto max-w-3xl text-center">
-          <div class="mb-6 inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 backdrop-blur-sm">
-            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z" /></svg>
-            <span class="text-sm font-semibold">SmartDesk Blog</span>
-          </div>
-          <h1 class="mb-6 text-5xl font-bold">Discover the Latest Insights</h1>
-          <p class="text-xl leading-relaxed text-white/90">Explore expert tips, trends, and in-depth articles on web development, design, digital growth, and business innovation.</p>
-        </div>
-      </div>
-    </div>
+    <!-- The gradient hero that sat here said nothing a visitor could not get from the header and
+         the first article card, and pushed the actual posts below the fold. The h1 stays, hidden:
+         a page with no top-level heading is a page a screen reader cannot summarise. -->
+    <h1 class="sr-only">SmartDesk Blog — release notes, guides and product writing</h1>
 
     <!-- Search -->
     <div class="border-b border-border bg-white">
-      <div class="container mx-auto px-6 py-6">
+      <div class="container mx-auto px-6 py-8">
         <div class="mx-auto max-w-2xl">
           <div class="relative">
             <svg class="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" /><path stroke-linecap="round" d="m21 21-4.3-4.3" /></svg>
