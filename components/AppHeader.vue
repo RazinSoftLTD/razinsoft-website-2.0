@@ -15,7 +15,6 @@ const nav: NavItem[] = [
     label: 'Platform',
     menu: [
       { label: 'Modules', desc: 'The twenty-plus tools it replaces.', to: '/#modules' },
-      { label: 'Screens', desc: 'What the panel actually looks like.', to: '/#screens' },
       { label: 'REST API', desc: 'Tokens, webhooks and CSV import.', to: '/#modules' },
     ],
   },

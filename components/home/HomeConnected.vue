@@ -106,7 +106,7 @@ const cards = [
           <span class="block font-display text-base font-extrabold text-ink-900 dark:text-white">Everything updates in real time.</span>
           <span class="block text-sm text-gray-600 dark:text-slate-400">One action. Instant sync. Total visibility.</span>
         </span>
-        <NuxtLink to="/#screens" class="inline-flex items-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-bold text-ink-900 shadow-sm transition hover:bg-gray-50 dark:bg-white/10 dark:text-white dark:hover:bg-white/15">
+        <NuxtLink to="/#modules" class="inline-flex items-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-bold text-ink-900 shadow-sm transition hover:bg-gray-50 dark:bg-white/10 dark:text-white dark:hover:bg-white/15">
           See it in Action
           <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6" /></svg>
         </NuxtLink>

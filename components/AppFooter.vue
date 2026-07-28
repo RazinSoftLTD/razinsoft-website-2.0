@@ -12,7 +12,6 @@ const columns = [
     title: 'Platform',
     items: [
       { label: 'Modules', to: '/#modules' },
-      { label: 'Screens', to: '/#screens' },
       { label: 'Pricing', to: '/#pricing' },
       { label: 'Questions', to: '/#faq' },
     ],

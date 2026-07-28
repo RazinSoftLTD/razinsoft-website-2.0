@@ -6,18 +6,6 @@ usePageSeo({
   ogType: 'product',
 })
 
-/** Captured from the demo install by tools/gen-screens (admin repo), never from a live one. */
-const screens = [
-  { file: 'deals', caption: 'CRM — drag a deal between stages; milestones live on each card' },
-  { file: 'projects', caption: 'Projects — budget, deadline, owner and progress on every row' },
-  { file: 'hr', caption: 'HR — the employee file, from joining date to who reports to whom' },
-  { file: 'analytics', caption: 'Finance — balances, twelve months of income against spend' },
-  { file: 'whatsapp', caption: 'WhatsApp — every number your team answers, in one inbox' },
-  { file: 'messenger', caption: 'Internal messaging — channels and direct threads, live' },
-  { file: 'email-templates', caption: 'Email — edit the wording, switch one off, see what sent' },
-  { file: 'branding', caption: 'Branding — name, logo and colours, without touching code' },
-]
-
 /** The questions a buyer actually asks before clicking buy. */
 const faqs = [
   { q: 'Is this a one-time payment?', a: 'Yes. You buy the licence once and host it yourself. No per-user fees, and no monthly bill from us.' },
@@ -36,27 +24,6 @@ const openFaq = ref<number | null>(null)
     <HomeStack />
     <HomeConnected />
     <HomeFeatures />
-
-    <!-- ───────── Screens ───────── -->
-    <section id="screens" class="container-page scroll-mt-24 py-20 lg:py-28">
-      <div class="mx-auto max-w-2xl text-center">
-        <h2 class="font-display text-3xl font-extrabold tracking-tight text-ink-900 dark:text-white sm:text-4xl">
-          What it actually looks like
-        </h2>
-        <p class="mt-4 text-lg leading-relaxed text-gray-600 dark:text-slate-400">
-          Real screens from a real install. Every name and figure in them is invented — the demo
-          runs on a database of its own, so nothing here is anyone's actual customer.
-        </p>
-      </div>
-
-      <div class="mt-14 space-y-10">
-        <figure v-for="sc in screens" :key="sc.file">
-          <img :src="`/images/screens/${sc.file}.png`" :alt="sc.caption" loading="lazy" width="1440" height="813"
-               class="w-full rounded-2xl border border-gray-200 bg-white dark:border-white/10">
-          <figcaption class="mt-3 text-sm text-gray-500 dark:text-slate-500">{{ sc.caption }}</figcaption>
-        </figure>
-      </div>
-    </section>
 
     <!-- ───────── Pricing ───────── -->
     <section id="pricing" class="scroll-mt-24 border-y border-gray-100 bg-gray-50/60 py-20 dark:border-white/10 dark:bg-white/[0.02] lg:py-28">
