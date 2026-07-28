@@ -18,7 +18,10 @@ const features = [
 ]
 
 const proof = {
-  show: true,
+  // Off until the fields below are real. Everything in here still came from the design comp —
+  // nobody named has ever used SmartDesk, and it has no customers to count yet. Flip to true the
+  // day you can put a real name, a real company and a real sentence against each quote.
+  show: false,
   headline: 'Trusted by 5,000+ Businesses',
   sub: 'from 25+ Countries Worldwide',
   rating: '4.9/5 from 1,200+ reviews',

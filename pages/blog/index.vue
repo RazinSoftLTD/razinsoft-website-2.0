@@ -2,7 +2,7 @@
 const { $api } = useNuxtApp()
 
 useSeoMeta({
-  title: 'Insights & Updates — RazinSoft Blog',
+  title: 'Insights & Updates — SmartDesk Blog',
   description: 'Explore expert tips, trends, and in-depth articles on web development, design, digital growth, and business innovation.',
 })
 
@@ -69,7 +69,7 @@ const showFeatured = computed(() => featured.value && activeCategory.value === '
         <div class="mx-auto max-w-3xl text-center">
           <div class="mb-6 inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 backdrop-blur-sm">
             <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z" /></svg>
-            <span class="text-sm font-semibold">RazinSoft Blog</span>
+            <span class="text-sm font-semibold">SmartDesk Blog</span>
           </div>
           <h1 class="mb-6 text-5xl font-bold">Discover the Latest Insights</h1>
           <p class="text-xl leading-relaxed text-white/90">Explore expert tips, trends, and in-depth articles on web development, design, digital growth, and business innovation.</p>

@@ -1,0 +1,203 @@
+@tailwind components;
+/* ---------------------------------------------------------------------------
+ * Dark theme for the pages that were written light-only.
+ *
+ * Sixty-four components carry about fourteen hundred light-only colour classes
+ * between them. Hand-adding a `dark:` twin to each is a week of typing and a
+ * week of missed ones; the site would be dark in the places somebody remembered
+ * and white in the places they did not.
+ *
+ * So instead of restating every colour, this restates the *palette*: what
+ * `bg-white` and `text-gray-500` mean once the page is dark. One rule covers
+ * every use of a class across the whole site, including the ones written after
+ * this file.
+ *
+ * Two things make it safe to do this way:
+ *
+ *   1. It lives in @layer components, which Tailwind emits BEFORE utilities.
+ *      An explicit `dark:bg-white/5` written on an element is emitted later at
+ *      the same specificity, so it still wins. Deliberate beats blanket.
+ *
+ *   2. `.dark .bg-white` is two classes to `.bg-white`'s one, so it beats the
+ *      plain light utility on specificity regardless of order.
+ *
+ * The exceptions are at the bottom: the handful of places where white is not a
+ * surface but an object — a toggle knob, a mark on a coloured tile — and has to
+ * stay white whatever the theme.
+ * ------------------------------------------------------------------------- */
+
+@layer components {
+  /* ---- Surfaces ------------------------------------------------------- */
+  /* Body is slate-950. Cards sit one step above it so they read as lifted
+     without a shadow, which is what shadows cannot do on a dark background. */
+  .dark .bg-white { background-color: #0f172a; }
+  .dark .bg-gray-50 { background-color: #0f172a; }
+  .dark .bg-gray-100 { background-color: #1e293b; }
+  .dark .bg-slate-50 { background-color: #0f172a; }
+
+  .dark .hover\:bg-white:hover { background-color: #1e293b; }
+  .dark .hover\:bg-gray-50:hover { background-color: #1e293b; }
+  .dark .hover\:bg-gray-100:hover { background-color: #334155; }
+
+  /* Tinted panels: keep the hue, drop the brightness. */
+  .dark .bg-brand-50 { background-color: rgb(37 99 235 / 0.12); }
+  .dark .bg-blue-50 { background-color: rgb(59 130 246 / 0.12); }
+  .dark .bg-emerald-50 { background-color: rgb(16 185 129 / 0.12); }
+  .dark .bg-green-50 { background-color: rgb(34 197 94 / 0.12); }
+  .dark .bg-amber-50 { background-color: rgb(245 158 11 / 0.12); }
+  .dark .bg-orange-50 { background-color: rgb(249 115 22 / 0.12); }
+  .dark .bg-rose-50 { background-color: rgb(244 63 94 / 0.12); }
+  .dark .bg-red-50 { background-color: rgb(239 68 68 / 0.12); }
+  .dark .bg-violet-50 { background-color: rgb(139 92 246 / 0.12); }
+  .dark .bg-indigo-50 { background-color: rgb(99 102 241 / 0.12); }
+  .dark .bg-sky-50 { background-color: rgb(14 165 233 / 0.12); }
+  .dark .bg-teal-50 { background-color: rgb(20 184 166 / 0.12); }
+  .dark .bg-cyan-50 { background-color: rgb(6 182 212 / 0.12); }
+  .dark .bg-pink-50 { background-color: rgb(236 72 153 / 0.12); }
+  .dark .bg-fuchsia-50 { background-color: rgb(217 70 239 / 0.12); }
+  .dark .bg-lime-50 { background-color: rgb(132 204 22 / 0.12); }
+  .dark .bg-purple-50 { background-color: rgb(168 85 247 / 0.12); }
+  .dark .bg-yellow-50 { background-color: rgb(234 179 8 / 0.12); }
+
+  /* ---- Type ----------------------------------------------------------- */
+  /* Not pure white: #f8fafc against #0f172a is a shade under the maximum
+     contrast, which is what stops long paragraphs glaring. */
+  .dark .text-ink-900,
+  .dark .text-gray-900,
+  .dark .text-slate-900 { color: #f8fafc; }
+  .dark .text-ink-800,
+  .dark .text-gray-800 { color: #e2e8f0; }
+  .dark .text-ink-700,
+  .dark .text-gray-700 { color: #cbd5e1; }
+  .dark .text-gray-600 { color: #a1aab8; }
+  .dark .text-gray-500 { color: #94a3b8; }
+  .dark .text-gray-400 { color: #6b7a8f; }
+  .dark .text-gray-300 { color: #475569; }
+
+  .dark .hover\:text-ink-900:hover { color: #f8fafc; }
+  .dark .hover\:text-gray-900:hover { color: #f8fafc; }
+
+  .dark .placeholder\:text-gray-400::placeholder { color: #64748b; }
+  .dark .placeholder\:text-gray-500::placeholder { color: #64748b; }
+
+  /* Brand text needs lifting: brand-600 on near-black fails contrast. */
+  .dark .text-brand-600 { color: #7ca5f8; }
+  .dark .text-brand-700 { color: #93b4fd; }
+  .dark .hover\:text-brand-600:hover { color: #93b4fd; }
+  .dark .hover\:text-brand-700:hover { color: #bfd3fe; }
+
+  /* ---- Lines ---------------------------------------------------------- */
+  /* Translucent white rather than a fixed grey, so a hairline reads the same
+     whether it sits on the body or on a card one step lighter. */
+  .dark .border-gray-100,
+  .dark .divide-gray-100 > * + * { border-color: rgb(255 255 255 / 0.08); }
+  .dark .border-gray-200,
+  .dark .divide-gray-200 > * + * { border-color: rgb(255 255 255 / 0.12); }
+  .dark .border-gray-300 { border-color: rgb(255 255 255 / 0.18); }
+  .dark .border-white { border-color: rgb(255 255 255 / 0.12); }
+
+  .dark .hover\:border-gray-200:hover { border-color: rgb(255 255 255 / 0.18); }
+  .dark .hover\:border-gray-300:hover { border-color: rgb(255 255 255 / 0.24); }
+
+  .dark .border-brand-100 { border-color: rgb(37 99 235 / 0.25); }
+  .dark .border-brand-200 { border-color: rgb(37 99 235 / 0.35); }
+
+  /* ---- Depth ---------------------------------------------------------- */
+  /* A drop shadow is light being blocked; on a dark page there is none to
+     block, and grey blur just reads as smudge. Cards get an edge instead. */
+  .dark .shadow-sm,
+  .dark .shadow,
+  .dark .shadow-md,
+  .dark .shadow-lg,
+  .dark .shadow-xl,
+  .dark .shadow-2xl { box-shadow: 0 0 0 1px rgb(255 255 255 / 0.06); }
+
+  /* Buttons keep theirs — a coloured glow still works against dark. */
+  .dark [class*='shadow-brand-'] { box-shadow: 0 10px 25px -8px rgb(37 99 235 / 0.45); }
+
+  /* ---- Form controls -------------------------------------------------- */
+  /* The browser paints these from its own light palette unless told the page
+     is dark; without this, selects and date pickers stay white on white. */
+  .dark input,
+  .dark select,
+  .dark textarea { color-scheme: dark; }
+
+  .dark input:not([type='checkbox']):not([type='radio']),
+  .dark select,
+  .dark textarea {
+    background-color: #0b1220;
+    border-color: rgb(255 255 255 / 0.12);
+    color: #e2e8f0;
+  }
+
+  .dark ::-webkit-calendar-picker-indicator { filter: invert(1) opacity(0.6); }
+
+  /* ---- The second palette ---------------------------------------------- */
+  /* The blog and the pages built alongside it use a separate set of semantic
+     tokens — foreground / muted-foreground / muted / border / background —
+     declared in tailwind.config next to the brand scale. Nothing above touches
+     them, so those pages went dark everywhere except their own headings, which
+     stayed near-black on near-black. */
+  .dark .text-foreground { color: #f8fafc; }
+  .dark .text-muted-foreground { color: #94a3b8; }
+  .dark .bg-background { background-color: #0f172a; }
+  .dark .bg-muted { background-color: #1e293b; }
+  .dark .hover\:bg-muted:hover { background-color: #334155; }
+  .dark .border-border,
+  .dark .divide-border > * + * { border-color: rgb(255 255 255 / 0.12); }
+  .dark .text-border { color: rgb(255 255 255 / 0.2); }
+
+  /* #3382e8 on near-black is under 4.5:1; this clears it. */
+  .dark .text-primary { color: #7ca5f8; }
+  .dark .hover\:text-primary:hover { color: #93b4fd; }
+  .dark .border-primary { border-color: rgb(51 130 232 / 0.5); }
+
+  /* ---- Gradients -------------------------------------------------------- */
+  /* Gradient stops are CSS variables, not colours on the element, so none of the
+     rules above reach them. A hero fading `from-brand-50 to-white` stayed a pale
+     wash under white heading text — the one place on the site where the words
+     genuinely could not be read. */
+  /* Opacity modifiers make a distinct class name, so /60 needs its own line. */
+  .dark .from-brand-50,
+  .dark .from-brand-50\/60 { --tw-gradient-from: rgb(37 99 235 / 0.12) var(--tw-gradient-from-position); }
+  .dark .to-white { --tw-gradient-to: #020617 var(--tw-gradient-to-position); }
+  .dark .from-white { --tw-gradient-from: #020617 var(--tw-gradient-from-position); }
+  .dark .via-white { --tw-gradient-via: #020617 var(--tw-gradient-via-position); }
+  .dark .to-gray-50, .dark .to-slate-50 { --tw-gradient-to: #0f172a var(--tw-gradient-to-position); }
+  .dark .from-gray-50, .dark .from-slate-50 { --tw-gradient-from: #0f172a var(--tw-gradient-from-position); }
+
+  /* ---- Arbitrary values ------------------------------------------------ */
+  /* A handful of pages set their page wash with a literal hex instead of a
+     palette class, so nothing above catches them and they stay near-white while
+     everything on top goes dark. Only two colours, both the same pale grey. */
+  .dark .bg-\[\#f7f9fc\],
+  .dark .bg-\[\#f7f8fa\] { background-color: #020617; }
+
+  /* ---- Exceptions ----------------------------------------------------- */
+  /* White that is an object, not a surface: it sits on a coloured background
+     and has to stay white or it disappears. */
+  .dark .bg-brand-600 .bg-white,
+  .dark .bg-brand-700 .bg-white,
+  .dark .bg-ink-900 .bg-white,
+  .dark [class*='from-brand-'] .bg-white,
+  .dark [class*='bg-brand-6'] > .bg-white,
+  .dark .text-white .bg-white { background-color: #ffffff; }
+
+  /* …and the label on such a button. The blanket rule lightens brand text for
+     contrast against a dark page, but this one sits on the white we just kept,
+     where pale blue is the unreadable choice. */
+  .dark .text-white .bg-white.text-brand-600,
+  .dark .text-white .bg-white.text-brand-700,
+  .dark [class*='from-brand-'] .bg-white.text-brand-600,
+  .dark [class*='from-brand-'] .bg-white.text-brand-700 { color: #1d4ed8; }
+
+  /* Anything explicitly opted out. Add `data-keep-light` to a wrapper whose
+     colours are already correct — an embedded payment frame, say, or a
+     screenshot that should not be repainted. */
+  .dark [data-keep-light],
+  .dark [data-keep-light] * {
+    background-color: revert;
+    color: revert;
+    border-color: revert;
+  }
+}

@@ -29,7 +29,9 @@ function toggle(i: number) { open.value = open.value === i ? null : i }
   <div>
     <!-- Hero -->
     <section class="relative overflow-hidden bg-gradient-to-b from-brand-50/60 to-white">
-      <span class="pointer-events-none absolute -right-8 top-4 select-none font-display text-[16rem] font-black leading-none text-brand-600/[0.05] sm:text-[22rem]" aria-hidden="true">R</span>
+      <!-- The watermark was RazinSoft's initial. On SmartDesk's own site that is the vendor
+           signing somebody else's product. -->
+      <span class="pointer-events-none absolute -right-8 top-4 select-none font-display text-[16rem] font-black leading-none text-brand-600/[0.05] sm:text-[22rem]" aria-hidden="true">S</span>
       <div class="container-page relative py-16 lg:py-24">
         <p class="text-xs font-bold uppercase tracking-widest text-brand-600">Support</p>
         <h1 class="mt-3 max-w-3xl font-display text-4xl font-extrabold leading-tight text-ink-900 sm:text-5xl">

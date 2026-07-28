@@ -8,10 +8,14 @@ usePageSeo({
 
 /** Captured from the demo install by tools/gen-screens (admin repo), never from a live one. */
 const screens = [
-  { file: 'deals', caption: 'Deals — drag a card between stages; milestones live on each one' },
+  { file: 'deals', caption: 'CRM — drag a deal between stages; milestones live on each card' },
+  { file: 'projects', caption: 'Projects — budget, deadline, owner and progress on every row' },
+  { file: 'hr', caption: 'HR — the employee file, from joining date to who reports to whom' },
+  { file: 'analytics', caption: 'Finance — balances, twelve months of income against spend' },
   { file: 'whatsapp', caption: 'WhatsApp — every number your team answers, in one inbox' },
-  { file: 'clients', caption: 'Clients — the book the rest of the system hangs off' },
+  { file: 'messenger', caption: 'Internal messaging — channels and direct threads, live' },
   { file: 'email-templates', caption: 'Email — edit the wording, switch one off, see what sent' },
+  { file: 'branding', caption: 'Branding — name, logo and colours, without touching code' },
 ]
 
 /** The questions a buyer actually asks before clicking buy. */

@@ -102,7 +102,9 @@ export default defineNuxtConfig({
     'nuxt-schema-org',
   ],
 
-  css: ['~/assets/css/main.css'],
+  // dark.css restates the palette for `.dark`; it must load after main.css so its
+  // @layer components rules land next to Tailwind's, before the utilities.
+  css: ['~/assets/css/main.css', '~/assets/css/dark.css'],
 
   // ---- Rendering ----
   // Static marketing pages prerender; data- and auth-driven pages render live (SSR/SPA)
