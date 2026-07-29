@@ -97,6 +97,20 @@ export function useCart() {
 
     if (import.meta.client) {
       useToast().success('Added to cart', `${input.name} — ${label}`)
+      // The cart never leaves the browser, so beacon the add — it is the only way the panel can
+      // see who is moving to buy. Fire-and-forget: tracking must never break adding to a cart.
+      const { $api } = useNuxtApp() as unknown as { $api: typeof $fetch }
+      $api('/track/cart', {
+        method: 'POST',
+        body: {
+          slug: input.slug,
+          name: input.name,
+          label,
+          unit_price: input.unitPrice,
+          qty: 1,
+          tz: Intl.DateTimeFormat().resolvedOptions().timeZone || undefined,
+        },
+      }).catch(() => {})
     }
   }
 
