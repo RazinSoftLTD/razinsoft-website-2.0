@@ -107,16 +107,29 @@ useHead({ title: () => (inv.value ? `Pay ${inv.value.invoice_number} — RazinSo
               <p v-if="inv.partial_requested" class="mt-0.5 text-xs text-gray-400">Remaining after this payment: {{ money(inv.amount_due - inv.payable_amount) }}</p>
             </div>
             <div class="flex w-full gap-3 sm:w-auto">
-              <a v-if="methods.includes('stripe')" :href="inv.checkout_url"
-                 class="inline-flex h-12 flex-1 items-center justify-center gap-2.5 rounded-xl bg-brand-600 px-6 font-bold text-white shadow-sm transition hover:bg-brand-700 sm:flex-none">
-                <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M2.5 9.5h19M6 14.5h4"/></svg>
-                Pay with Card
-              </a>
-              <!-- Official PayPal button: yellow pill + the PayPal wordmark, exactly like PayPal's own standalone checkout button -->
-              <a v-if="methods.includes('paypal')" :href="inv.paypal_url" aria-label="Pay with PayPal"
-                 class="inline-flex h-12 flex-1 items-center justify-center rounded-xl border border-gray-300 bg-white px-8 shadow-sm transition hover:bg-gray-50 sm:flex-none">
-                <img src="https://www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-100px.png" alt="PayPal" class="h-6 w-auto">
-              </a>
+              <!-- Until there is a billing address, the pay buttons are a prompt to add one.
+                   Letting Stripe collect it at checkout looks equivalent but is not: that address
+                   never comes back to the invoice, so the record and the receipt disagree about who
+                   was billed — and PayPal collects nothing at all. -->
+              <button v-if="needsAddress" type="button"
+                      class="inline-flex h-12 w-full items-center justify-center gap-2.5 rounded-xl bg-brand-600 px-6 font-bold text-white shadow-sm transition hover:bg-brand-700 sm:w-auto"
+                      @click="addrOpen = true">
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>
+                Add billing address to pay
+              </button>
+
+              <template v-else>
+                <a v-if="methods.includes('stripe')" :href="inv.checkout_url"
+                   class="inline-flex h-12 flex-1 items-center justify-center gap-2.5 rounded-xl bg-brand-600 px-6 font-bold text-white shadow-sm transition hover:bg-brand-700 sm:flex-none">
+                  <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M2.5 9.5h19M6 14.5h4"/></svg>
+                  Pay with Card
+                </a>
+                <!-- Official PayPal button: yellow pill + the PayPal wordmark, exactly like PayPal's own standalone checkout button -->
+                <a v-if="methods.includes('paypal')" :href="inv.paypal_url" aria-label="Pay with PayPal"
+                   class="inline-flex h-12 flex-1 items-center justify-center rounded-xl border border-gray-300 bg-white px-8 shadow-sm transition hover:bg-gray-50 sm:flex-none">
+                  <img src="https://www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-100px.png" alt="PayPal" class="h-6 w-auto">
+                </a>
+              </template>
             </div>
           </div>
           <p class="mt-4 border-t border-gray-100 pt-3 text-center text-xs text-gray-400">
