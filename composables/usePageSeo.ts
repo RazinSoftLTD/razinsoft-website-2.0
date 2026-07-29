@@ -10,7 +10,7 @@ interface PageSeo {
  * Sets per-page title, description, canonical URL, Open Graph and Twitter tags.
  * Improves: SEO (unique metadata, canonical, social cards).
  */
-export function usePageSeo(meta: PageSeo) {
+export function usePageSeo(meta: PageSeo & { noindex?: boolean }) {
   const route = useRoute()
   const siteUrl = useRuntimeConfig().public.siteUrl as string
   const base = siteUrl.replace(/\/$/, '')
@@ -18,6 +18,12 @@ export function usePageSeo(meta: PageSeo) {
   // Absolute image URLs (e.g. API-hosted product images) pass through; relative paths get the site origin.
   const rawImage = meta.image ?? '/images/razinsoft-home-og-image.webp'
   const image = /^https?:\/\//.test(rawImage) ? rawImage : base + rawImage
+
+  // Pages reached by a private link (a product sales link, say) must stay out of the index —
+  // otherwise the URL that was the authorisation ends up in a search result.
+  if (meta.noindex) {
+    useHead({ meta: [{ name: 'robots', content: 'noindex, nofollow' }] })
+  }
 
   useSeoMeta({
     title: meta.title,
