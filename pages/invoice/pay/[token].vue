@@ -17,7 +17,15 @@ const LABELS = [
   { value: 'office', text: 'Office' },
   { value: 'other', text: 'Other' },
 ]
-const needsAddress = computed(() => !!inv.value && !inv.value.bill_to?.has_address && !paid.value)
+// The backend decides whether this invoice is subject to the rule at all — invoices raised before
+// it came in are exempt, and the page must not gate those. Defaults to true when the field is
+// absent, so an older API build fails closed rather than letting a payment through unaddressed.
+const needsAddress = computed(() =>
+  !!inv.value
+  && (inv.value.bill_to?.address_required ?? true)
+  && !inv.value.bill_to?.has_address
+  && !paid.value,
+)
 const addrOpen = ref(false)
 const savingAddr = ref(false)
 const addrError = ref('')
