@@ -29,7 +29,23 @@ function dismiss() {
         </svg>
       </button>
       <NuxtLink to="/products" aria-label="View all products" @click="dismiss">
-        <img :src="popup.image" alt="" class="w-full rounded-2xl object-cover shadow-2xl" />
+        <!-- The box holds its shape before the artwork arrives. Without it the image grew from
+             nothing to full height on load, which was the single largest layout shift on the site
+             (0.14 of a 0.22 CLS) — the promo is fetched after hydration, so it always lands late.
+             Square matches the artwork the admin uploads; object-contain means a differently
+             shaped upload letterboxes inside the box rather than being cropped. -->
+        <div class="aspect-square w-full overflow-hidden rounded-2xl shadow-2xl">
+          <NuxtImg
+            :src="popup.image"
+            alt=""
+            width="448"
+            height="448"
+            sizes="448px"
+            loading="eager"
+            fetchpriority="high"
+            class="h-full w-full object-contain"
+          />
+        </div>
       </NuxtLink>
     </div>
   </div>
