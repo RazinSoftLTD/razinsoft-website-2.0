@@ -1,6 +1,6 @@
 <script setup lang="ts">
 definePageMeta({ layout: 'auth', middleware: 'guest' })
-usePageSeo({ title: 'Create Account', description: 'Create a free RazinSoft account to purchase products, manage licenses and access downloads.' })
+usePageSeo({ title: 'Create Account', description: 'Create an account to purchase, manage licenses and access downloads.' })
 useSeoMeta({ robots: 'noindex, follow' })
 
 const form = reactive({ name: '', email: '', country: 'BD', phone: '', password: '' })
@@ -49,6 +49,8 @@ async function onSubmit() {
 }
 
 const field = 'h-11 w-full rounded-lg border border-gray-200 bg-white pl-10 text-sm text-ink-900 placeholder-gray-400 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500'
+
+const brand = useBranding()
 </script>
 
 <template>
@@ -58,7 +60,7 @@ const field = 'h-11 w-full rounded-lg border border-gray-200 bg-white pl-10 text
     <main class="flex items-center justify-center px-5 py-10 sm:px-8">
       <div class="w-full max-w-md">
         <NuxtLink to="/" class="mb-8 flex items-center gap-2 lg:hidden">
-          <img src="/images/Razinsoft-logo.webp" alt="RazinSoft" width="1772" height="384" class="h-8 w-auto">
+          <img :src="brand.logo || '/images/smartdesk-logo.svg'" :alt="brand.product" class="h-8 w-auto">
         </NuxtLink>
 
         <h1 class="font-display text-3xl font-extrabold text-ink-900">Create your account</h1>

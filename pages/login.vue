@@ -1,6 +1,6 @@
 <script setup lang="ts">
 definePageMeta({ layout: 'auth', middleware: 'guest' })
-usePageSeo({ title: 'Sign In', description: 'Sign in to your RazinSoft account to manage your products, licenses and downloads.' })
+usePageSeo({ title: 'Sign In', description: 'Sign in to manage your orders, licences and downloads.' })
 useSeoMeta({ robots: 'noindex, follow' })
 
 const email = ref('')
@@ -28,6 +28,8 @@ async function onSubmit() {
 }
 
 const field = 'h-11 w-full rounded-lg border border-gray-200 bg-white pl-10 text-sm text-ink-900 placeholder-gray-400 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500'
+
+const brand = useBranding()
 </script>
 
 <template>
@@ -38,11 +40,11 @@ const field = 'h-11 w-full rounded-lg border border-gray-200 bg-white pl-10 text
       <div class="w-full max-w-md">
         <!-- Mobile logo -->
         <NuxtLink to="/" class="mb-8 flex items-center gap-2 lg:hidden">
-          <img src="/images/Razinsoft-logo.webp" alt="RazinSoft" width="1772" height="384" class="h-8 w-auto">
+          <img :src="brand.logo || '/images/smartdesk-logo.svg'" :alt="brand.product" class="h-8 w-auto">
         </NuxtLink>
 
-        <h1 class="font-display text-3xl font-extrabold text-ink-900">Welcome back</h1>
-        <p class="mt-2 text-gray-500">Sign in to continue to your dashboard.</p>
+        <h1 class="font-display text-3xl font-extrabold text-ink-900 dark:text-white">{{ brand.login.heading }}</h1>
+        <p class="mt-2 text-gray-500 dark:text-slate-400">{{ brand.login.subheading }}</p>
 
         <!-- <div class="mt-7">
           <AuthSocials />

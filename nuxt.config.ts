@@ -69,11 +69,16 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
 
   // Single source of truth for every absolute URL (canonical, OG, sitemap, schema).
+  // Build-time site identity, for the sitemap and schema.org output. Everything a visitor reads on
+  // the page comes from the admin panel at runtime; these two are baked, so they live in .env
+  // rather than in this file — an operator should not have to edit source to stop the sitemap
+  // announcing somebody else's company.
   site: {
     url: siteUrl,
-    name: 'RazinSoft',
+    name: process.env.SITE_NAME || 'SmartDesk',
     description:
-      'RazinSoft empowers startups and businesses with scalable digital solutions, combining modern development technologies, strategic thinking, and industry-focused expertise.',
+      process.env.SITE_DESCRIPTION
+      || 'SmartDesk is a self-hosted business hub: CRM, HRM, projects, WhatsApp, email, internal messaging and analytics behind one login.',
     defaultLocale: 'en',
   },
 
@@ -117,23 +122,23 @@ export default defineNuxtConfig({
     // swr: Nitro also caches the rendered HTML in-process, so repeat SSR hits skip the
     // render + API round-trip entirely (TTFB ~120ms → ~15ms at the origin).
     '/': { swr: 300, headers: { 'cache-control': 'public, max-age=0, must-revalidate, s-maxage=300, stale-while-revalidate=600' } },
-    '/login': { prerender: true },
-    '/register': { prerender: true },
-    '/contact-us': { prerender: true },
-    '/about-us': { prerender: true },
+    '/login': { swr: 600, headers: { 'cache-control': 'public, max-age=0, must-revalidate, s-maxage=600, stale-while-revalidate=600' } },
+    '/register': { swr: 600, headers: { 'cache-control': 'public, max-age=0, must-revalidate, s-maxage=600, stale-while-revalidate=600' } },
+    '/contact-us': { swr: 600, headers: { 'cache-control': 'public, max-age=0, must-revalidate, s-maxage=600, stale-while-revalidate=600' } },
+    '/about-us': { swr: 600, headers: { 'cache-control': 'public, max-age=0, must-revalidate, s-maxage=600, stale-while-revalidate=600' } },
     // Careers renders live (published openings come from the API) — SSR + short cache,
     // so a newly published/unpublished role shows up within a few minutes without a rebuild.
     '/careers': { swr: 180, headers: { 'cache-control': 'public, max-age=0, must-revalidate, s-maxage=180, stale-while-revalidate=600' } },
-    '/life-at-razinsoft': { prerender: true },
+    '/life-at-razinsoft': { swr: 600, headers: { 'cache-control': 'public, max-age=0, must-revalidate, s-maxage=600, stale-while-revalidate=600' } },
     // The page used to live at /life — keep those links (and their search ranking) working.
     '/life': { redirect: { to: '/life-at-razinsoft', statusCode: 301 } },
-    '/support': { prerender: true },
-    '/privacy-policy': { prerender: true },
-    '/refund-policy': { prerender: true },
-    '/installation-policy': { prerender: true },
-    '/terms-and-conditions': { prerender: true },
-    '/service-policy': { prerender: true },
-    '/support-policy': { prerender: true },
+    '/support': { swr: 600, headers: { 'cache-control': 'public, max-age=0, must-revalidate, s-maxage=600, stale-while-revalidate=600' } },
+    '/privacy-policy': { swr: 600, headers: { 'cache-control': 'public, max-age=0, must-revalidate, s-maxage=600, stale-while-revalidate=600' } },
+    '/refund-policy': { swr: 600, headers: { 'cache-control': 'public, max-age=0, must-revalidate, s-maxage=600, stale-while-revalidate=600' } },
+    '/installation-policy': { swr: 600, headers: { 'cache-control': 'public, max-age=0, must-revalidate, s-maxage=600, stale-while-revalidate=600' } },
+    '/terms-and-conditions': { swr: 600, headers: { 'cache-control': 'public, max-age=0, must-revalidate, s-maxage=600, stale-while-revalidate=600' } },
+    '/service-policy': { swr: 600, headers: { 'cache-control': 'public, max-age=0, must-revalidate, s-maxage=600, stale-while-revalidate=600' } },
+    '/support-policy': { swr: 600, headers: { 'cache-control': 'public, max-age=0, must-revalidate, s-maxage=600, stale-while-revalidate=600' } },
     // Insights / blog: edge-cached, browser revalidates (articles change rarely).
     '/blog': { swr: 180, headers: { 'cache-control': 'public, max-age=0, must-revalidate, s-maxage=180, stale-while-revalidate=600' } },
     '/blog/**': { swr: 600, headers: { 'cache-control': 'public, max-age=0, must-revalidate, s-maxage=600, stale-while-revalidate=600' } },

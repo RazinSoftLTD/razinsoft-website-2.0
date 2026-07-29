@@ -1,26 +1,40 @@
 <script setup lang="ts">
+/**
+ * The panel beside the sign-in form.
+ *
+ * Everything here used to be hard-coded: the logo file, the headline, "Join 50,000+ teams running
+ * their business on RazinSoft's enterprise-ready platforms", and a five-star review from a CTO at
+ * a company that does not exist. All of it now comes from the panel, and the invented review is
+ * gone — a fabricated quote on a sign-in screen is a lie told to the operator's own customers, and
+ * it is not the operator's lie to tell.
+ */
+const brand = useBranding()
+
 const points = [
-  'Lifetime licenses — pay once, own forever',
-  'Full source code & documentation included',
-  '24/7 expert support and free updates',
+  'Lifetime licence — pay once, own it',
+  'Full source code and documentation',
+  'Free updates for the life of the licence',
 ]
 </script>
 
 <template>
   <aside class="relative hidden overflow-hidden bg-gradient-to-br from-[#0f172a] via-[#1e3a5f] to-[#0f172a] p-10 text-white lg:flex lg:flex-col lg:justify-between xl:p-14">
-    <div class="pointer-events-none absolute inset-0 opacity-[0.06]" aria-hidden="true" style="background-image: linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px); background-size: 56px 56px;" />
+    <div class="pointer-events-none absolute inset-0 opacity-[0.06]" aria-hidden="true"
+         style="background-image: linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px); background-size: 56px 56px;" />
 
-    <NuxtLink to="/" class="relative flex items-center gap-2">
-      <!-- White-inverted brand logo for the dark aside. -->
-      <img src="/images/Razinsoft-logo.webp" alt="RazinSoft" width="1772" height="384" class="h-9 w-auto brightness-0 invert">
+    <NuxtLink to="/" class="relative flex items-center gap-2" :aria-label="`${brand.product} home`">
+      <!-- An uploaded logo is shown as it is. Only the shipped mark is known to survive being
+           flattened to white, so the filter is not applied to somebody else's artwork. -->
+      <img v-if="brand.logo" :src="brand.logo" :alt="brand.product" class="h-9 w-auto">
+      <img v-else src="/images/smartdesk-logo.svg" :alt="brand.product" width="760" height="180" class="h-9 w-auto brightness-0 invert">
     </NuxtLink>
 
     <div class="relative">
       <h2 class="font-display text-3xl font-extrabold leading-tight xl:text-4xl">
-        Scalable software for <span class="text-brand-400">growing businesses.</span>
+        {{ brand.login.heading }}
       </h2>
       <p class="mt-4 max-w-md text-gray-300">
-        Join 50,000+ teams running their business on RazinSoft’s enterprise-ready platforms.
+        {{ brand.footer.about }}
       </p>
       <ul class="mt-8 space-y-3">
         <li v-for="p in points" :key="p" class="flex items-center gap-3 text-sm text-gray-200">
@@ -32,15 +46,19 @@ const points = [
       </ul>
     </div>
 
-    <figure class="relative rounded-2xl border border-white/10 bg-white/5 p-5">
-      <div class="flex gap-1 text-amber-400" aria-hidden="true">
-        <svg v-for="n in 5" :key="n" class="h-4 w-4 fill-current" viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.3 5.9.9-4.2 4.1 1 5.8L10 15l-5.3 2.6 1-5.8L1.5 7.7l5.9-.9z" /></svg>
+    <!-- Where the invented testimonial was. Contact details are true and useful; a made-up review
+         is neither. -->
+    <div class="relative rounded-2xl border border-white/10 bg-white/5 p-5 text-sm">
+      <p class="font-semibold text-white">{{ brand.company_name }}</p>
+      <p v-if="brand.address" class="mt-1 text-gray-400">{{ brand.address }}</p>
+      <div class="mt-3 space-y-1 text-gray-300">
+        <p>
+          <a :href="`mailto:${brand.support_email}`" class="hover:text-white">{{ brand.support_email }}</a>
+        </p>
+        <p v-if="brand.phone">
+          <a :href="`tel:${brand.phone}`" class="hover:text-white">{{ brand.phone }}</a>
+        </p>
       </div>
-      <blockquote class="mt-3 text-sm leading-relaxed text-gray-200">“RazinSoft’s suite cut our development time by 70%. Live in three days — the analytics dashboard is genuinely excellent.”</blockquote>
-      <figcaption class="mt-3 text-sm">
-        <span class="font-semibold text-white">Aisha Rahman</span>
-        <span class="text-gray-400"> · CTO, NovaTrade</span>
-      </figcaption>
-    </figure>
+    </div>
   </aside>
 </template>

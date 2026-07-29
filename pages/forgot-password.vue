@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const { $api } = useNuxtApp()
 
-useSeoMeta({ title: 'Forgot Password — RazinSoft', description: 'Reset your RazinSoft account password.' })
+useSeoMeta({ title: 'Forgot Password', description: 'Reset your account password.' })
 
 const email = ref('')
 const loading = ref(false)

@@ -4,7 +4,7 @@ const route = useRoute()
 const router = useRouter()
 const { success } = useToast()
 
-useSeoMeta({ title: 'Reset Password — RazinSoft' })
+useSeoMeta({ title: 'Reset Password' })
 
 const token = String(route.query.token || '')
 const email = ref(String(route.query.email || ''))

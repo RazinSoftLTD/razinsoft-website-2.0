@@ -50,16 +50,20 @@ watch(() => route.fullPath, () => { open.value = false; mobileSub.value = null; 
 
 const { isLoggedIn } = useAuth()
 const { theme, toggle } = useTheme()
+const brand = useBranding()
 </script>
 
 <template>
   <header class="sticky top-0 z-50 border-b border-gray-100 bg-white/85 backdrop-blur dark:border-white/10 dark:bg-slate-950/85">
     <div class="container-page flex h-[72px] items-center justify-between gap-4">
-      <NuxtLink to="/" class="flex shrink-0 items-center" aria-label="SmartDesk home">
-        <!-- Two files rather than a CSS filter: the mark is a coloured tile, and `invert` would
-             flatten it to a white square. Only the wordmark differs between them. -->
-        <img src="/images/smartdesk-logo.svg" alt="SmartDesk" width="760" height="180" class="h-8 w-auto max-[379px]:h-6 dark:hidden">
-        <img src="/images/smartdesk-logo-dark.svg" alt="" aria-hidden="true" width="760" height="180" class="hidden h-8 w-auto max-[379px]:h-6 dark:block">
+      <NuxtLink to="/" class="flex shrink-0 items-center" :aria-label="`${brand.product} home`">
+        <!-- An operator's uploaded logo wins. Only the shipped mark has a dark twin, so a custom
+             one is shown as-is rather than run through a filter that would wreck it. -->
+        <img v-if="brand.logo" :src="brand.logo" :alt="brand.product" class="h-8 w-auto max-[379px]:h-6">
+        <template v-else>
+          <img src="/images/smartdesk-logo.svg" :alt="brand.product" width="760" height="180" class="h-8 w-auto max-[379px]:h-6 dark:hidden">
+          <img src="/images/smartdesk-logo-dark.svg" alt="" aria-hidden="true" width="760" height="180" class="hidden h-8 w-auto max-[379px]:h-6 dark:block">
+        </template>
       </NuxtLink>
 
       <!-- ───────── Desktop nav ───────── -->
@@ -140,9 +144,9 @@ const { theme, toggle } = useTheme()
           </template>
         </ClientOnly>
 
-        <NuxtLink to="/#pricing"
+        <NuxtLink :to="brand.header.cta_url"
                   class="hidden items-center gap-2 rounded-xl bg-brand-600 px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-brand-600/20 transition hover:bg-brand-700 sm:inline-flex">
-          Get Started
+          {{ brand.header.cta_label }}
           <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6" /></svg>
         </NuxtLink>
 
@@ -193,7 +197,7 @@ const { theme, toggle } = useTheme()
 
           <li class="flex gap-2 pt-2">
             <NuxtLink to="/login" class="flex-1 rounded-xl border border-gray-200 px-4 py-3 text-center text-sm font-bold text-ink-900 dark:border-white/15 dark:text-white">Log In</NuxtLink>
-            <NuxtLink to="/#pricing" class="flex-1 rounded-xl bg-brand-600 px-4 py-3 text-center text-sm font-bold text-white">Get Started</NuxtLink>
+            <NuxtLink :to="brand.header.cta_url" class="flex-1 rounded-xl bg-brand-600 px-4 py-3 text-center text-sm font-bold text-white">{{ brand.header.cta_label }}</NuxtLink>
           </li>
         </ul>
       </nav>
