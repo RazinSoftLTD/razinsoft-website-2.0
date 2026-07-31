@@ -9,10 +9,29 @@
  *
  * The message is prefilled — landing in an empty thread is where most of these buttons lose people.
  */
+/**
+ * Where it points is set in the panel (Activity → WhatsApp Button). Using that link rather than a
+ * wa.me address is what lets those clicks be counted: it goes to the panel, which records the click
+ * and forwards to the chat.
+ *
+ * The built-in number below is the fallback, and it matters — this button is on every page, and it
+ * must not vanish or dead-end because an API call failed or nobody has chosen a link yet.
+ */
 const NUMBER = '8801937203743'
 const MESSAGE = 'Hello RazinSoft, I would like to know more about your services.'
+const FALLBACK = `https://wa.me/${NUMBER}?text=${encodeURIComponent(MESSAGE)}`
 
-const href = computed(() => `https://wa.me/${NUMBER}?text=${encodeURIComponent(MESSAGE)}`)
+const { $api } = useNuxtApp()
+
+// Client-side: pages are SWR-cached, so a link baked into that HTML would keep pointing at an old
+// choice for the whole cache window.
+const { data: button } = await useAsyncData(
+  'whatsapp-button',
+  () => $api<{ data: { url: string } | null }>('/whatsapp-button'),
+  { server: false, default: () => null },
+)
+
+const href = computed(() => button.value?.data?.url || FALLBACK)
 </script>
 
 <template>
