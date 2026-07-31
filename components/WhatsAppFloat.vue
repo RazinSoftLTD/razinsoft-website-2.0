@@ -55,7 +55,7 @@ const href = computed(() => button.value?.data?.url || FALLBACK)
     <span
       class="pointer-events-none absolute right-full mr-3 hidden whitespace-nowrap rounded-lg bg-ink-900 px-3 py-1.5 text-sm font-semibold text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100 lg:block"
     >
-      Chat on WhatsApp
+      💬 Let's Chat on WhatsApp
     </span>
   </a>
 </template>
