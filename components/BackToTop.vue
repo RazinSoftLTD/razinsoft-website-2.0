@@ -25,13 +25,13 @@ onBeforeUnmount(() => window.removeEventListener('scroll', onScroll))
 </script>
 
 <template>
-  <!-- Stacked above the WhatsApp button, which now owns the bottom of this corner. -->
+  <!-- Sits at the bottom of the corner; the WhatsApp button stacks above it. -->
   <Transition name="btt">
     <button
       v-show="visible"
       type="button"
       aria-label="Back to top"
-      class="fixed bottom-20 right-5 z-40 grid h-11 w-11 place-items-center rounded-full bg-brand-600 text-white shadow-lg shadow-brand-600/30 transition-colors hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-400 focus:ring-offset-2 sm:bottom-24 sm:right-6"
+      class="fixed bottom-5 right-5 z-40 grid h-11 w-11 place-items-center rounded-full bg-brand-600 text-white shadow-lg shadow-brand-600/30 transition-colors hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-400 focus:ring-offset-2 sm:bottom-6 sm:right-6"
       @click="toTop"
     >
       <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" aria-hidden="true">
