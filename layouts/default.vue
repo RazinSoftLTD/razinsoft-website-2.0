@@ -7,6 +7,7 @@
       <slot />
     </main>
     <AppFooter />
+    <WhatsAppFloat />
     <BackToTop />
     <PromoPopup />
   </div>
