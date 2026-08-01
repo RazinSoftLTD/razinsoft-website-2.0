@@ -1,16 +1,44 @@
 <script setup lang="ts">
 type MenuItem = { title: string; desc: string; to: string; icon: string[]; tone: string; arrow: string }
-type NavItem = { label: string; to?: string; caret?: boolean; menu?: MenuItem[] }
+/** Services opens as a wide panel with its own intro and a talk-to-us column; Company stays a list. */
+type NavItem = {
+  label: string; to?: string; caret?: boolean; menu?: MenuItem[]
+  wide?: boolean
+  intro?: { eyebrow: string; title: string; accent: string; desc: string }
+  aside?: { eyebrow: string; title: string; desc: string; cta: string; ctaTo: string; stats: { value: string; label: string; tone: string; icon: string[] }[] }
+}
 
 const nav: NavItem[] = [
   { label: 'Products', to: '/products', caret: false },
   {
     label: 'Services',
     caret: true,
+    wide: true,
+    intro: {
+      eyebrow: 'Our Services',
+      title: 'Complete Services.',
+      accent: 'Lasting Impact.',
+      desc: 'From installation to ongoing support, we provide end-to-end services to help your business grow.',
+    },
+    aside: {
+      eyebrow: "Let's talk",
+      title: 'Have a project in mind?',
+      desc: 'Our experts are ready to help you find the right solution for your business.',
+      cta: 'Book a Free Consultation',
+      ctaTo: '/book-a-meeting',
+      stats: [
+        { value: '25+', label: 'Countries Served', tone: 'bg-blue-50 text-blue-600', icon: ['M12 2.5a9.5 9.5 0 1 0 0 19 9.5 9.5 0 0 0 0-19Z', 'M2.5 12h19', 'M12 2.5c2.5 2.6 2.5 16.4 0 19', 'M12 2.5c-2.5 2.6-2.5 16.4 0 19'] },
+        { value: '1000+', label: 'Happy Clients', tone: 'bg-emerald-50 text-emerald-600', icon: ['M9 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z', 'M17 11a3 3 0 1 0 0-6', 'M3 20a6 6 0 0 1 12 0', 'M16.5 14.5A6 6 0 0 1 21 20'] },
+        { value: '99.9%', label: 'Uptime & Reliability', tone: 'bg-purple-50 text-purple-600', icon: ['M12 2.5 4 6v6c0 5 3.4 8.6 8 9.5 4.6-.9 8-4.5 8-9.5V6l-8-3.5Z', 'm9 12 2 2 4-4'] },
+      ],
+    },
     menu: [
-      { title: 'Installation', desc: 'Get your product set up and live by our experts.', to: '/services/installation', tone: 'bg-emerald-50 text-emerald-600', arrow: 'text-emerald-500', icon: ['M12 3v12', 'm8 11 4 4 4-4', 'M4 15v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4'] },
-      { title: 'Customisation', desc: 'Tailor features, design and workflows to your needs.', to: '/services/customization', tone: 'bg-indigo-50 text-indigo-600', arrow: 'text-indigo-500', icon: ['M14.6 6.4a3.5 3.5 0 0 0-4.8 4.2L4 16.4V20h3.6l5.8-5.8a3.5 3.5 0 0 0 4.2-4.8l-2.3 2.3-2-.5-.5-2 2.3-2.3Z'] },
-      { title: 'Maintenance Services', desc: 'Ongoing support, updates and monitoring for peace of mind.', to: '/services/maintenance', tone: 'bg-amber-50 text-amber-600', arrow: 'text-amber-500', icon: ['M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z', 'M12 2.5v2M12 19.5v2M4.5 12h-2M21.5 12h-2M6 6 4.6 4.6M19.4 19.4 18 18M18 6l1.4-1.4M4.6 19.4 6 18'] },
+      { title: 'Installation', desc: 'Quick and secure installation to get your product up and running.', to: '/services/installation', tone: 'bg-blue-50 text-blue-600', arrow: 'text-blue-500', icon: ['m4.5 19.5 3-1 12-12a2.1 2.1 0 0 0-3-3l-12 12-1 3Z', 'M14 6.5 17.5 10', 'M6 14.5 9.5 18'] },
+      { title: 'Custom Development', desc: 'Build custom features and workflows tailored to your unique business needs.', to: '/services/customization', tone: 'bg-emerald-50 text-emerald-600', arrow: 'text-emerald-500', icon: ['m9 8-4 4 4 4', 'm15 8 4 4-4 4', 'm13 5-2 14'] },
+      { title: 'Maintenance & Support', desc: 'Ongoing support and regular updates to keep your system secure and reliable.', to: '/services/maintenance', tone: 'bg-orange-50 text-orange-600', arrow: 'text-orange-500', icon: ['M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z', 'M12 2.5v2M12 19.5v2M4.5 12h-2M21.5 12h-2M6 6 4.6 4.6M19.4 19.4 18 18M18 6l1.4-1.4M4.6 19.4 6 18'] },
+      { title: 'Dedicated Team', desc: 'Hire dedicated developers to extend your team and accelerate delivery.', to: '/contact-us', tone: 'bg-purple-50 text-purple-600', arrow: 'text-purple-500', icon: ['M9 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z', 'M17 11a3 3 0 1 0 0-6', 'M3 20a6 6 0 0 1 12 0', 'M16.5 14.5A6 6 0 0 1 21 20'] },
+      { title: 'Cloud Deployment', desc: 'Deploy your application on scalable and secure cloud infrastructure.', to: '/contact-us', tone: 'bg-sky-50 text-sky-600', arrow: 'text-sky-500', icon: ['M7 18a4.5 4.5 0 0 1-.6-9A6 6 0 0 1 18 9.5a4.25 4.25 0 0 1-.5 8.5H7Z'] },
+      { title: 'AI Business Automation', desc: 'Automate workflows, reduce manual work and grow your business with AI.', to: '/contact-us', tone: 'bg-violet-50 text-violet-600', arrow: 'text-violet-500', icon: ['M8 4h8a4 4 0 0 1 4 4v8a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V8a4 4 0 0 1 4-4Z', 'M9.5 15V9h1.8l1.7 3.6L14.7 9h1.8v6', 'M12 2v2M12 20v2M2 12h2M20 12h2'] },
     ],
   },
   {
@@ -72,10 +100,104 @@ onMounted(() => {
 
             <!-- Panel (pt-3 bridges the hover gap) -->
             <div
-              class="absolute left-1/2 top-full z-50 w-[600px] -translate-x-1/2 pt-3 transition-all duration-200"
-              :class="openDropdown === item.label ? 'visible translate-y-0 opacity-100' : 'invisible translate-y-1 opacity-0'"
+              class="z-50 -translate-x-1/2 pt-3 transition-all duration-200"
+              :class="[
+                // Wide panels are centred on the page, not on their button: anchored to the button
+                // they hang off the left edge, because Services sits left of centre. top-16 matches
+                // the header's h-16.
+                item.wide
+                  ? 'fixed left-1/2 top-16 w-[min(78rem,calc(100vw-3rem))]'
+                  : 'absolute left-1/2 top-full w-[600px]',
+                openDropdown === item.label ? 'visible translate-y-0 opacity-100' : 'invisible translate-y-1 opacity-0',
+              ]"
             >
-              <div class="relative rounded-2xl border border-gray-100 bg-white p-3 shadow-xl shadow-gray-200/60">
+              <!-- Wide panel: services as cards, with the intro and a talk-to-us column beside them -->
+              <div v-if="item.wide" class="relative overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-xl shadow-gray-200/60">
+                <div class="grid lg:grid-cols-[1fr_auto]">
+                  <div class="min-w-0">
+                    <!-- Intro band -->
+                    <div v-if="item.intro" class="relative overflow-hidden bg-gradient-to-r from-brand-50/70 via-white to-white px-8 pb-6 pt-7">
+                      <p class="text-xs font-bold uppercase tracking-[0.15em] text-brand-600">{{ item.intro.eyebrow }}</p>
+                      <span class="mt-1.5 block h-0.5 w-8 rounded bg-brand-600" aria-hidden="true" />
+                      <h3 class="mt-3 text-2xl font-extrabold leading-tight text-ink-900">
+                        {{ item.intro.title }}<br><span class="text-brand-600">{{ item.intro.accent }}</span>
+                      </h3>
+                      <p class="mt-2 max-w-md text-sm leading-relaxed text-gray-500">{{ item.intro.desc }}</p>
+
+                      <!-- Decorative: a cube with orbiting service marks. Inline so it needs no asset. -->
+                      <svg class="pointer-events-none absolute right-6 top-1/2 hidden h-32 w-56 -translate-y-1/2 xl:block" viewBox="0 0 220 130" fill="none" aria-hidden="true">
+                        <ellipse cx="110" cy="66" rx="82" ry="40" stroke="#dbeafe" stroke-dasharray="4 5" />
+                        <path d="M110 40l26 15v30l-26 15-26-15V55l26-15Z" fill="#bfdbfe" fill-opacity=".55" />
+                        <path d="M110 40l26 15-26 15-26-15 26-15Z" fill="#3b82f6" fill-opacity=".75" />
+                        <g>
+                          <circle cx="36" cy="46" r="15" fill="#fff" stroke="#e5edff" />
+                          <path d="M30 48a4 4 0 0 1 .5-8 6 6 0 0 1 11 1 3.8 3.8 0 0 1-.5 7H30Z" fill="#3b82f6" />
+                          <circle cx="186" cy="40" r="15" fill="#fff" stroke="#e5edff" />
+                          <path d="M186 33l6 2.5v4c0 3.7-2.5 6.4-6 7-3.5-.6-6-3.3-6-7v-4l6-2.5Z" fill="#10b981" />
+                          <circle cx="30" cy="98" r="15" fill="#fff" stroke="#e5edff" />
+                          <rect x="24" y="97" width="3.4" height="6" rx="1" fill="#10b981" /><rect x="28.6" y="93" width="3.4" height="10" rx="1" fill="#10b981" /><rect x="33.2" y="89" width="3.4" height="14" rx="1" fill="#10b981" />
+                          <circle cx="190" cy="96" r="15" fill="#fff" stroke="#e5edff" />
+                          <circle cx="190" cy="96" r="4" fill="#3b82f6" /><path d="M190 88v3M190 101v3M182 96h3M195 96h3" stroke="#3b82f6" stroke-width="2.2" stroke-linecap="round" />
+                        </g>
+                      </svg>
+                    </div>
+
+                    <!-- Service cards -->
+                    <div class="grid gap-4 px-8 pb-8 pt-2 sm:grid-cols-2 lg:grid-cols-3">
+                      <NuxtLink
+                        v-for="m in item.menu"
+                        :key="m.title"
+                        :to="m.to"
+                        class="group/card flex flex-col rounded-xl border border-gray-100 p-5 transition-all hover:-translate-y-0.5 hover:border-gray-200 hover:shadow-md"
+                        @click="openDropdown = null"
+                      >
+                        <span class="grid h-12 w-12 shrink-0 place-items-center rounded-xl" :class="m.tone" aria-hidden="true">
+                          <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path v-for="d in m.icon" :key="d" stroke-linecap="round" stroke-linejoin="round" :d="d" /></svg>
+                        </span>
+                        <span class="mt-4 block font-bold text-ink-900">{{ m.title }}</span>
+                        <span class="mt-1.5 block flex-1 text-sm leading-relaxed text-gray-500">{{ m.desc }}</span>
+                        <span class="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold" :class="m.arrow">
+                          Learn More
+                          <svg class="h-4 w-4 transition-transform duration-200 group-hover/card:translate-x-1" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6" /></svg>
+                        </span>
+                      </NuxtLink>
+                    </div>
+                  </div>
+
+                  <!-- Talk to us -->
+                  <div v-if="item.aside" class="hidden w-72 flex-col border-l border-gray-100 px-7 py-8 lg:flex">
+                    <span class="grid h-14 w-14 place-items-center rounded-2xl bg-brand-50 text-brand-600" aria-hidden="true">
+                      <svg class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 14v-2a8 8 0 0 1 16 0v2M20 15a2 2 0 0 1-2 2h-1v-5h1a2 2 0 0 1 2 2ZM4 15a2 2 0 0 1 2-2h1v5H6a2 2 0 0 1-2-2ZM18 17a4 4 0 0 1-4 3h-2" /></svg>
+                    </span>
+                    <p class="mt-5 text-xs font-bold uppercase tracking-[0.15em] text-brand-600">{{ item.aside.eyebrow }}</p>
+                    <h3 class="mt-2 text-xl font-extrabold leading-snug text-ink-900">{{ item.aside.title }}</h3>
+                    <p class="mt-2 text-sm leading-relaxed text-gray-500">{{ item.aside.desc }}</p>
+
+                    <NuxtLink
+                      :to="item.aside.ctaTo"
+                      class="mt-5 inline-flex items-center justify-center gap-2 rounded-xl bg-brand-700 px-5 py-3 text-sm font-bold text-white transition hover:bg-brand-800"
+                      @click="openDropdown = null"
+                    >
+                      {{ item.aside.cta }}
+                      <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6" /></svg>
+                    </NuxtLink>
+
+                    <div class="mt-6 space-y-4 border-t border-gray-100 pt-6">
+                      <div v-for="st in item.aside.stats" :key="st.label" class="flex items-center gap-3">
+                        <span class="grid h-10 w-10 shrink-0 place-items-center rounded-full" :class="st.tone" aria-hidden="true">
+                          <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path v-for="d in st.icon" :key="d" stroke-linecap="round" stroke-linejoin="round" :d="d" /></svg>
+                        </span>
+                        <span>
+                          <span class="block text-lg font-extrabold leading-none text-brand-700">{{ st.value }}</span>
+                          <span class="mt-0.5 block text-xs text-gray-500">{{ st.label }}</span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div v-else class="relative rounded-2xl border border-gray-100 bg-white p-3 shadow-xl shadow-gray-200/60">
                 <span class="absolute -top-1.5 left-1/2 h-3 w-3 -translate-x-1/2 rotate-45 rounded-tl-sm border-l border-t border-gray-100 bg-white" aria-hidden="true" />
                 <NuxtLink
                   v-for="(m, idx) in item.menu"
