@@ -74,6 +74,12 @@ const RESULTS = [
   { value: '100+', label: 'Successful automation projects delivered', tone: 'bg-amber-50 text-amber-600', paths: ['M12 3 4.5 6v5c0 4.5 3 7.5 7.5 9 4.5-1.5 7.5-4.5 7.5-9V6L12 3Z', 'm9.5 12 1.8 1.8L15 10'] },
 ]
 
+const BADGES = [
+  { label: 'Secure & Reliable', tone: 'bg-blue-50 text-blue-600', paths: ['M12 3 4.5 6v5c0 4.5 3 7.5 7.5 9 4.5-1.5 7.5-4.5 7.5-9V6L12 3Z', 'm9.5 12 1.8 1.8L15 10'] },
+  { label: 'Scalable Solutions', tone: 'bg-violet-50 text-violet-600', paths: ['m12 3 9 5-9 5-9-5 9-5Z', 'm3 13 9 5 9-5'] },
+  { label: 'AI Powered', tone: 'bg-fuchsia-50 text-fuchsia-600', paths: ['m12 4 1.6 4.4L18 10l-4.4 1.6L12 16l-1.6-4.4L6 10l4.4-1.6L12 4Z', 'm18.5 15 .6 1.7 1.7.6-1.7.6-.6 1.7-.6-1.7-1.7-.6 1.7-.6.6-1.7Z'] },
+]
+
 // SMIL animations ignore the stylesheet's reduced-motion rule, so the switch has to be in the
 // markup: when the visitor has asked for less motion, the animation elements are never rendered and
 // the diagram stands as static art. Starts false on both server and client, so hydration matches.
@@ -244,35 +250,27 @@ const CALENDLY = useRuntimeConfig().public.calendlyUrl
     </section>
 
     <div class="container-page pb-20">
-      <!-- Trust bar -->
-      <div class="grid gap-6 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm lg:grid-cols-[auto_1fr_auto] lg:items-center lg:gap-8 lg:p-7">
-        <div class="flex items-center gap-4">
-          <img src="/images/Razinsoft-logo.webp" alt="RazinSoft" width="1772" height="384" class="h-8 w-auto">
+      <!-- Trust bar. Three columns on a wide screen, divided by hairlines rather than by distance,
+           so the bar holds together as one strip instead of three loose groups. -->
+      <div class="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm sm:p-7">
+        <div class="grid gap-6 lg:grid-cols-[auto_1fr_auto] lg:items-center lg:gap-9">
+          <img src="/images/Razinsoft-logo.webp" alt="RazinSoft" width="1772" height="384" class="h-9 w-auto lg:pr-2">
+
+          <div class="border-gray-100 lg:border-l lg:pl-9">
+            <p class="font-display text-lg font-bold text-ink-900">Smart Automation. Real Results.</p>
+            <p class="mt-1 max-w-lg text-sm leading-relaxed text-gray-500">RazinSoft empowers businesses with secure, scalable and intelligent automation solutions.</p>
+          </div>
+
+          <!-- One line each: the labels are short enough that breaking them only made the row ragged. -->
+          <ul class="flex flex-wrap items-center gap-x-8 gap-y-4 border-gray-100 lg:border-l lg:pl-9">
+            <li v-for="b in BADGES" :key="b.label" class="flex items-center gap-3">
+              <span class="grid h-10 w-10 shrink-0 place-items-center rounded-xl" :class="b.tone" aria-hidden="true">
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path v-for="d in b.paths" :key="d" stroke-linecap="round" stroke-linejoin="round" :d="d" /></svg>
+              </span>
+              <span class="whitespace-nowrap text-sm font-semibold text-ink-900">{{ b.label }}</span>
+            </li>
+          </ul>
         </div>
-        <div class="border-gray-100 lg:border-l lg:pl-8">
-          <p class="font-display text-base font-bold text-ink-900">Smart Automation. Real Results.</p>
-          <p class="mt-1 text-sm leading-relaxed text-gray-500">RazinSoft empowers businesses with secure, scalable and intelligent automation solutions.</p>
-        </div>
-        <ul class="flex flex-wrap gap-x-8 gap-y-4 border-gray-100 lg:border-l lg:pl-8">
-          <li class="flex items-center gap-2.5">
-            <span class="grid h-9 w-9 place-items-center rounded-lg bg-blue-50 text-blue-600" aria-hidden="true">
-              <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3 4.5 6v5c0 4.5 3 7.5 7.5 9 4.5-1.5 7.5-4.5 7.5-9V6L12 3Z" /><path stroke-linecap="round" stroke-linejoin="round" d="m9.5 12 1.8 1.8L15 10" /></svg>
-            </span>
-            <span class="text-sm font-semibold leading-tight text-ink-900">Secure<br>& Reliable</span>
-          </li>
-          <li class="flex items-center gap-2.5">
-            <span class="grid h-9 w-9 place-items-center rounded-lg bg-violet-50 text-violet-600" aria-hidden="true">
-              <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m12 3 9 5-9 5-9-5 9-5Z" /><path stroke-linecap="round" stroke-linejoin="round" d="m3 13 9 5 9-5" /></svg>
-            </span>
-            <span class="text-sm font-semibold leading-tight text-ink-900">Scalable<br>Solutions</span>
-          </li>
-          <li class="flex items-center gap-2.5">
-            <span class="grid h-9 w-9 place-items-center rounded-lg bg-fuchsia-50 text-fuchsia-600" aria-hidden="true">
-              <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m12 4 1.6 4.4L18 10l-4.4 1.6L12 16l-1.6-4.4L6 10l4.4-1.6L12 4Z" /><path stroke-linecap="round" stroke-linejoin="round" d="m18.5 15 .6 1.7 1.7.6-1.7.6-.6 1.7-.6-1.7-1.7-.6 1.7-.6.6-1.7Z" /></svg>
-            </span>
-            <span class="text-sm font-semibold leading-tight text-ink-900">AI<br>Powered</span>
-          </li>
-        </ul>
       </div>
 
       <!-- What we automate -->
