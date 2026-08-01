@@ -84,11 +84,46 @@ const BADGES = [
 // markup: when the visitor has asked for less motion, the animation elements are never rendered and
 // the diagram stands as static art. Starts false on both server and client, so hydration matches.
 const reduceMotion = ref(false)
+
+// Sections arrive as they are scrolled to rather than all at once on load. One observer for the
+// whole page: each element is released the first time it is seen and then dropped, so nothing is
+// still being watched by the time the visitor reaches the bottom.
+let revealObserver: IntersectionObserver | null = null
+
 onMounted(() => {
   const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
   reduceMotion.value = mq.matches
   mq.addEventListener('change', e => { reduceMotion.value = e.matches })
+
+  // The reduced-motion rule in the stylesheet already shows everything; observing would only
+  // add work to no effect.
+  if (mq.matches) return
+
+  // Nothing is hidden by the stylesheet — the hiding is done here, so a browser without
+  // IntersectionObserver simply shows the page rather than rendering blank where the reveals are.
+  if (!('IntersectionObserver' in window)) return
+
+  revealObserver = new IntersectionObserver((entries, obs) => {
+    for (const entry of entries) {
+      if (!entry.isIntersecting) continue
+      entry.target.classList.add('is-in')
+      obs.unobserve(entry.target)
+    }
+  }, { threshold: 0.15, rootMargin: '0px 0px -8% 0px' })
+
+  const fold = window.innerHeight * 0.9
+
+  for (const el of document.querySelectorAll('[data-reveal]')) {
+    el.classList.add('will-reveal')
+
+    // Whatever is already on screen is released in the same frame. Hiding it first and fading it
+    // back in would be a flicker, and it is the part the visitor is already looking at.
+    if (el.getBoundingClientRect().top <= fold) el.classList.add('is-in')
+    else revealObserver.observe(el)
+  }
 })
+
+onBeforeUnmount(() => revealObserver?.disconnect())
 
 // The four signal paths out of the core. Staggered starts keep them from firing in unison.
 const FLOWS = [
@@ -282,21 +317,24 @@ const CALENDLY = useRuntimeConfig().public.calendlyUrl
 
         <div class="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           <article
-            v-for="c in CAPABILITIES"
+            v-for="(c, i) in CAPABILITIES"
             :key="c.title"
-            class="tile group flex gap-4 rounded-2xl border border-gray-100 bg-white p-5 shadow-sm sm:p-6"
-            :style="{ '--accent': c.accent }"
+            data-reveal
+            class="tile relative overflow-hidden rounded-2xl border border-gray-100 bg-white p-5 shadow-sm sm:p-6"
+            :style="{ '--accent': c.accent, '--d': i * 70 + 'ms' }"
           >
-            <span class="tile-icon grid h-12 w-12 shrink-0 place-items-center rounded-xl" :class="c.tone" aria-hidden="true">
-              <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path v-for="d in c.paths" :key="d" stroke-linecap="round" stroke-linejoin="round" :d="d" /></svg>
-            </span>
-            <div class="min-w-0">
-              <h3 class="tile-title font-display text-base font-bold leading-snug text-ink-900">{{ c.title }}</h3>
-              <p class="mt-2 text-sm leading-relaxed text-gray-500">{{ c.desc }}</p>
-              <NuxtLink to="/contact-us" class="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold" :style="{ color: c.accent }">
-                Learn More
-                <svg class="tile-arrow h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6" /></svg>
-              </NuxtLink>
+            <!-- A bar down the leading edge rather than under the text: it grows from the icon,
+                 which is where the eye already is. -->
+            <span class="tile-bar" aria-hidden="true" />
+
+            <div class="flex gap-4">
+              <span class="tile-icon relative grid h-12 w-12 shrink-0 place-items-center rounded-xl" :class="c.tone" aria-hidden="true">
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path v-for="d in c.paths" :key="d" stroke-linecap="round" stroke-linejoin="round" :d="d" /></svg>
+              </span>
+              <div class="min-w-0">
+                <h3 class="tile-title font-display text-base font-bold leading-snug text-ink-900">{{ c.title }}</h3>
+                <p class="mt-2 text-sm leading-relaxed text-gray-500">{{ c.desc }}</p>
+              </div>
             </div>
           </article>
         </div>
@@ -309,26 +347,28 @@ const CALENDLY = useRuntimeConfig().public.calendlyUrl
           <span class="mx-auto mt-3 block h-1 w-16 rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-500" aria-hidden="true" />
         </div>
 
-        <!-- The connector is drawn between steps, so it is a gap in the grid rather than an overlay:
-             it cannot drift out of place when the columns reflow. -->
-        <ol class="mt-12 grid gap-y-10 sm:grid-cols-2 lg:flex lg:items-start lg:gap-y-0">
-          <template v-for="(s, i) in STEPS" :key="s.no">
-            <li class="relative text-center lg:flex-1">
-              <span class="relative mx-auto grid h-24 w-24 place-items-center rounded-full border-2 bg-white" :style="{ borderColor: s.accent + '33' }">
-                <svg class="h-10 w-10" fill="none" :stroke="s.accent" stroke-width="1.6" viewBox="0 0 24 24" aria-hidden="true"><path v-for="d in s.paths" :key="d" stroke-linecap="round" stroke-linejoin="round" :d="d" /></svg>
-                <span class="absolute -top-2.5 grid h-7 w-7 place-items-center rounded-full text-[11px] font-extrabold text-white" :style="{ backgroundColor: s.accent }">{{ s.no }}</span>
+        <!-- One track behind all five, rather than an arrow wedged between each pair. It draws
+             itself once as the section arrives, so the row reads as a single route the work
+             travels rather than five stops that happen to sit in a line. -->
+        <div class="steps relative mt-12" data-reveal>
+          <div class="steps-track" aria-hidden="true"><span class="steps-track-fill" /></div>
+
+          <ol class="relative grid gap-y-12 sm:grid-cols-2 lg:grid-cols-5 lg:gap-y-0">
+            <li
+              v-for="(s, i) in STEPS"
+              :key="s.no"
+              class="step text-center"
+              :style="{ '--accent': s.accent, '--d': 250 + i * 160 + 'ms' }"
+            >
+              <span class="step-ring relative mx-auto grid h-24 w-24 place-items-center rounded-full bg-white">
+                <svg class="step-icon h-10 w-10" fill="none" :stroke="s.accent" stroke-width="1.6" viewBox="0 0 24 24" aria-hidden="true"><path v-for="d in s.paths" :key="d" stroke-linecap="round" stroke-linejoin="round" :d="d" /></svg>
+                <span class="step-no absolute -top-2.5 grid h-7 w-7 place-items-center rounded-full text-[11px] font-extrabold text-white">{{ s.no }}</span>
               </span>
               <h3 class="mt-4 font-display text-lg font-bold text-ink-900">{{ s.title }}</h3>
               <p class="mx-auto mt-1.5 max-w-[15rem] text-sm leading-relaxed text-gray-500">{{ s.desc }}</p>
             </li>
-            <li v-if="i < STEPS.length - 1" class="hidden self-start pt-11 lg:block" aria-hidden="true">
-              <svg class="h-3 w-10" viewBox="0 0 40 12" fill="none">
-                <path d="M1 6h30" :stroke="STEPS[i + 1]!.accent" stroke-width="2" stroke-linecap="round" stroke-dasharray="4 5" />
-                <path d="m31 2 6 4-6 4" :stroke="STEPS[i + 1]!.accent" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-            </li>
-          </template>
-        </ol>
+          </ol>
+        </div>
       </section>
 
       <!-- Why choose it, and what it returns -->
@@ -400,30 +440,149 @@ const CALENDLY = useRuntimeConfig().public.calendlyUrl
 </template>
 
 <style scoped>
-/* Same reaction as the Services menu cards, so a tile behaves the way the menu taught the visitor
-   it would: its own colour, and the arrow leading on. */
+/* ---- Arriving on scroll ---------------------------------------------------------------------
+   Held just below their resting place until seen. `--d` staggers siblings so a row assembles
+   left to right instead of appearing as one block.
+   A keyframe rather than a transition: the tiles carry their own transition for hover, and a
+   shorthand there would wipe out the stagger delay set here. An animation is a separate property,
+   so the two never fight. */
+.will-reveal { opacity: 0; }
+.will-reveal.is-in {
+  opacity: 1;
+  animation: reveal-up .6s cubic-bezier(.2, .8, .2, 1) backwards;
+  animation-delay: var(--d, 0ms);
+}
+@keyframes reveal-up {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* The steps block is a trigger for the row inside it, not something that moves on its own —
+   the container fading while its children also rise reads as two competing entrances. */
+.steps, .steps.will-reveal, .steps.is-in { opacity: 1; animation: none; }
+
+/* ---- Capability tiles ----------------------------------------------------------------------
+   The same reaction as the Services menu cards, so a tile behaves the way the menu taught the
+   visitor it would: its own colour, arriving from the side the eye is already on. */
 .tile {
   transition: transform .25s cubic-bezier(.2, .8, .2, 1), box-shadow .25s ease, border-color .25s ease;
 }
+.tile::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 9%, transparent), transparent 60%);
+  opacity: 0;
+  transition: opacity .3s ease;
+}
 .tile:hover,
 .tile:focus-within {
-  transform: translateY(-3px);
+  transform: translateY(-4px);
   border-color: color-mix(in srgb, var(--accent) 30%, transparent);
-  box-shadow: 0 12px 28px -14px color-mix(in srgb, var(--accent) 60%, transparent);
+  box-shadow: 0 14px 30px -14px color-mix(in srgb, var(--accent) 60%, transparent);
 }
+.tile:hover::before,
+.tile:focus-within::before { opacity: 1; }
 
-.tile-icon { transition: transform .35s cubic-bezier(.34, 1.56, .64, 1); }
-.tile:hover .tile-icon { transform: scale(1.1) rotate(-6deg); }
+.tile-bar {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 3px;
+  height: 0;
+  border-radius: 0 3px 3px 0;
+  background: var(--accent);
+  transform: translateY(-50%);
+  transition: height .35s cubic-bezier(.2, .8, .2, 1);
+}
+.tile:hover .tile-bar,
+.tile:focus-within .tile-bar { height: 62%; }
+
+.tile-icon { transition: transform .35s cubic-bezier(.34, 1.56, .64, 1), box-shadow .3s ease; }
+.tile:hover .tile-icon {
+  transform: scale(1.1) rotate(-6deg);
+  box-shadow: 0 8px 18px -6px color-mix(in srgb, var(--accent) 70%, transparent);
+}
 
 .tile-title { transition: color .25s ease; }
 .tile:hover .tile-title { color: var(--accent); }
 
-.tile-arrow { transition: transform .3s cubic-bezier(.2, .8, .2, 1); }
-.tile:hover .tile-arrow { transform: translateX(5px); }
+/* ---- The five stages -----------------------------------------------------------------------
+   A single track behind the row, drawn once when the section arrives. It sits at the centre of
+   the circles and stops at the first and last of them, so it reads as joining the five rather
+   than running past them. */
+.steps-track {
+  display: none;
+}
+@media (min-width: 1024px) {
+  .steps-track {
+    display: block;
+    position: absolute;
+    top: 48px;
+    left: 10%;
+    right: 10%;
+    height: 2px;
+    border-radius: 2px;
+    background: #e9edf5;
+    overflow: hidden;
+  }
+}
+.steps-track-fill {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #3b82f6, #10b981, #8b5cf6, #f97316, #f43f5e);
+  transform-origin: left;
+}
+/* Full unless JS has taken charge of the reveal, for the same reason as everything else here.
+   The emptying is deliberately instant: the track starts full for anyone without JS, and letting
+   that state transition would show the line wiping itself out before drawing back in. Only the
+   drawing is timed. */
+.steps.will-reveal .steps-track-fill {
+  transform: scaleX(0);
+  transition: none;
+}
+.steps.will-reveal.is-in .steps-track-fill {
+  transform: scaleX(1);
+  transition: transform 1.5s cubic-bezier(.3, .7, .2, 1) .2s;
+}
+
+/* Each stage rides the page-wide reveal, but keyed off its section rather than itself: the row
+   is one gesture, and a stage that scrolled into view alone would break the sequence. */
+.steps.will-reveal .step { opacity: 0; }
+.steps.will-reveal.is-in .step {
+  opacity: 1;
+  animation: reveal-up .55s cubic-bezier(.2, .8, .2, 1) backwards;
+  animation-delay: var(--d, 0ms);
+}
+
+.step-ring {
+  border: 2px solid color-mix(in srgb, var(--accent) 22%, transparent);
+  transition: transform .3s cubic-bezier(.34, 1.56, .64, 1), border-color .3s ease, box-shadow .3s ease;
+}
+.step-no { background: var(--accent); }
+.step:hover .step-ring {
+  transform: translateY(-4px) scale(1.04);
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  box-shadow: 0 14px 26px -12px color-mix(in srgb, var(--accent) 65%, transparent);
+}
+.step-icon { transition: transform .35s cubic-bezier(.34, 1.56, .64, 1); }
+.step:hover .step-icon { transform: scale(1.08); }
 
 @media (prefers-reduced-motion: reduce) {
-  .tile, .tile:hover, .tile-icon, .tile:hover .tile-icon, .tile-arrow, .tile:hover .tile-arrow {
+  /* Nothing is allowed to stay hidden waiting for a scroll that will never animate. */
+  .will-reveal,
+  .will-reveal.is-in,
+  .steps.will-reveal .step,
+  .steps.will-reveal.is-in .step {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+  .steps.will-reveal .steps-track-fill { transform: scaleX(1); transition: none; }
+  .tile, .tile:hover, .tile-icon, .tile:hover .tile-icon,
+  .step-ring, .step:hover .step-ring, .step-icon, .step:hover .step-icon {
     transform: none;
   }
+  .tile:hover .tile-bar { height: 62%; }
 }
 </style>
