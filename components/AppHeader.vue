@@ -106,26 +106,26 @@ onMounted(() => {
                 // they hang off the left edge, because Services sits left of centre. top-16 matches
                 // the header's h-16.
                 item.wide
-                  ? 'fixed left-1/2 top-16 w-[min(78rem,calc(100vw-3rem))]'
+                  ? 'fixed left-1/2 top-16 w-[min(64rem,calc(100vw-2rem))]'
                   : 'absolute left-1/2 top-full w-[600px]',
                 openDropdown === item.label ? 'visible translate-y-0 opacity-100' : 'invisible translate-y-1 opacity-0',
               ]"
             >
               <!-- Wide panel: services as cards, with the intro and a talk-to-us column beside them -->
-              <div v-if="item.wide" class="relative overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-xl shadow-gray-200/60">
+              <div v-if="item.wide" class="relative max-h-[calc(100vh-5rem)] overflow-y-auto rounded-2xl border border-gray-100 bg-white shadow-xl shadow-gray-200/60">
                 <div class="grid lg:grid-cols-[1fr_auto]">
                   <div class="min-w-0">
                     <!-- Intro band -->
-                    <div v-if="item.intro" class="relative overflow-hidden bg-gradient-to-r from-brand-50/70 via-white to-white px-8 pb-6 pt-7">
-                      <p class="text-xs font-bold uppercase tracking-[0.15em] text-brand-600">{{ item.intro.eyebrow }}</p>
-                      <span class="mt-1.5 block h-0.5 w-8 rounded bg-brand-600" aria-hidden="true" />
-                      <h3 class="mt-3 text-2xl font-extrabold leading-tight text-ink-900">
+                    <div v-if="item.intro" class="relative overflow-hidden bg-gradient-to-r from-brand-50/70 via-white to-white px-6 pb-5 pt-6">
+                      <p class="text-[11px] font-bold uppercase tracking-[0.15em] text-brand-600">{{ item.intro.eyebrow }}</p>
+                      <span class="mt-1.5 block h-0.5 w-7 rounded bg-brand-600" aria-hidden="true" />
+                      <h3 class="mt-2.5 text-xl font-extrabold leading-tight text-ink-900">
                         {{ item.intro.title }}<br><span class="text-brand-600">{{ item.intro.accent }}</span>
                       </h3>
-                      <p class="mt-2 max-w-md text-sm leading-relaxed text-gray-500">{{ item.intro.desc }}</p>
+                      <p class="mt-2 max-w-sm text-[13px] leading-relaxed text-gray-500">{{ item.intro.desc }}</p>
 
                       <!-- Decorative: a cube with orbiting service marks. Inline so it needs no asset. -->
-                      <svg class="pointer-events-none absolute right-6 top-1/2 hidden h-32 w-56 -translate-y-1/2 xl:block" viewBox="0 0 220 130" fill="none" aria-hidden="true">
+                      <svg class="pointer-events-none absolute right-5 top-1/2 hidden h-24 w-44 -translate-y-1/2 lg:block" viewBox="0 0 220 130" fill="none" aria-hidden="true">
                         <ellipse cx="110" cy="66" rx="82" ry="40" stroke="#dbeafe" stroke-dasharray="4 5" />
                         <path d="M110 40l26 15v30l-26 15-26-15V55l26-15Z" fill="#bfdbfe" fill-opacity=".55" />
                         <path d="M110 40l26 15-26 15-26-15 26-15Z" fill="#3b82f6" fill-opacity=".75" />
@@ -143,53 +143,53 @@ onMounted(() => {
                     </div>
 
                     <!-- Service cards -->
-                    <div class="grid gap-4 px-8 pb-8 pt-2 sm:grid-cols-2 lg:grid-cols-3">
+                    <div class="grid gap-3 px-6 pb-6 pt-2 sm:grid-cols-2 lg:grid-cols-3">
                       <NuxtLink
                         v-for="m in item.menu"
                         :key="m.title"
                         :to="m.to"
-                        class="group/card flex flex-col rounded-xl border border-gray-100 p-5 transition-all hover:-translate-y-0.5 hover:border-gray-200 hover:shadow-md"
+                        class="group/card flex flex-col rounded-xl border border-gray-100 p-4 transition-all hover:-translate-y-0.5 hover:border-gray-200 hover:shadow-md"
                         @click="openDropdown = null"
                       >
-                        <span class="grid h-12 w-12 shrink-0 place-items-center rounded-xl" :class="m.tone" aria-hidden="true">
-                          <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path v-for="d in m.icon" :key="d" stroke-linecap="round" stroke-linejoin="round" :d="d" /></svg>
+                        <span class="grid h-10 w-10 shrink-0 place-items-center rounded-lg" :class="m.tone" aria-hidden="true">
+                          <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path v-for="d in m.icon" :key="d" stroke-linecap="round" stroke-linejoin="round" :d="d" /></svg>
                         </span>
-                        <span class="mt-4 block font-bold text-ink-900">{{ m.title }}</span>
-                        <span class="mt-1.5 block flex-1 text-sm leading-relaxed text-gray-500">{{ m.desc }}</span>
-                        <span class="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold" :class="m.arrow">
+                        <span class="mt-3 block text-sm font-bold text-ink-900">{{ m.title }}</span>
+                        <span class="mt-1 block flex-1 text-xs leading-relaxed text-gray-500">{{ m.desc }}</span>
+                        <span class="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold" :class="m.arrow">
                           Learn More
-                          <svg class="h-4 w-4 transition-transform duration-200 group-hover/card:translate-x-1" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6" /></svg>
+                          <svg class="h-3.5 w-3.5 transition-transform duration-200 group-hover/card:translate-x-1" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6" /></svg>
                         </span>
                       </NuxtLink>
                     </div>
                   </div>
 
                   <!-- Talk to us -->
-                  <div v-if="item.aside" class="hidden w-72 flex-col border-l border-gray-100 px-7 py-8 lg:flex">
-                    <span class="grid h-14 w-14 place-items-center rounded-2xl bg-brand-50 text-brand-600" aria-hidden="true">
-                      <svg class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 14v-2a8 8 0 0 1 16 0v2M20 15a2 2 0 0 1-2 2h-1v-5h1a2 2 0 0 1 2 2ZM4 15a2 2 0 0 1 2-2h1v5H6a2 2 0 0 1-2-2ZM18 17a4 4 0 0 1-4 3h-2" /></svg>
+                  <div v-if="item.aside" class="hidden w-60 flex-col border-l border-gray-100 px-5 py-6 lg:flex">
+                    <span class="grid h-11 w-11 place-items-center rounded-xl bg-brand-50 text-brand-600" aria-hidden="true">
+                      <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 14v-2a8 8 0 0 1 16 0v2M20 15a2 2 0 0 1-2 2h-1v-5h1a2 2 0 0 1 2 2ZM4 15a2 2 0 0 1 2-2h1v5H6a2 2 0 0 1-2-2ZM18 17a4 4 0 0 1-4 3h-2" /></svg>
                     </span>
-                    <p class="mt-5 text-xs font-bold uppercase tracking-[0.15em] text-brand-600">{{ item.aside.eyebrow }}</p>
-                    <h3 class="mt-2 text-xl font-extrabold leading-snug text-ink-900">{{ item.aside.title }}</h3>
-                    <p class="mt-2 text-sm leading-relaxed text-gray-500">{{ item.aside.desc }}</p>
+                    <p class="mt-4 text-[11px] font-bold uppercase tracking-[0.15em] text-brand-600">{{ item.aside.eyebrow }}</p>
+                    <h3 class="mt-1.5 text-base font-extrabold leading-snug text-ink-900">{{ item.aside.title }}</h3>
+                    <p class="mt-1.5 text-xs leading-relaxed text-gray-500">{{ item.aside.desc }}</p>
 
                     <NuxtLink
                       :to="item.aside.ctaTo"
-                      class="mt-5 inline-flex items-center justify-center gap-2 rounded-xl bg-brand-700 px-5 py-3 text-sm font-bold text-white transition hover:bg-brand-800"
+                      class="mt-4 inline-flex items-center justify-center gap-2 rounded-lg bg-brand-700 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-brand-800"
                       @click="openDropdown = null"
                     >
                       {{ item.aside.cta }}
                       <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6" /></svg>
                     </NuxtLink>
 
-                    <div class="mt-6 space-y-4 border-t border-gray-100 pt-6">
+                    <div class="mt-5 space-y-3 border-t border-gray-100 pt-5">
                       <div v-for="st in item.aside.stats" :key="st.label" class="flex items-center gap-3">
-                        <span class="grid h-10 w-10 shrink-0 place-items-center rounded-full" :class="st.tone" aria-hidden="true">
-                          <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path v-for="d in st.icon" :key="d" stroke-linecap="round" stroke-linejoin="round" :d="d" /></svg>
+                        <span class="grid h-8 w-8 shrink-0 place-items-center rounded-full" :class="st.tone" aria-hidden="true">
+                          <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path v-for="d in st.icon" :key="d" stroke-linecap="round" stroke-linejoin="round" :d="d" /></svg>
                         </span>
                         <span>
-                          <span class="block text-lg font-extrabold leading-none text-brand-700">{{ st.value }}</span>
-                          <span class="mt-0.5 block text-xs text-gray-500">{{ st.label }}</span>
+                          <span class="block text-sm font-extrabold leading-none text-brand-700">{{ st.value }}</span>
+                          <span class="mt-0.5 block text-[11px] text-gray-500">{{ st.label }}</span>
                         </span>
                       </div>
                     </div>
