@@ -28,7 +28,7 @@ const nav: NavItem[] = [
       ctaTo: '/book-a-meeting',
       stats: [
         { value: '25+', label: 'Countries Served', tone: 'bg-blue-50 text-blue-600', icon: ['M12 2.5a9.5 9.5 0 1 0 0 19 9.5 9.5 0 0 0 0-19Z', 'M2.5 12h19', 'M12 2.5c2.5 2.6 2.5 16.4 0 19', 'M12 2.5c-2.5 2.6-2.5 16.4 0 19'] },
-        { value: '1000+', label: 'Happy Clients', tone: 'bg-emerald-50 text-emerald-600', icon: ['M9 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z', 'M17 11a3 3 0 1 0 0-6', 'M3 20a6 6 0 0 1 12 0', 'M16.5 14.5A6 6 0 0 1 21 20'] },
+        { value: '3100+', label: 'Happy Clients', tone: 'bg-emerald-50 text-emerald-600', icon: ['M9 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z', 'M17 11a3 3 0 1 0 0-6', 'M3 20a6 6 0 0 1 12 0', 'M16.5 14.5A6 6 0 0 1 21 20'] },
         { value: '99.9%', label: 'Uptime & Reliability', tone: 'bg-purple-50 text-purple-600', icon: ['M12 2.5 4 6v6c0 5 3.4 8.6 8 9.5 4.6-.9 8-4.5 8-9.5V6l-8-3.5Z', 'm9 12 2 2 4-4'] },
       ],
     },
