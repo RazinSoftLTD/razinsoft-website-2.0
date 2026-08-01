@@ -67,21 +67,40 @@ const posts = computed(() =>
 
 <template>
   <!-- ============ HERO ============ -->
-  <section class="container-page grid items-center gap-12 py-14 lg:grid-cols-2 lg:py-20">
+  <section class="hero relative overflow-hidden">
+    <!-- Colour is carried by the backdrop rather than the copy, so the words stay black on white
+         and readable while the section still looks like something was designed. -->
+    <span class="hero-blob hero-blob-a" aria-hidden="true" />
+    <span class="hero-blob hero-blob-b" aria-hidden="true" />
+    <span class="hero-grid" aria-hidden="true" />
+
+    <div class="container-page relative grid items-center gap-12 py-14 lg:grid-cols-2 lg:py-20">
     <div>
-      <h1 class="font-display text-5xl font-extrabold leading-[1.05] tracking-tight text-ink-900 sm:text-6xl">
+      <span class="hero-in hero-badge inline-flex items-center gap-2 rounded-full border border-brand-100 bg-brand-50/80 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.14em] text-brand-700">
+        <span class="hero-dot" aria-hidden="true" />
+        Software development company
+      </span>
+
+      <h1 class="hero-in font-display mt-5 text-5xl font-extrabold leading-[1.05] tracking-tight text-ink-900 sm:text-6xl" style="--d: 60ms">
         Scalable
-        <span class="block w-fit text-brand-600 underline decoration-brand-600/40 decoration-4 underline-offset-4">Software Solutions</span>
+        <span class="block w-fit bg-gradient-to-r from-brand-600 via-indigo-600 to-violet-600 bg-clip-text text-transparent">Software Solutions</span>
       </h1>
-      <p class="mt-6 max-w-lg text-lg leading-relaxed text-gray-600">
+      <p class="hero-in mt-6 max-w-lg text-lg leading-relaxed text-gray-600" style="--d: 120ms">
         RazinSoft builds ready and custom software solutions for eCommerce, LMS, POS, transportation, and more  — trusted by 25+ countries. 
       </p>
-      <NuxtLink to="/book-a-meeting" class="btn-brand mt-8 shadow-lg shadow-brand-600/20">
-        Book a Free Consultation
-        <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6" /></svg>
-      </NuxtLink>
 
-      <dl class="mt-8 grid max-w-md grid-cols-3 divide-x divide-gray-100 rounded-2xl border border-gray-100 bg-white px-2 py-7 shadow-sm sm:px-4">
+      <div class="hero-in mt-8 flex flex-wrap gap-3" style="--d: 180ms">
+        <NuxtLink to="/book-a-meeting" class="btn-brand shadow-lg shadow-brand-600/20">
+          Book a Free Consultation
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6" /></svg>
+        </NuxtLink>
+        <NuxtLink to="/products" class="btn-outline">
+          Explore Products
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M4 12h16M4 17h10" /></svg>
+        </NuxtLink>
+      </div>
+
+      <dl class="hero-in mt-8 grid max-w-md grid-cols-3 divide-x divide-gray-100 rounded-2xl border border-gray-100 bg-white px-2 py-7 shadow-sm sm:px-4" style="--d: 240ms">
         <div v-for="r in reviews" :key="r.brand" class="flex items-center justify-center px-2 sm:px-4">
           <dt class="sr-only">{{ r.brand }} — rated {{ r.score }} out of 5</dt>
           <dd>
@@ -121,18 +140,29 @@ const posts = computed(() =>
 
       <div class="relative z-10 ml-auto w-[82%]">
         <NuxtImg src="/images/razinsoft-team-focus-hero-image.webp" alt="The RazinSoft team is dedicated to working" width="520" height="360" sizes="100vw lg:520px" format="webp" loading="eager" fetchpriority="high" preload class="aspect-[13/9] w-full rounded-3xl bg-gray-100 object-cover shadow-xl" />
-        <div class="absolute left-4 top-4 rounded-2xl bg-white/95 px-4 py-2.5 shadow-lg backdrop-blur">
-          <p class="font-display text-2xl font-extrabold text-ink-900">35+</p>
-          <p class="text-xs text-gray-500">Tech Professionals</p>
+        <div class="hero-badge-float absolute left-4 top-4 flex items-center gap-3 rounded-2xl bg-white/95 px-4 py-2.5 shadow-lg backdrop-blur">
+          <span class="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-brand-50 text-brand-600" aria-hidden="true">
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7ZM17 11a3 3 0 1 0 0-6M3 20a6 6 0 0 1 12 0M16.5 14.5A6 6 0 0 1 21 20" /></svg>
+          </span>
+          <span>
+            <span class="block font-display text-2xl font-extrabold leading-none text-ink-900">35+</span>
+            <span class="mt-1 block text-xs text-gray-500">Tech Professionals</span>
+          </span>
         </div>
       </div>
       <div class="relative z-10 -mt-14 w-[72%]">
         <NuxtImg src="/images/razinsoft-resolving-issue-together.webp" alt="RazinSoft team is resolving their issues together" width="420" height="300" sizes="100vw lg:420px" format="webp" loading="lazy" fetchpriority="low" class="aspect-[7/5] w-full rounded-3xl border-4 border-white bg-gray-100 object-cover shadow-xl" />
-        <div class="absolute left-4 top-4 rounded-2xl bg-white/95 px-4 py-2.5 shadow-lg backdrop-blur">
-          <p class="font-display text-2xl font-extrabold text-ink-900">25+</p>
-          <p class="text-xs text-gray-500">Countries Served</p>
+        <div class="hero-badge-float hero-badge-float-b absolute left-4 top-4 flex items-center gap-3 rounded-2xl bg-white/95 px-4 py-2.5 shadow-lg backdrop-blur">
+          <span class="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-emerald-50 text-emerald-600" aria-hidden="true">
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 2.5a9.5 9.5 0 1 0 0 19 9.5 9.5 0 0 0 0-19ZM2.5 12h19M12 2.5c2.5 2.6 2.5 16.4 0 19M12 2.5c-2.5 2.6-2.5 16.4 0 19" /></svg>
+          </span>
+          <span>
+            <span class="block font-display text-2xl font-extrabold leading-none text-ink-900">25+</span>
+            <span class="mt-1 block text-xs text-gray-500">Countries Served</span>
+          </span>
         </div>
       </div>
+    </div>
     </div>
   </section>
 
@@ -324,6 +354,104 @@ const posts = computed(() =>
 </template>
 
 <style scoped>
+/* ---- Hero -----------------------------------------------------------------------------------
+   Two slow-drifting washes and a faint grid behind the copy. The colour lives in the backdrop so
+   the headline can stay black on white and still read at a glance. */
+.hero-blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(70px);
+  pointer-events: none;
+  will-change: transform;
+}
+.hero-blob-a {
+  top: -14rem;
+  right: -10rem;
+  width: 34rem;
+  height: 34rem;
+  background: radial-gradient(circle, rgba(99, 102, 241, .20), transparent 68%);
+  animation: hero-drift-a 22s ease-in-out infinite;
+}
+.hero-blob-b {
+  bottom: -16rem;
+  left: -12rem;
+  width: 30rem;
+  height: 30rem;
+  background: radial-gradient(circle, rgba(59, 130, 246, .16), transparent 68%);
+  animation: hero-drift-b 26s ease-in-out infinite;
+}
+@keyframes hero-drift-a {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(-3rem, 2.5rem, 0); }
+}
+@keyframes hero-drift-b {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(2.5rem, -2rem, 0); }
+}
+
+/* A engineering-drawing grid, faded out before it reaches the copy. */
+.hero-grid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, rgba(37, 99, 235, .06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(37, 99, 235, .06) 1px, transparent 1px);
+  background-size: 46px 46px;
+  -webkit-mask-image: radial-gradient(ellipse at 50% 0%, #000, transparent 72%);
+  mask-image: radial-gradient(ellipse at 50% 0%, #000, transparent 72%);
+}
+
+/* The copy arrives in reading order. Kept short and started at once: this is the first paint the
+   visitor gets, and a long entrance here is time they spend watching nothing. The images are left
+   alone deliberately — fading the hero image would push out the largest paint. */
+.hero-in {
+  animation: hero-rise .5s cubic-bezier(.2, .8, .2, 1) backwards;
+  animation-delay: var(--d, 0ms);
+}
+@keyframes hero-rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+
+.hero-dot {
+  width: .5rem;
+  height: .5rem;
+  border-radius: 9999px;
+  background: #2563eb;
+  box-shadow: 0 0 0 0 rgba(37, 99, 235, .55);
+  animation: hero-pulse 2.4s ease-out infinite;
+}
+@keyframes hero-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(37, 99, 235, .55); }
+  70% { box-shadow: 0 0 0 .5rem rgba(37, 99, 235, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); }
+}
+
+/* The two figures lift and settle on opposite phases, so the pair never moves as one block. */
+.hero-badge-float {
+  animation: hero-float 7s ease-in-out infinite;
+  will-change: transform;
+}
+.hero-badge-float-b { animation-duration: 8.5s; animation-delay: -3s; }
+@keyframes hero-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-7px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* The site-wide rule collapses durations to nothing, which leaves anything set to repeat
+     looping at speed. These are switched off outright instead. */
+  .hero-blob, .hero-dot, .hero-badge-float {
+    animation: none;
+  }
+  .hero-in {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
 .marquee {
   /* Fade the cards in/out at the edges. */
   -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
