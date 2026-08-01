@@ -106,7 +106,7 @@ onMounted(() => {
                 // they hang off the left edge, because Services sits left of centre. top-16 matches
                 // the header's h-16.
                 item.wide
-                  ? 'fixed left-1/2 top-16 w-[min(64rem,calc(100vw-2rem))]'
+                  ? 'menu-panel-wide fixed left-1/2 top-16 w-[min(64rem,calc(100vw-2rem))]'
                   : 'absolute left-1/2 top-full w-[600px]',
                 openDropdown === item.label ? 'is-open' : '',
               ]"
@@ -350,6 +350,20 @@ onMounted(() => {
 @keyframes menu-card-in {
   from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+/* The wide panel is pinned to the header's bottom edge, while its button stops 14px short of it.
+   Crossing that strip of bare header put the pointer outside the trigger, so the menu shut and
+   reopened the moment it reached the panel — one visible blink on the way in. This bridges the
+   strip with hit area only, leaving the panel where it is. It rides on the panel, so it exists
+   only while the menu is open; the narrow panels sit directly under their button and need none. */
+.menu-panel-wide::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 100%;
+  height: 14px;
 }
 
 /* Each item answers in its own colour rather than all of them going the same grey: --accent is
