@@ -99,7 +99,7 @@ onMounted(() => {
 
             <!-- Panel (pt-3 bridges the hover gap) -->
             <div
-              class="z-50 -translate-x-1/2 pt-3 transition-all duration-200"
+              class="menu-panel z-50 -translate-x-1/2 pt-3"
               :class="[
                 // Wide panels are centred on the page, not on their button: anchored to the button
                 // they hang off the left edge, because Services sits left of centre. top-16 matches
@@ -107,7 +107,7 @@ onMounted(() => {
                 item.wide
                   ? 'fixed left-1/2 top-16 w-[min(64rem,calc(100vw-2rem))]'
                   : 'absolute left-1/2 top-full w-[600px]',
-                openDropdown === item.label ? 'visible translate-y-0 opacity-100' : 'invisible translate-y-1 opacity-0',
+                openDropdown === item.label ? 'is-open' : '',
               ]"
             >
               <!-- Wide panel: services as cards, with the intro and a talk-to-us column beside them -->
@@ -143,17 +143,20 @@ onMounted(() => {
                     <!-- Service cards -->
                     <div class="grid gap-3 px-6 pb-6 pt-2 sm:grid-cols-2 lg:grid-cols-3">
                       <NuxtLink
-                        v-for="m in item.menu"
+                        v-for="(m, idx) in item.menu"
                         :key="m.title"
                         :to="m.to"
-                        class="group/card flex flex-col rounded-xl border border-gray-100 p-4 transition-all hover:-translate-y-0.5 hover:border-gray-200 hover:shadow-md"
+                        class="menu-card group/card flex flex-col rounded-xl border border-gray-100 p-4 transition-all hover:-translate-y-0.5 hover:border-gray-200 hover:shadow-md"
+                        :style="{ '--i': idx }"
                         @click="openDropdown = null"
                       >
-                        <span class="grid h-10 w-10 shrink-0 place-items-center rounded-lg" :class="m.tone" aria-hidden="true">
-                          <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path v-for="d in m.icon" :key="d" stroke-linecap="round" stroke-linejoin="round" :d="d" /></svg>
+                        <span class="flex items-center gap-3">
+                          <span class="grid h-10 w-10 shrink-0 place-items-center rounded-lg transition-transform duration-200 group-hover/card:scale-110" :class="m.tone" aria-hidden="true">
+                            <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path v-for="d in m.icon" :key="d" stroke-linecap="round" stroke-linejoin="round" :d="d" /></svg>
+                          </span>
+                          <span class="text-sm font-bold leading-snug text-ink-900">{{ m.title }}</span>
                         </span>
-                        <span class="mt-3 block text-sm font-bold text-ink-900">{{ m.title }}</span>
-                        <span class="mt-1 line-clamp-2 block flex-1 text-xs leading-relaxed text-gray-500">{{ m.desc }}</span>
+                        <span class="mt-2.5 line-clamp-2 block flex-1 text-xs leading-relaxed text-gray-500">{{ m.desc }}</span>
                         <span class="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold" :class="m.arrow">
                           Learn More
                           <svg class="h-3.5 w-3.5 transition-transform duration-200 group-hover/card:translate-x-1" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6" /></svg>
@@ -316,3 +319,44 @@ onMounted(() => {
     </div>
   </header>
 </template>
+
+<style scoped>
+/* Opening reads as the panel dropping out of the header, so it grows from its top edge rather
+   than fading in place. Closing is quicker — waiting for a menu to leave feels like lag. */
+.menu-panel {
+  visibility: hidden;
+  opacity: 0;
+  transform: translateX(-50%) translateY(-6px) scale(.98);
+  transform-origin: top center;
+  transition: opacity .14s ease, transform .14s ease, visibility 0s linear .14s;
+}
+.menu-panel.is-open {
+  visibility: visible;
+  opacity: 1;
+  transform: translateX(-50%) translateY(0) scale(1);
+  transition: opacity .22s ease, transform .28s cubic-bezier(.2, .8, .2, 1), visibility 0s;
+}
+
+/* Cards arrive just behind the panel, one after another — enough to feel deliberate, not slow.
+   A keyframe rather than a transition: the panel is hidden between openings, and a transition from
+   a never-rendered state does not reliably run, so the second visit would show no stagger at all.
+   `backwards` holds the card at its starting point through the delay. */
+.is-open .menu-card {
+  animation: menu-card-in .3s cubic-bezier(.2, .8, .2, 1) backwards;
+  animation-delay: calc(60ms + var(--i) * 35ms);
+}
+@keyframes menu-card-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Anyone who has asked for less motion gets the panel appearing, and nothing moving. */
+@media (prefers-reduced-motion: reduce) {
+  .menu-panel,
+  .menu-panel.is-open {
+    transition-duration: .01ms;
+    transform: translateX(-50%);
+  }
+  .is-open .menu-card { animation: none; }
+}
+</style>
