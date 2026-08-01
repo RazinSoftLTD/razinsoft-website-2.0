@@ -168,13 +168,6 @@ const CALENDLY = useRuntimeConfig().public.calendlyUrl
                 <animate v-if="!reduceMotion" attributeName="stroke-dashoffset" from="0" to="-10" dur="1.1s" repeatCount="indefinite" />
               </path>
             </g>
-            <g>
-              <circle cx="230" cy="105" r="4.5" fill="#3b82f6" />
-              <circle cx="330" cy="100" r="4.5" fill="#10b981" />
-              <circle cx="230" cy="340" r="4.5" fill="#f97316" />
-              <circle cx="330" cy="340" r="4.5" fill="#f43f5e" />
-            </g>
-
             <!-- One pulse per branch, staggered so they leave the core in turn rather than as a
                  single flash. Each fades in on departure and out on arrival, so nothing pops. -->
             <g v-if="!reduceMotion">
@@ -187,11 +180,17 @@ const CALENDLY = useRuntimeConfig().public.calendlyUrl
                 <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.14;0.78;1" :dur="f.dur" :begin="f.begin" repeatCount="indefinite" />
               </g>
 
-              <!-- The core answers each departure with a ring, so the movement has a source. -->
-              <circle cx="280" cy="225" r="64" fill="none" stroke="#a78bfa" stroke-width="2" stroke-opacity="0">
-                <animate attributeName="r" values="64;92" dur="2.6s" repeatCount="indefinite" />
+              <!-- The core answers each departure with a ring, so the movement has a source. It
+                   grows as a rounded square rather than a circle: a circle cuts across the core's
+                   corners and reads as a second, unrelated shape. -->
+              <rect x="215" y="160" width="130" height="130" rx="26" fill="none" stroke="#a78bfa" stroke-width="2" stroke-opacity="0">
+                <animate attributeName="x" values="215;191" dur="2.6s" repeatCount="indefinite" />
+                <animate attributeName="y" values="160;136" dur="2.6s" repeatCount="indefinite" />
+                <animate attributeName="width" values="130;178" dur="2.6s" repeatCount="indefinite" />
+                <animate attributeName="height" values="130;178" dur="2.6s" repeatCount="indefinite" />
+                <animate attributeName="rx" values="26;38" dur="2.6s" repeatCount="indefinite" />
                 <animate attributeName="stroke-opacity" values="0.5;0" dur="2.6s" repeatCount="indefinite" />
-              </circle>
+              </rect>
             </g>
 
             <!-- Core -->
@@ -201,7 +200,7 @@ const CALENDLY = useRuntimeConfig().public.calendlyUrl
             <rect x="235" y="180" width="90" height="90" rx="18" fill="url(#ai-core)" opacity="0.10">
               <animate v-if="!reduceMotion" attributeName="opacity" values="0.10;0.22;0.10" dur="2.6s" repeatCount="indefinite" />
             </rect>
-            <text x="280" y="240" text-anchor="middle" dominant-baseline="central" font-family="system-ui, sans-serif" font-size="46" font-weight="800" fill="url(#ai-core)">AI</text>
+            <text x="280" y="225" text-anchor="middle" dominant-baseline="central" font-family="system-ui, sans-serif" font-size="46" font-weight="800" fill="url(#ai-core)">AI</text>
             <g stroke="#c4b5fd" stroke-width="3" stroke-linecap="round">
               <path d="M245 152v-14M280 152v-14M315 152v-14M245 298v14M280 298v14M315 298v14" />
               <path d="M207 190h-14M207 225h-14M207 260h-14M353 190h14M353 225h14M353 260h14" />
