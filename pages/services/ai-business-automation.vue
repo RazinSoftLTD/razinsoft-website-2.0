@@ -68,10 +68,10 @@ const BENEFITS = [
 ]
 
 const RESULTS = [
-  { value: '70%+', label: 'Reduction in manual workload', tone: 'bg-violet-50 text-violet-600', paths: ['M4 20V10M9.5 20V4M15 20v-7M20.5 20V7'] },
-  { value: '40%+', label: 'Increase in operational efficiency', tone: 'bg-emerald-50 text-emerald-600', paths: ['m4 16 5-5 3.5 3.5L20 7', 'M15 7h5v5'] },
-  { value: '24/7', label: 'Automated support and operations', tone: 'bg-blue-50 text-blue-600', paths: ['M4 14v-2a8 8 0 0 1 16 0v2', 'M20 15a2 2 0 0 1-2 2h-1v-5h1a2 2 0 0 1 2 2Z', 'M4 15a2 2 0 0 1 2-2h1v5H6a2 2 0 0 1-2-2Z'] },
-  { value: '100+', label: 'Successful automation projects delivered', tone: 'bg-amber-50 text-amber-600', paths: ['M12 3 4.5 6v5c0 4.5 3 7.5 7.5 9 4.5-1.5 7.5-4.5 7.5-9V6L12 3Z', 'm9.5 12 1.8 1.8L15 10'] },
+  { value: '70%+', label: 'Reduction in manual workload', accent: '#8b5cf6', tone: 'bg-violet-50 text-violet-600', paths: ['M4 20V10M9.5 20V4M15 20v-7M20.5 20V7'] },
+  { value: '40%+', label: 'Increase in operational efficiency', accent: '#10b981', tone: 'bg-emerald-50 text-emerald-600', paths: ['m4 16 5-5 3.5 3.5L20 7', 'M15 7h5v5'] },
+  { value: '24/7', label: 'Automated support and operations', accent: '#3b82f6', tone: 'bg-blue-50 text-blue-600', paths: ['M4 14v-2a8 8 0 0 1 16 0v2', 'M20 15a2 2 0 0 1-2 2h-1v-5h1a2 2 0 0 1 2 2Z', 'M4 15a2 2 0 0 1 2-2h1v5H6a2 2 0 0 1-2-2Z'] },
+  { value: '100+', label: 'Successful automation projects delivered', accent: '#f59e0b', tone: 'bg-amber-50 text-amber-600', paths: ['M12 3 4.5 6v5c0 4.5 3 7.5 7.5 9 4.5-1.5 7.5-4.5 7.5-9V6L12 3Z', 'm9.5 12 1.8 1.8L15 10'] },
 ]
 
 const BADGES = [
@@ -373,48 +373,75 @@ const CALENDLY = useRuntimeConfig().public.calendlyUrl
 
       <!-- Why choose it, and what it returns -->
       <section class="mt-16 grid gap-6 lg:grid-cols-2">
-        <div class="relative overflow-hidden rounded-2xl p-8 shadow-sm sm:p-9" style="background-image: linear-gradient(135deg, #6d28d9, #4f46e5);">
-          <h2 class="font-display text-2xl font-extrabold text-white sm:text-3xl">Why Choose AI Automation?</h2>
-          <ul class="mt-6 space-y-3.5">
-            <li v-for="b in BENEFITS" :key="b" class="flex items-start gap-3 text-sm text-white/90 sm:text-[15px]">
-              <svg class="mt-0.5 h-5 w-5 shrink-0 text-violet-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z" /><path stroke-linecap="round" stroke-linejoin="round" d="m8.5 12 2.5 2.5 4.5-5" /></svg>
-              {{ b }}
-            </li>
-          </ul>
+        <div data-reveal class="why relative overflow-hidden rounded-2xl p-8 shadow-sm sm:p-9">
+          <!-- A light source behind the heading, so the panel is not a flat block of purple. -->
+          <span class="why-glow" aria-hidden="true" />
 
-          <!-- Sits behind the list on small screens rather than squashing it, so the copy always wins. -->
-          <svg class="pointer-events-none absolute bottom-2 right-2 hidden h-52 w-52 opacity-95 sm:block" viewBox="0 0 200 200" fill="none" aria-hidden="true">
-            <!-- One raised hand, so it reads as a greeting rather than a diagram. -->
-            <path d="M70 126 48 106" stroke="#fff" stroke-width="10" stroke-linecap="round" />
-            <circle cx="44" cy="102" r="9" fill="#fff" />
-            <path d="M130 128l18 18" stroke="#fff" stroke-width="10" stroke-linecap="round" />
-            <circle cx="152" cy="150" r="9" fill="#fff" />
+          <div class="relative">
+            <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-violet-200">The payoff</p>
+            <h2 class="mt-2 font-display text-2xl font-extrabold text-white sm:text-3xl">Why Choose AI Automation?</h2>
 
-            <circle cx="100" cy="26" r="6" fill="#c4b5fd" />
-            <path d="M100 32v12" stroke="#c4b5fd" stroke-width="4" stroke-linecap="round" />
+            <ul class="mt-6 space-y-3">
+              <li
+                v-for="(b, i) in BENEFITS"
+                :key="b"
+                class="why-item flex items-center gap-3 text-sm text-white/90 sm:text-[15px]"
+                :style="{ '--d': 150 + i * 90 + 'ms' }"
+              >
+                <span class="why-check grid h-6 w-6 shrink-0 place-items-center rounded-full" aria-hidden="true">
+                  <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m5 12.5 4.5 4.5L19 7" /></svg>
+                </span>
+                {{ b }}
+              </li>
+            </ul>
+          </div>
 
-            <rect x="54" y="64" width="9" height="20" rx="4.5" fill="#ddd6fe" />
-            <rect x="137" y="64" width="9" height="20" rx="4.5" fill="#ddd6fe" />
-            <rect x="62" y="44" width="76" height="58" rx="20" fill="#fff" />
-            <rect x="76" y="60" width="48" height="26" rx="13" fill="#1e1b4b" />
-            <circle cx="90" cy="73" r="5" fill="#67e8f9" /><circle cx="110" cy="73" r="5" fill="#67e8f9" />
+          <!-- Kept clear of the copy, and hidden entirely where the panel is too narrow to hold
+               both — the words are the point, the robot is the flourish. -->
+          <svg class="robot pointer-events-none absolute -bottom-1 right-3 hidden h-48 w-48 xl:block" viewBox="0 0 200 200" fill="none" aria-hidden="true">
+            <!-- Arms are drawn first and in a shade off white, so they read as passing behind the
+                 body rather than lying across it. -->
+            <g stroke="#c7bdf5" stroke-width="11" stroke-linecap="round">
+              <path d="M74 126 52 142" />
+              <path d="M126 122 150 102" />
+            </g>
+            <circle cx="49" cy="145" r="9" fill="#fff" />
+            <circle cx="153" cy="99" r="9" fill="#fff" />
+
+            <circle cx="100" cy="24" r="6" fill="#c4b5fd" />
+            <path d="M100 30v12" stroke="#c4b5fd" stroke-width="4" stroke-linecap="round" />
+
+            <rect x="52" y="62" width="9" height="20" rx="4.5" fill="#c7bdf5" />
+            <rect x="139" y="62" width="9" height="20" rx="4.5" fill="#c7bdf5" />
+            <rect x="58" y="42" width="84" height="60" rx="22" fill="#fff" />
+            <rect x="72" y="58" width="56" height="28" rx="14" fill="#1e1b4b" />
+            <circle cx="89" cy="72" r="5" fill="#67e8f9" /><circle cx="111" cy="72" r="5" fill="#67e8f9" />
 
             <rect x="92" y="100" width="16" height="10" fill="#ede9fe" />
-            <rect x="80" y="166" width="15" height="18" rx="7.5" fill="#fff" />
-            <rect x="105" y="166" width="15" height="18" rx="7.5" fill="#fff" />
-            <rect x="68" y="108" width="64" height="60" rx="18" fill="#fff" />
-            <rect x="84" y="124" width="32" height="22" rx="7" fill="#ede9fe" />
-            <path d="M92 140v-8M100 140v-12M108 140v-5" stroke="#a78bfa" stroke-width="3" stroke-linecap="round" />
+            <rect x="79" y="168" width="15" height="18" rx="7.5" fill="#fff" />
+            <rect x="106" y="168" width="15" height="18" rx="7.5" fill="#fff" />
+            <rect x="66" y="108" width="68" height="62" rx="20" fill="#fff" />
+            <rect x="84" y="124" width="32" height="24" rx="8" fill="#ede9fe" />
+            <path d="M92 141v-9M100 141v-13M108 141v-6" stroke="#a78bfa" stroke-width="3" stroke-linecap="round" />
           </svg>
         </div>
 
         <div class="grid gap-5 sm:grid-cols-2">
-          <div v-for="r in RESULTS" :key="r.value" class="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm sm:p-6">
-            <span class="grid h-11 w-11 place-items-center rounded-xl" :class="r.tone" aria-hidden="true">
-              <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path v-for="d in r.paths" :key="d" stroke-linecap="round" stroke-linejoin="round" :d="d" /></svg>
-            </span>
-            <p class="mt-4 font-display text-2xl font-extrabold text-ink-900">{{ r.value }}</p>
-            <p class="mt-1 text-sm leading-relaxed text-gray-500">{{ r.label }}</p>
+          <div
+            v-for="(r, i) in RESULTS"
+            :key="r.value"
+            data-reveal
+            class="stat relative overflow-hidden rounded-2xl border border-gray-100 bg-white p-5 shadow-sm sm:p-6"
+            :style="{ '--accent': r.accent, '--d': i * 80 + 'ms' }"
+          >
+            <span class="stat-wash" aria-hidden="true" />
+            <div class="relative">
+              <span class="stat-icon grid h-11 w-11 place-items-center rounded-xl" :class="r.tone" aria-hidden="true">
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path v-for="d in r.paths" :key="d" stroke-linecap="round" stroke-linejoin="round" :d="d" /></svg>
+              </span>
+              <p class="stat-value mt-4 font-display text-3xl font-extrabold text-ink-900">{{ r.value }}</p>
+              <p class="mt-1 text-sm leading-relaxed text-gray-500">{{ r.label }}</p>
+            </div>
           </div>
         </div>
       </section>
@@ -568,6 +595,64 @@ const CALENDLY = useRuntimeConfig().public.calendlyUrl
 .step-icon { transition: transform .35s cubic-bezier(.34, 1.56, .64, 1); }
 .step:hover .step-icon { transform: scale(1.08); }
 
+/* ---- Why choose it -------------------------------------------------------------------------
+   A flat fill made the panel read as a coloured box with words on it. The gradient plus one soft
+   light behind the heading gives it a direction to be lit from. */
+.why {
+  background-image: linear-gradient(135deg, #6d28d9 0%, #5b31d6 45%, #4f46e5 100%);
+}
+.why-glow {
+  position: absolute;
+  top: -30%;
+  right: -10%;
+  width: 22rem;
+  height: 22rem;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(196, 181, 253, .35), transparent 65%);
+  pointer-events: none;
+}
+
+/* Each point lands in turn, at reading pace, rather than the list appearing as one slab. */
+.why-check {
+  background: rgba(255, 255, 255, .16);
+  color: #ede9fe;
+}
+.why.will-reveal .why-item { opacity: 0; }
+.why.will-reveal.is-in .why-item {
+  opacity: 1;
+  animation: reveal-left .5s cubic-bezier(.2, .8, .2, 1) backwards;
+  animation-delay: var(--d, 0ms);
+}
+@keyframes reveal-left {
+  from { opacity: 0; transform: translateX(-10px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ---- The four figures ----------------------------------------------------------------------
+   Same reaction as the capability tiles, so the whole page answers the pointer one way. */
+.stat {
+  transition: transform .25s cubic-bezier(.2, .8, .2, 1), box-shadow .25s ease, border-color .25s ease;
+}
+.stat-wash {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 10%, transparent), transparent 62%);
+  opacity: 0;
+  transition: opacity .3s ease;
+}
+.stat:hover {
+  transform: translateY(-4px);
+  border-color: color-mix(in srgb, var(--accent) 30%, transparent);
+  box-shadow: 0 14px 30px -14px color-mix(in srgb, var(--accent) 60%, transparent);
+}
+.stat:hover .stat-wash { opacity: 1; }
+
+.stat-icon { transition: transform .35s cubic-bezier(.34, 1.56, .64, 1); }
+.stat:hover .stat-icon { transform: scale(1.1) rotate(-6deg); }
+
+.stat-value { transition: color .25s ease; }
+.stat:hover .stat-value { color: var(--accent); }
+
 @media (prefers-reduced-motion: reduce) {
   /* Nothing is allowed to stay hidden waiting for a scroll that will never animate. */
   .will-reveal,
@@ -579,8 +664,14 @@ const CALENDLY = useRuntimeConfig().public.calendlyUrl
     animation: none;
   }
   .steps.will-reveal .steps-track-fill { transform: scaleX(1); transition: none; }
+  .why.will-reveal .why-item,
+  .why.will-reveal.is-in .why-item {
+    opacity: 1;
+    animation: none;
+  }
   .tile, .tile:hover, .tile-icon, .tile:hover .tile-icon,
-  .step-ring, .step:hover .step-ring, .step-icon, .step:hover .step-icon {
+  .step-ring, .step:hover .step-ring, .step-icon, .step:hover .step-icon,
+  .stat, .stat:hover, .stat-icon, .stat:hover .stat-icon {
     transform: none;
   }
   .tile:hover .tile-bar { height: 62%; }
