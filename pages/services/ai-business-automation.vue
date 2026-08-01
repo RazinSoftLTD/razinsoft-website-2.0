@@ -74,6 +74,24 @@ const RESULTS = [
   { value: '100+', label: 'Successful automation projects delivered', tone: 'bg-amber-50 text-amber-600', paths: ['M12 3 4.5 6v5c0 4.5 3 7.5 7.5 9 4.5-1.5 7.5-4.5 7.5-9V6L12 3Z', 'm9.5 12 1.8 1.8L15 10'] },
 ]
 
+// SMIL animations ignore the stylesheet's reduced-motion rule, so the switch has to be in the
+// markup: when the visitor has asked for less motion, the animation elements are never rendered and
+// the diagram stands as static art. Starts false on both server and client, so hydration matches.
+const reduceMotion = ref(false)
+onMounted(() => {
+  const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
+  reduceMotion.value = mq.matches
+  mq.addEventListener('change', e => { reduceMotion.value = e.matches })
+})
+
+// The four signal paths out of the core. Staggered starts keep them from firing in unison.
+const FLOWS = [
+  { id: 'ai-flow-1', color: '#3b82f6', dur: '2.6s', begin: '0s' },
+  { id: 'ai-flow-2', color: '#10b981', dur: '2.6s', begin: '0.65s' },
+  { id: 'ai-flow-3', color: '#f97316', dur: '2.6s', begin: '1.3s' },
+  { id: 'ai-flow-4', color: '#f43f5e', dur: '2.6s', begin: '1.95s' },
+]
+
 useSeoMeta({
   title: 'AI Business Automation — RazinSoft Services',
   description: 'We help businesses automate repetitive tasks, streamline workflows, and make data-driven decisions using the power of AI.',
@@ -133,12 +151,22 @@ const CALENDLY = useRuntimeConfig().public.calendlyUrl
               </filter>
             </defs>
 
-            <!-- Connections, drawn first so the cards and core sit on top -->
-            <g stroke-width="2" stroke-linecap="round" stroke-dasharray="1 9" opacity="0.75">
-              <path d="M175 105h55c14 0 25 11 25 25v40" stroke="#3b82f6" />
-              <path d="M385 100h-55c-14 0-25 11-25 25v45" stroke="#10b981" />
-              <path d="M175 340h55c14 0 25-11 25-25v-40" stroke="#f97316" />
-              <path d="M385 340h-55c-14 0-25-11-25-25v-40" stroke="#f43f5e" />
+            <!-- Connections. Each path is drawn from the core outwards, which is the direction the
+                 signal travels: the dashes march that way and the pulses ride the same path, so
+                 the diagram reads as the AI feeding each capability rather than the reverse. -->
+            <g stroke-width="2" stroke-linecap="round" stroke-dasharray="1 9" opacity="0.75" fill="none">
+              <path id="ai-flow-1" d="M255 170v-40c0-14-11-25-25-25h-55" stroke="#3b82f6">
+                <animate v-if="!reduceMotion" attributeName="stroke-dashoffset" from="0" to="-10" dur="1.1s" repeatCount="indefinite" />
+              </path>
+              <path id="ai-flow-2" d="M305 170v-45c0-14 11-25 25-25h55" stroke="#10b981">
+                <animate v-if="!reduceMotion" attributeName="stroke-dashoffset" from="0" to="-10" dur="1.1s" repeatCount="indefinite" />
+              </path>
+              <path id="ai-flow-3" d="M255 275v40c0 14-11 25-25 25h-55" stroke="#f97316">
+                <animate v-if="!reduceMotion" attributeName="stroke-dashoffset" from="0" to="-10" dur="1.1s" repeatCount="indefinite" />
+              </path>
+              <path id="ai-flow-4" d="M305 275v40c0 14 11 25 25 25h55" stroke="#f43f5e">
+                <animate v-if="!reduceMotion" attributeName="stroke-dashoffset" from="0" to="-10" dur="1.1s" repeatCount="indefinite" />
+              </path>
             </g>
             <g>
               <circle cx="230" cy="105" r="4.5" fill="#3b82f6" />
@@ -147,11 +175,32 @@ const CALENDLY = useRuntimeConfig().public.calendlyUrl
               <circle cx="330" cy="340" r="4.5" fill="#f43f5e" />
             </g>
 
+            <!-- One pulse per branch, staggered so they leave the core in turn rather than as a
+                 single flash. Each fades in on departure and out on arrival, so nothing pops. -->
+            <g v-if="!reduceMotion">
+              <g v-for="f in FLOWS" :key="f.id" opacity="0">
+                <circle r="9" :fill="f.color" opacity="0.22" />
+                <circle r="4.5" :fill="f.color" />
+                <animateMotion :dur="f.dur" :begin="f.begin" repeatCount="indefinite" calcMode="linear">
+                  <mpath :href="'#' + f.id" />
+                </animateMotion>
+                <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.14;0.78;1" :dur="f.dur" :begin="f.begin" repeatCount="indefinite" />
+              </g>
+
+              <!-- The core answers each departure with a ring, so the movement has a source. -->
+              <circle cx="280" cy="225" r="64" fill="none" stroke="#a78bfa" stroke-width="2" stroke-opacity="0">
+                <animate attributeName="r" values="64;92" dur="2.6s" repeatCount="indefinite" />
+                <animate attributeName="stroke-opacity" values="0.5;0" dur="2.6s" repeatCount="indefinite" />
+              </circle>
+            </g>
+
             <!-- Core -->
             <g filter="url(#ai-shadow)">
               <rect x="215" y="160" width="130" height="130" rx="26" fill="#fff" stroke="#ede9fe" stroke-width="2" />
             </g>
-            <rect x="235" y="180" width="90" height="90" rx="18" fill="url(#ai-core)" opacity="0.10" />
+            <rect x="235" y="180" width="90" height="90" rx="18" fill="url(#ai-core)" opacity="0.10">
+              <animate v-if="!reduceMotion" attributeName="opacity" values="0.10;0.22;0.10" dur="2.6s" repeatCount="indefinite" />
+            </rect>
             <text x="280" y="240" text-anchor="middle" dominant-baseline="central" font-family="system-ui, sans-serif" font-size="46" font-weight="800" fill="url(#ai-core)">AI</text>
             <g stroke="#c4b5fd" stroke-width="3" stroke-linecap="round">
               <path d="M245 152v-14M280 152v-14M315 152v-14M245 298v14M280 298v14M315 298v14" />
