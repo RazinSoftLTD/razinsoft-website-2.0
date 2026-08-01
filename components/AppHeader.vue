@@ -4,7 +4,7 @@ type MenuItem = { title: string; desc: string; to: string; icon: string[]; tone:
 type NavItem = {
   label: string; to?: string; caret?: boolean; menu?: MenuItem[]
   wide?: boolean
-  intro?: { eyebrow: string; title: string; accent: string; desc: string }
+  intro?: { eyebrow: string; title: string; accent: string }
   aside?: { eyebrow: string; title: string; desc: string; cta: string; ctaTo: string; stats: { value: string; label: string; tone: string; icon: string[] }[] }
 }
 
@@ -18,12 +18,11 @@ const nav: NavItem[] = [
       eyebrow: 'Our Services',
       title: 'Complete Services.',
       accent: 'Lasting Impact.',
-      desc: 'From installation to ongoing support, we provide end-to-end services to help your business grow.',
     },
     aside: {
       eyebrow: "Let's talk",
       title: 'Have a project in mind?',
-      desc: 'Our experts are ready to help you find the right solution for your business.',
+      desc: 'Our experts will help you find the right fit.',
       cta: 'Book a Free Consultation',
       ctaTo: '/book-a-meeting',
       stats: [
@@ -33,12 +32,12 @@ const nav: NavItem[] = [
       ],
     },
     menu: [
-      { title: 'Installation', desc: 'Quick and secure installation to get your product up and running.', to: '/services/installation', tone: 'bg-blue-50 text-blue-600', arrow: 'text-blue-500', icon: ['m4.5 19.5 3-1 12-12a2.1 2.1 0 0 0-3-3l-12 12-1 3Z', 'M14 6.5 17.5 10', 'M6 14.5 9.5 18'] },
-      { title: 'Custom Development', desc: 'Build custom features and workflows tailored to your unique business needs.', to: '/services/customization', tone: 'bg-emerald-50 text-emerald-600', arrow: 'text-emerald-500', icon: ['m9 8-4 4 4 4', 'm15 8 4 4-4 4', 'm13 5-2 14'] },
-      { title: 'Maintenance & Support', desc: 'Ongoing support and regular updates to keep your system secure and reliable.', to: '/services/maintenance', tone: 'bg-orange-50 text-orange-600', arrow: 'text-orange-500', icon: ['M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z', 'M12 2.5v2M12 19.5v2M4.5 12h-2M21.5 12h-2M6 6 4.6 4.6M19.4 19.4 18 18M18 6l1.4-1.4M4.6 19.4 6 18'] },
-      { title: 'Dedicated Team', desc: 'Hire dedicated developers to extend your team and accelerate delivery.', to: '/contact-us', tone: 'bg-purple-50 text-purple-600', arrow: 'text-purple-500', icon: ['M9 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z', 'M17 11a3 3 0 1 0 0-6', 'M3 20a6 6 0 0 1 12 0', 'M16.5 14.5A6 6 0 0 1 21 20'] },
-      { title: 'Cloud Deployment', desc: 'Deploy your application on scalable and secure cloud infrastructure.', to: '/contact-us', tone: 'bg-sky-50 text-sky-600', arrow: 'text-sky-500', icon: ['M7 18a4.5 4.5 0 0 1-.6-9A6 6 0 0 1 18 9.5a4.25 4.25 0 0 1-.5 8.5H7Z'] },
-      { title: 'AI Business Automation', desc: 'Automate workflows, reduce manual work and grow your business with AI.', to: '/contact-us', tone: 'bg-violet-50 text-violet-600', arrow: 'text-violet-500', icon: ['M8 4h8a4 4 0 0 1 4 4v8a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V8a4 4 0 0 1 4-4Z', 'M9.5 15V9h1.8l1.7 3.6L14.7 9h1.8v6', 'M12 2v2M12 20v2M2 12h2M20 12h2'] },
+      { title: 'Installation', desc: 'Set up and running, fast and secure.', to: '/services/installation', tone: 'bg-blue-50 text-blue-600', arrow: 'text-blue-500', icon: ['m4.5 19.5 3-1 12-12a2.1 2.1 0 0 0-3-3l-12 12-1 3Z', 'M14 6.5 17.5 10', 'M6 14.5 9.5 18'] },
+      { title: 'Custom Development', desc: 'Features and workflows built around your business.', to: '/services/customization', tone: 'bg-emerald-50 text-emerald-600', arrow: 'text-emerald-500', icon: ['m9 8-4 4 4 4', 'm15 8 4 4-4 4', 'm13 5-2 14'] },
+      { title: 'Maintenance & Support', desc: 'Updates and support that keep things running.', to: '/services/maintenance', tone: 'bg-orange-50 text-orange-600', arrow: 'text-orange-500', icon: ['M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z', 'M12 2.5v2M12 19.5v2M4.5 12h-2M21.5 12h-2M6 6 4.6 4.6M19.4 19.4 18 18M18 6l1.4-1.4M4.6 19.4 6 18'] },
+      { title: 'Dedicated Team', desc: 'Developers who extend your team and ship faster.', to: '/contact-us', tone: 'bg-purple-50 text-purple-600', arrow: 'text-purple-500', icon: ['M9 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z', 'M17 11a3 3 0 1 0 0-6', 'M3 20a6 6 0 0 1 12 0', 'M16.5 14.5A6 6 0 0 1 21 20'] },
+      { title: 'Cloud Deployment', desc: 'Scalable, secure hosting for your application.', to: '/contact-us', tone: 'bg-sky-50 text-sky-600', arrow: 'text-sky-500', icon: ['M7 18a4.5 4.5 0 0 1-.6-9A6 6 0 0 1 18 9.5a4.25 4.25 0 0 1-.5 8.5H7Z'] },
+      { title: 'AI Business Automation', desc: 'Automate the manual work and grow with AI.', to: '/contact-us', tone: 'bg-violet-50 text-violet-600', arrow: 'text-violet-500', icon: ['M8 4h8a4 4 0 0 1 4 4v8a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V8a4 4 0 0 1 4-4Z', 'M9.5 15V9h1.8l1.7 3.6L14.7 9h1.8v6', 'M12 2v2M12 20v2M2 12h2M20 12h2'] },
     ],
   },
   {
@@ -122,7 +121,6 @@ onMounted(() => {
                       <h3 class="mt-2.5 text-xl font-extrabold leading-tight text-ink-900">
                         {{ item.intro.title }}<br><span class="text-brand-600">{{ item.intro.accent }}</span>
                       </h3>
-                      <p class="mt-2 max-w-sm text-[13px] leading-relaxed text-gray-500">{{ item.intro.desc }}</p>
 
                       <!-- Decorative: a cube with orbiting service marks. Inline so it needs no asset. -->
                       <svg class="pointer-events-none absolute right-5 top-1/2 hidden h-24 w-44 -translate-y-1/2 lg:block" viewBox="0 0 220 130" fill="none" aria-hidden="true">
@@ -155,7 +153,7 @@ onMounted(() => {
                           <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path v-for="d in m.icon" :key="d" stroke-linecap="round" stroke-linejoin="round" :d="d" /></svg>
                         </span>
                         <span class="mt-3 block text-sm font-bold text-ink-900">{{ m.title }}</span>
-                        <span class="mt-1 block flex-1 text-xs leading-relaxed text-gray-500">{{ m.desc }}</span>
+                        <span class="mt-1 line-clamp-2 block flex-1 text-xs leading-relaxed text-gray-500">{{ m.desc }}</span>
                         <span class="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold" :class="m.arrow">
                           Learn More
                           <svg class="h-3.5 w-3.5 transition-transform duration-200 group-hover/card:translate-x-1" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6" /></svg>
@@ -171,7 +169,7 @@ onMounted(() => {
                     </span>
                     <p class="mt-4 text-[11px] font-bold uppercase tracking-[0.15em] text-brand-600">{{ item.aside.eyebrow }}</p>
                     <h3 class="mt-1.5 text-base font-extrabold leading-snug text-ink-900">{{ item.aside.title }}</h3>
-                    <p class="mt-1.5 text-xs leading-relaxed text-gray-500">{{ item.aside.desc }}</p>
+                    <p class="mt-1.5 line-clamp-2 text-xs leading-relaxed text-gray-500">{{ item.aside.desc }}</p>
 
                     <NuxtLink
                       :to="item.aside.ctaTo"
