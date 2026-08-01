@@ -38,7 +38,7 @@ const nav: NavItem[] = [
       { title: 'Maintenance & Support', desc: 'Updates and support that keep things running.', to: '/services/maintenance', tone: 'bg-orange-50 text-orange-600', arrow: 'text-orange-500', icon: ['M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76Z'], accent: '#f97316' },
       { title: 'Dedicated Team', desc: 'Developers who extend your team and ship faster.', to: '/contact-us', tone: 'bg-purple-50 text-purple-600', arrow: 'text-purple-500', icon: ['M9 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z', 'M17 11a3 3 0 1 0 0-6', 'M3 20a6 6 0 0 1 12 0', 'M16.5 14.5A6 6 0 0 1 21 20'], accent: '#a855f7' },
       { title: 'Cloud Deployment', desc: 'Scalable, secure hosting for your application.', to: '/contact-us', tone: 'bg-sky-50 text-sky-600', arrow: 'text-sky-500', icon: ['M12 13v8', 'm8 17 4-4 4 4', 'M4 14.9A7 7 0 1 1 15.7 8h1.8a4.5 4.5 0 0 1 2.5 8.2'], accent: '#0ea5e9' },
-      { title: 'AI Business Automation', desc: 'Automate the manual work and grow with AI.', to: '/contact-us', tone: 'bg-violet-50 text-violet-600', arrow: 'text-violet-500', icon: ['m12 4 1.6 4.4L18 10l-4.4 1.6L12 16l-1.6-4.4L6 10l4.4-1.6L12 4Z', 'm18.5 14.5.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8.8-2.2Z'], accent: '#8b5cf6' },
+      { title: 'AI Business Automation', desc: 'Automate the manual work and grow with AI.', to: '/services/ai-business-automation', tone: 'bg-violet-50 text-violet-600', arrow: 'text-violet-500', icon: ['m12 4 1.6 4.4L18 10l-4.4 1.6L12 16l-1.6-4.4L6 10l4.4-1.6L12 4Z', 'm18.5 14.5.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8.8-2.2Z'], accent: '#8b5cf6' },
     ],
   },
   {
