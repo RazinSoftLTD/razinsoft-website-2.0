@@ -44,14 +44,28 @@ function setSort(key: string) {
 const category = ref((route.query.category as string) || 'All Categories')
 const search = ref((route.query.q as string) || '')
 
+// How many to show at once. 'all' is kept as an option because the catalogue is small enough to
+// scroll, and someone comparing products would rather not lose their place to a page change.
+const PAGE_SIZES = [12, 24, 48, 96] as const
+const perPage = ref<number | 'all'>(
+  route.query.show === 'all' ? 'all' : (PAGE_SIZES as readonly number[]).includes(Number(route.query.show)) ? Number(route.query.show) : 12,
+)
+const page = ref(Math.max(1, Number(route.query.page) || 1))
+
 // Mirror the current filters back into the URL (replace = no extra history entry).
-watch([sort, category, search], ([s, c, q]) => {
+watch([sort, category, search, perPage, page], ([s, c, q, n, pg]) => {
   const query: Record<string, string> = {}
   if (s && s !== 'best') query.sort = s
   if (c && c !== 'All Categories') query.category = c
   if (q) query.q = q
+  if (n !== 12) query.show = String(n)
+  if (Number(pg) > 1) query.page = String(pg)
   router.replace({ query })
 })
+
+// Changing what you are looking at puts you back at the start — page 3 of the old filter is
+// rarely where you want to land, and can be past the end of the new list entirely.
+watch([sort, category, search, perPage], () => { page.value = 1 })
 
 // Sync the other way too: navigating to /products?sort=free while already on the page
 // (e.g. the top-nav "Free Product" link) updates the active tab. Guards avoid a loop.
@@ -84,6 +98,23 @@ const filtered = computed(() => {
   }
   return list
 })
+
+const pageCount = computed(() => (perPage.value === 'all' ? 1 : Math.max(1, Math.ceil(filtered.value.length / perPage.value))))
+// Clamped on read as well as on change: a filter that shrinks the list while you are on the last
+// page would otherwise leave you looking at nothing.
+const currentPage = computed(() => Math.min(Math.max(1, page.value), pageCount.value))
+const paged = computed(() => {
+  if (perPage.value === 'all') return filtered.value
+  const start = (currentPage.value - 1) * perPage.value
+  return filtered.value.slice(start, start + perPage.value)
+})
+const shownFrom = computed(() => (filtered.value.length ? (perPage.value === 'all' ? 1 : (currentPage.value - 1) * perPage.value + 1) : 0))
+const shownTo = computed(() => (perPage.value === 'all' ? filtered.value.length : Math.min(currentPage.value * perPage.value, filtered.value.length)))
+
+function goToPage(n: number) {
+  page.value = Math.min(Math.max(1, n), pageCount.value)
+  if (import.meta.client) window.scrollTo({ top: 0, behavior: 'smooth' })
+}
 
 const badgeClass: Record<string, string> = {
   'Best Seller': 'bg-ink-900 text-amber-300',
@@ -139,7 +170,20 @@ const badgeClass: Record<string, string> = {
           </button>
         </div>
 
-        <div class="ml-auto flex items-center gap-1 rounded-lg border border-gray-200 p-1">
+        <div class="ml-auto flex items-center gap-2">
+          <label class="hidden text-sm text-gray-500 sm:block" for="per-page">Show</label>
+          <select
+            id="per-page"
+            v-model="perPage"
+            class="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-ink-800 focus:border-brand-500 focus:outline-none"
+            aria-label="Products per page"
+          >
+            <option v-for="n in PAGE_SIZES" :key="n" :value="n">{{ n }}</option>
+            <option value="all">All</option>
+          </select>
+        </div>
+
+        <div class="flex items-center gap-1 rounded-lg border border-gray-200 p-1">
           <button type="button" aria-label="Grid view" class="rounded p-1.5" :class="view === 'grid' ? 'bg-brand-50 text-brand-600' : 'text-gray-400 hover:text-gray-600'" @click="view = 'grid'">
             <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z" /></svg>
           </button>
@@ -156,9 +200,14 @@ const badgeClass: Record<string, string> = {
         No products match your filters.
       </p>
 
-      <div v-else class="grid gap-6" :class="view === 'grid' ? 'sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4' : 'grid-cols-1'">
+      <p v-if="filtered.length" class="mb-5 text-sm text-gray-500">
+        Showing <span class="font-semibold text-ink-800">{{ shownFrom }}–{{ shownTo }}</span> of
+        <span class="font-semibold text-ink-800">{{ filtered.length }}</span> {{ filtered.length === 1 ? 'product' : 'products' }}
+      </p>
+
+      <div v-if="filtered.length" class="grid gap-6" :class="view === 'grid' ? 'sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4' : 'grid-cols-1'">
         <article
-          v-for="p in filtered"
+          v-for="p in paged"
           :key="p.slug"
           class="group flex overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition hover:shadow-md"
           :class="view === 'list' ? 'flex-col sm:flex-row' : 'flex-col'"
@@ -202,6 +251,39 @@ const badgeClass: Record<string, string> = {
           </div>
         </article>
       </div>
+
+      <!-- Pager: only when there is more than one page, so a short catalogue stays clean. -->
+      <nav v-if="pageCount > 1" class="mt-10 flex flex-wrap items-center justify-center gap-2" aria-label="Product pages">
+        <button
+          type="button"
+          class="rounded-lg border border-gray-200 px-3 py-2 text-sm font-medium text-ink-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+          :disabled="currentPage === 1"
+          @click="goToPage(currentPage - 1)"
+        >
+          Previous
+        </button>
+
+        <button
+          v-for="n in pageCount"
+          :key="n"
+          type="button"
+          class="min-w-10 rounded-lg px-3 py-2 text-sm font-semibold transition"
+          :class="n === currentPage ? 'bg-brand-600 text-white' : 'border border-gray-200 text-ink-700 hover:bg-gray-50'"
+          :aria-current="n === currentPage ? 'page' : undefined"
+          @click="goToPage(n)"
+        >
+          {{ n }}
+        </button>
+
+        <button
+          type="button"
+          class="rounded-lg border border-gray-200 px-3 py-2 text-sm font-medium text-ink-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+          :disabled="currentPage === pageCount"
+          @click="goToPage(currentPage + 1)"
+        >
+          Next
+        </button>
+      </nav>
     </div>
   </div>
 </template>
