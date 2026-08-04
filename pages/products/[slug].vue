@@ -520,17 +520,20 @@ const { addItem } = useCart()
               {{ tab.name }}
             </button>
           </div>
-          <div class="relative mt-4 aspect-[16/9] overflow-hidden rounded-2xl bg-ink-900">
+          <div class="relative mt-4 aspect-[16/9] overflow-hidden rounded-2xl border border-gray-100 bg-gray-50">
             <div v-for="tab in gallery" v-show="activeTab === tab.name" :key="tab.name" class="absolute inset-0">
               <button type="button" class="group/gal relative block h-full w-full" :aria-label="`View ${tab.name} screenshots`" @click="openLightbox(tab, 0)">
-                <NuxtImg :src="tab.images[0].image" :alt="tab.images[0].alt || `${product.name} — ${tab.name} screenshot`" width="640" height="420" sizes="100vw sm:50vw lg:420px" format="webp" loading="lazy" class="h-full w-full object-cover opacity-90 transition duration-300 group-hover/gal:scale-[1.02] group-hover/gal:opacity-100" />
-                <span class="absolute bottom-4 left-4 font-display font-bold text-white drop-shadow">{{ tab.label }}</span>
+                <!-- contain, not cover: these are screenshots, and cropping one cuts off the part
+                     someone is trying to look at. Rendered at the width it is actually displayed
+                     at — 640 was being upscaled across the column, which is what made it soft. -->
+                <NuxtImg :src="tab.images[0].image" :alt="tab.images[0].alt || `${product.name} — ${tab.name} screenshot`" width="1400" height="788" sizes="100vw sm:100vw lg:900px" format="webp" quality="90" loading="lazy" class="h-full w-full object-contain transition duration-300 group-hover/gal:scale-[1.01]" />
+                <span class="absolute bottom-4 left-4 rounded-lg bg-white/85 px-2.5 py-1 font-display text-sm font-bold text-ink-900 shadow-sm backdrop-blur-sm">{{ tab.label }}</span>
                 <span v-if="tab.images.length > 1" class="absolute right-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-black/50 px-3 py-1 text-xs font-semibold text-white backdrop-blur">
                   <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" /><path d="M3 15l5-5 4 4 3-3 6 6" /></svg>
                   {{ tab.images.length }} screenshots
                 </span>
-                <span class="pointer-events-none absolute inset-0 grid place-items-center bg-black/0 transition group-hover/gal:bg-black/25">
-                  <span class="grid h-14 w-14 place-items-center rounded-full bg-white/90 opacity-0 shadow-lg transition group-hover/gal:opacity-100">
+                <span class="pointer-events-none absolute inset-0 grid place-items-center">
+                  <span class="grid h-14 w-14 place-items-center rounded-full bg-white/95 opacity-0 shadow-lg ring-1 ring-black/5 transition group-hover/gal:opacity-100">
                     <svg class="h-6 w-6 text-ink-900" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" /><path stroke-linecap="round" d="m21 21-4.3-4.3M11 8v6M8 11h6" /></svg>
                   </span>
                 </span>
@@ -800,11 +803,24 @@ const { addItem } = useCart()
             <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m15 18-6-6 6-6" /></svg>
           </button>
 
-          <figure class="flex max-h-full max-w-full flex-col items-center">
-            <img :src="lightboxImages[lightboxIndex]?.image" :alt="lightboxImages[lightboxIndex]?.alt || 'Screenshot'" class="max-h-[82vh] max-w-[92vw] rounded-xl object-contain shadow-2xl">
-            <figcaption class="mt-4 flex flex-col items-center gap-2 text-center text-white">
-              <p v-if="lightboxImages[lightboxIndex]?.caption" class="max-w-lg text-sm text-white/90">{{ lightboxImages[lightboxIndex].caption }}</p>
-              <span class="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold">{{ lightboxIndex + 1 }} / {{ lightboxImages.length }}</span>
+          <!-- A framed window rather than a bare enlargement: the screenshot sits inside our own
+               chrome, so it reads as our product being shown rather than a file that opened. -->
+          <figure class="flex max-h-full w-full max-w-6xl flex-col items-center">
+            <div class="w-full overflow-hidden rounded-2xl bg-white shadow-2xl ring-1 ring-white/10">
+              <div class="flex items-center gap-3 border-b border-gray-100 bg-gray-50 px-4 py-3">
+                <img src="/images/Razinsoft-logo.webp" alt="RazinSoft" width="1772" height="384" class="h-5 w-auto shrink-0">
+                <span class="hidden truncate text-xs font-semibold text-gray-500 sm:block">{{ lightboxImages[lightboxIndex]?.caption || product.name }}</span>
+                <span v-if="lightboxImages.length > 1" class="ml-auto shrink-0 rounded-full bg-white px-2.5 py-1 text-[11px] font-bold text-gray-500 ring-1 ring-gray-200">
+                  {{ lightboxIndex + 1 }} / {{ lightboxImages.length }}
+                </span>
+              </div>
+              <!-- contain and a light mat, so a tall screenshot is shown whole instead of cropped -->
+              <div class="flex items-center justify-center bg-gray-50 p-2 sm:p-4">
+                <img :src="lightboxImages[lightboxIndex]?.image" :alt="lightboxImages[lightboxIndex]?.alt || 'Screenshot'" class="max-h-[74vh] w-auto max-w-full rounded-lg object-contain">
+              </div>
+            </div>
+            <figcaption v-if="lightboxImages[lightboxIndex]?.caption" class="mt-3 max-w-lg text-center text-sm text-white/80 sm:hidden">
+              {{ lightboxImages[lightboxIndex].caption }}
             </figcaption>
           </figure>
 
