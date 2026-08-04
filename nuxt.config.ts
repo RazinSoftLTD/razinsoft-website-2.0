@@ -48,10 +48,13 @@ const legacyProductRedirects: Record<string, string> = {
   'ready-classify-eclassify-buy-and-sell-marketplace-mobile-app-website-with-laravel-admin-panel-NQiioZ': 'ready-classify',
 }
 
+// The same slugs were also published under /services/purchase/{slug} — the old buy page. Google
+// has those indexed too (a search for our own product name still returns one), so both paths map
+// to the same product.
 const legacyProductRules = Object.fromEntries(
-  Object.entries(legacyProductRedirects).map(([from, to]) => [
-    `/products/details/${from}`,
-    { redirect: { to: `/products/${to}`, statusCode: 301 } },
+  Object.entries(legacyProductRedirects).flatMap(([from, to]) => [
+    [`/products/details/${from}`, { redirect: { to: `/products/${to}`, statusCode: 301 } }],
+    [`/services/purchase/${from}`, { redirect: { to: `/products/${to}`, statusCode: 301 } }],
   ]),
 )
 
@@ -169,9 +172,10 @@ export default defineNuxtConfig({
     '/products/**': { swr: 300, headers: { 'cache-control': 'public, max-age=0, must-revalidate, s-maxage=300, stale-while-revalidate=600' } },
     // Old product URLs, most specific first — Nitro matches these before /products/**.
     ...legacyProductRules,
-    // Anything else under the old path: the catalogue is a better answer than a 404 for a URL
+    // Anything else under the old paths: the catalogue is a better answer than a 404 for a URL
     // we no longer recognise. Listed after the exact matches so it only catches the leftovers.
     '/products/details/**': { redirect: { to: '/products', statusCode: 301 } },
+    '/services/purchase/**': { redirect: { to: '/products', statusCode: 301 } },
     // Insights / blog: edge-cached, browser revalidates (articles change rarely).
     '/blog': { swr: 180, headers: { 'cache-control': 'public, max-age=0, must-revalidate, s-maxage=180, stale-while-revalidate=600' } },
     '/blog/**': { swr: 600, headers: { 'cache-control': 'public, max-age=0, must-revalidate, s-maxage=600, stale-while-revalidate=600' } },
