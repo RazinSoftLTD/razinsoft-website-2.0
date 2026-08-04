@@ -54,9 +54,15 @@ const nav = [
     <div class="grid gap-8 lg:grid-cols-[17rem_1fr]">
       <!-- Sidebar (persistent) -->
       <aside class="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm lg:sticky lg:top-20 lg:self-start">
-        <div class="rounded-xl bg-gradient-to-br from-brand-500 to-brand-600 p-4 text-white">
-          <p class="font-display text-lg font-bold">{{ user?.name || 'My Account' }}</p>
-          <p class="truncate text-sm text-white/80">{{ user?.email }}</p>
+        <div class="flex items-center gap-3 rounded-xl bg-gradient-to-br from-brand-500 to-brand-600 p-4 text-white">
+          <span class="grid h-12 w-12 shrink-0 place-items-center overflow-hidden rounded-full bg-white/20 ring-2 ring-white/30">
+            <img v-if="user?.photo" :src="user.photo" :alt="user.name || 'Profile photo'" class="h-full w-full object-cover">
+            <span v-else class="text-base font-bold">{{ user?.initials || '?' }}</span>
+          </span>
+          <div class="min-w-0">
+            <p class="truncate font-display text-lg font-bold">{{ user?.name || 'My Account' }}</p>
+            <p class="truncate text-sm text-white/80">{{ user?.email }}</p>
+          </div>
         </div>
 
         <nav class="mt-4 space-y-1" aria-label="Account">

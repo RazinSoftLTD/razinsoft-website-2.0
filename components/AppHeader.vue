@@ -255,8 +255,13 @@ onMounted(() => {
         </NuxtLink>
 
         <ClientOnly>
-          <NuxtLink v-if="loggedIn" to="/dashboard" class="grid h-9 w-9 place-items-center rounded-full bg-brand-600 text-white hover:bg-brand-700" aria-label="Go to your dashboard">
-            <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5" /><path stroke-linecap="round" d="M4.5 19.5a7.5 7.5 0 0 1 15 0" /></svg>
+          <!-- The signed-in user's own photo, falling back to initials and then the generic icon.
+               `user` is shared state, so uploading a new one on the profile page updates this
+               without a reload. -->
+          <NuxtLink v-if="loggedIn" to="/dashboard" class="grid h-9 w-9 place-items-center overflow-hidden rounded-full bg-brand-600 text-white hover:bg-brand-700" :aria-label="user?.name ? `${user.name} — go to your dashboard` : 'Go to your dashboard'">
+            <img v-if="user?.photo" :src="user.photo" :alt="user.name || 'Profile photo'" class="h-full w-full object-cover">
+            <span v-else-if="user?.initials" class="text-sm font-bold">{{ user.initials }}</span>
+            <svg v-else class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5" /><path stroke-linecap="round" d="M4.5 19.5a7.5 7.5 0 0 1 15 0" /></svg>
           </NuxtLink>
           <NuxtLink v-else to="/login" class="grid h-9 w-9 place-items-center rounded-xl bg-brand-600 text-white hover:bg-brand-700" aria-label="Sign in">
             <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5" /><path stroke-linecap="round" d="M4.5 19.5a7.5 7.5 0 0 1 15 0" /></svg>

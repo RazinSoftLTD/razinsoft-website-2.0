@@ -68,10 +68,27 @@ export function toCardProduct(p: ApiProduct): CardProduct {
   }
 }
 
-/** SSR-safe fetch of the product catalogue (lean list). */
+/**
+ * SSR-safe fetch of the whole product catalogue (lean list).
+ *
+ * Every page of it. The API paginates at 12 and caps per_page at 48, so asking once returned the
+ * first twelve — which looked fine right up until the thirteenth product was published and simply
+ * never appeared on /products. The page filters and sorts client-side, so it needs the full set.
+ */
 export function useProducts() {
   const { $api } = useNuxtApp()
-  return useAsyncData('products', () => $api<{ data: ApiProduct[] }>('/products'), {
+  return useAsyncData('products', async () => {
+    const first = await $api<{ data: ApiProduct[]; meta?: { last_page?: number; per_page?: number } }>('/products?per_page=48')
+    const lastPage = first.meta?.last_page ?? 1
+    if (lastPage <= 1) return first
+
+    const rest = await Promise.all(
+      Array.from({ length: lastPage - 1 }, (_, i) =>
+        $api<{ data: ApiProduct[] }>(`/products?per_page=48&page=${i + 2}`)),
+    )
+
+    return { data: [...(first.data ?? []), ...rest.flatMap((r) => r.data ?? [])] }
+  }, {
     transform: (res) => (res.data ?? []).map(toCardProduct),
     default: () => [] as CardProduct[],
   })
