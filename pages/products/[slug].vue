@@ -526,7 +526,7 @@ const { addItem } = useCart()
                 <!-- contain, not cover: these are screenshots, and cropping one cuts off the part
                      someone is trying to look at. Rendered at the width it is actually displayed
                      at — 640 was being upscaled across the column, which is what made it soft. -->
-                <NuxtImg :src="tab.images[0].image" :alt="tab.images[0].alt || `${product.name} — ${tab.name} screenshot`" width="1400" height="788" sizes="100vw sm:100vw lg:900px" format="webp" quality="90" loading="lazy" class="h-full w-full object-contain transition duration-300 group-hover/gal:scale-[1.01]" />
+                <NuxtImg :src="tab.images[0].image" :alt="tab.images[0].alt || `${product.name} — ${tab.name} screenshot`" width="900" height="507" sizes="100vw lg:900px" densities="x1 x2" format="webp" quality="90" loading="lazy" class="h-full w-full object-contain transition duration-300 group-hover/gal:scale-[1.01]" />
                 <span class="absolute bottom-4 left-4 rounded-lg bg-white/85 px-2.5 py-1 font-display text-sm font-bold text-ink-900 shadow-sm backdrop-blur-sm">{{ tab.label }}</span>
                 <span v-if="tab.images.length > 1" class="absolute right-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-black/50 px-3 py-1 text-xs font-semibold text-white backdrop-blur">
                   <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" /><path d="M3 15l5-5 4 4 3-3 6 6" /></svg>
