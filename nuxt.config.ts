@@ -14,6 +14,47 @@ const apiImageHost = (() => {
 })()
 const imageDomains = [...new Set([apiImageHost, '127.0.0.1', 'localhost'])]
 
+// ---- Legacy product URLs ----
+// The old site published every product (and every add-on) at /products/details/{slug}-{key}.
+// Those URLs are what Google still has indexed, and on this site they 404 — so a search result
+// for our own product lands the visitor on an error page and the ranking those pages earned is
+// thrown away. Each one 301s to whichever current product it became; add-ons and extensions go
+// to the product they extend, since they no longer have a page of their own.
+const legacyProductRedirects: Record<string, string> = {
+  'ready-ecommerce-complete-multi-vendor-ecommerce-mobile-app-customer-website-with-store-pos-R0yUKE': 'ready-ecommerce',
+  'ready-ecommerce-e-commerce-seller-app-store-app-provider-app-vendor-app-addon-JKbsd0': 'ready-ecommerce',
+  'ready-ecommerce-delivery-man-app-UyFmKv': 'ready-ecommerce',
+  'purchase-extension-advanced-stock-inventory-management-for-readycommerce-readygrocery-BIw9tX': 'ready-ecommerce',
+  'report-extension-business-reporting-analytics-solution-addon-for-readycommerce-readygrocery-ZO9Y4z': 'ready-ecommerce',
+  'ready-pos-pos-with-inventory-management-system-hrm-accounting-pos-saas-11dYAe': 'ready-pos',
+  'ready-pos-mobile-pos-inventory-management-system-addon-kX1PNf': 'ready-pos',
+  // ePOS Pro was POS + HRM + accounting; Ready POS is the product that carries that ground now.
+  'epos-pro-pos-hrm-accounting-with-ecommerce-solution-Apm0or': 'ready-pos',
+  'ready-lms-complete-learning-management-system-websites-mobile-app-with-admin-panel-UvSuch': 'ready-lms',
+  'readyride-complete-on-demand-ride-sharing-rider-driver-mobile-apps-with-web-admin-panel-h4QRG4': 'ready-ride',
+  'readygrocery-multivendor-grocery-ecommerce-mobile-app-with-website-laravel-admin-panel-3wlEFq': 'ready-grocery-new',
+  'ready-grocery-delivery-man-app-rider-app-delivery-app-addon-IQbz8Q': 'ready-grocery-new',
+  'ready-grocery-seller-app-store-app-provider-app-vendor-app-addon-2DSPsU': 'ready-grocery-new',
+  // Single-store laundry stayed Best Laundry; everything multi-store became Ready Laundry.
+  'best-laundry-app-with-admin-panel-laundry-booking-system-quick-wash-on-demand-laundry-XYMxXD': 'best-laundry',
+  'laundrymart-multi-vendor-laundry-booking-app-with-admin-panel-d1Uvq9': 'ready-laundry-solution',
+  'laundrymart-laundry-provider-mobile-app-addon-RoRhr9': 'ready-laundry-solution',
+  'readylaundry-app-website-with-admin-panel-multi-store-laundry-booking-system-on-demand-laundry-6XDZH3': 'ready-laundry-solution',
+  'readylaundry-delivery-man-app-rider-app-delivery-app-addon-fuuNAk': 'ready-laundry-solution',
+  'readylaundry-seller-app-store-app-provider-app-vendor-app-addon-9ySHqz': 'ready-laundry-solution',
+  'alicom-ecommerce-cms-complete-single-vendor-ecommerce-solution-with-built-in-pos-8C8GRE': 'alicom',
+  'maditam-best-meditation-app-with-web-admin-daily-meditations-app-music-app-with-web-admin-0zM0Ja': 'meditam',
+  'rentdo-house-rental-mobile-app-with-web-admin-panel-MJoRXF': 'rentdo',
+  'ready-classify-eclassify-buy-and-sell-marketplace-mobile-app-website-with-laravel-admin-panel-NQiioZ': 'ready-classify',
+}
+
+const legacyProductRules = Object.fromEntries(
+  Object.entries(legacyProductRedirects).map(([from, to]) => [
+    `/products/details/${from}`,
+    { redirect: { to: `/products/${to}`, statusCode: 301 } },
+  ]),
+)
+
 // Full origin of the API/storage host — used to preconnect (cuts image/API connection latency).
 const apiOrigin = (() => {
   try {
@@ -126,6 +167,11 @@ export default defineNuxtConfig({
     // HTML (SEO-safe) but repeat visitors get it instantly from cache; revalidated in background.
     '/products': { swr: 180, headers: { 'cache-control': 'public, max-age=0, must-revalidate, s-maxage=180, stale-while-revalidate=600' } },
     '/products/**': { swr: 300, headers: { 'cache-control': 'public, max-age=0, must-revalidate, s-maxage=300, stale-while-revalidate=600' } },
+    // Old product URLs, most specific first — Nitro matches these before /products/**.
+    ...legacyProductRules,
+    // Anything else under the old path: the catalogue is a better answer than a 404 for a URL
+    // we no longer recognise. Listed after the exact matches so it only catches the leftovers.
+    '/products/details/**': { redirect: { to: '/products', statusCode: 301 } },
     // Insights / blog: edge-cached, browser revalidates (articles change rarely).
     '/blog': { swr: 180, headers: { 'cache-control': 'public, max-age=0, must-revalidate, s-maxage=180, stale-while-revalidate=600' } },
     '/blog/**': { swr: 600, headers: { 'cache-control': 'public, max-age=0, must-revalidate, s-maxage=600, stale-while-revalidate=600' } },
