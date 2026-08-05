@@ -223,21 +223,19 @@ onMounted(() => {
                   <div class="min-w-0">
                     <!-- Intro band -->
                     <div v-if="item.intro" class="relative overflow-hidden bg-gradient-to-r from-brand-50/70 via-white to-white px-6 pb-5 pt-6">
-                      <p class="text-[11px] font-bold uppercase tracking-[0.15em] text-brand-600">{{ item.intro.eyebrow }}</p>
-                      <span class="mt-1.5 block h-0.5 w-7 rounded bg-brand-600" aria-hidden="true" />
-                      <h3 class="mt-2.5 text-xl font-extrabold leading-tight text-ink-900">
-                        {{ item.intro.title }}<br><span class="text-brand-600">{{ item.intro.accent }}</span>
-                      </h3>
-                      <!-- The line and the stack read as one statement, so they sit on one row:
-                           the sentence says how many, the thumbnails show which. -->
-                      <div class="mt-2 flex flex-wrap items-center gap-x-5 gap-y-3">
-                        <p class="max-w-xs text-xs leading-relaxed text-gray-500">
-                          {{ (allProducts ?? []).length }} enterprise-ready platforms — pay once, own forever.
-                        </p>
+                      <!-- Title on the left, the catalogue on the right, on one line. -->
+                      <div class="flex items-center justify-between gap-6">
+                        <div class="min-w-0">
+                          <p class="text-[11px] font-bold uppercase tracking-[0.15em] text-brand-600">{{ item.intro.eyebrow }}</p>
+                          <span class="mt-1.5 block h-0.5 w-7 rounded bg-brand-600" aria-hidden="true" />
+                          <h3 class="mt-2.5 text-xl font-extrabold leading-tight text-ink-900">
+                            {{ item.intro.title }}<br><span class="text-brand-600">{{ item.intro.accent }}</span>
+                          </h3>
+                        </div>
 
                         <!-- Real thumbnails rather than a drawing: the one thing this menu can show
                              that an illustration cannot. They fan apart when the panel opens, then
-                             lift one by one on hover. -->
+                             spread and lift under the cursor. -->
                         <NuxtLink
                           to="/products"
                           class="product-fan group/fan hidden shrink-0 items-center sm:flex"
@@ -248,10 +246,10 @@ onMounted(() => {
                             v-for="(p, i) in (allProducts ?? []).slice(0, 4)"
                             :key="p.slug"
                             :src="p.image" :alt="p.name" width="192" height="128" format="webp" loading="lazy"
-                            class="product-fan-item h-12 w-16 rounded-lg border-2 border-white bg-gray-100 object-cover shadow-md"
+                            class="product-fan-item h-14 w-20 rounded-lg border-2 border-white bg-gray-100 object-cover shadow-md"
                             :style="{ '--i': i }"
                           />
-                          <span class="product-fan-more ml-3 grid h-12 w-12 shrink-0 place-items-center rounded-lg border-2 border-white bg-ink-900 text-[11px] font-bold text-white shadow-md">
+                          <span class="product-fan-more ml-3 grid h-14 w-14 shrink-0 place-items-center rounded-lg border-2 border-white bg-ink-900 text-xs font-bold text-white shadow-md">
                             +{{ Math.max(0, (allProducts ?? []).length - 4) }}
                           </span>
                         </NuxtLink>
