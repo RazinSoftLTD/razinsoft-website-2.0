@@ -6,6 +6,7 @@ export interface ApiProduct {
   tagline: string
   category?: string
   badge?: string | null
+  offer_ends_at?: string | null
   version: string
   rating: number
   reviews_count: number
@@ -39,6 +40,8 @@ export interface CardProduct {
   badge?: 'Best Seller' | 'New' | 'Free' | 'Upcoming'
   /** Raw API value, for grouping (the label above is for display). */
   badgeKey?: 'best_seller' | 'new' | 'free' | 'upcoming'
+  /** ISO date the current offer ends, or null when there is no offer or no deadline. */
+  offerEndsAt?: string | null
   image: string
   imageWidth: number
   imageHeight: number
@@ -81,6 +84,7 @@ export function toCardProduct(p: ApiProduct): CardProduct {
     imageWidth: 900,
     imageHeight: 600,
     category: p.category,
+    offerEndsAt: p.offer_ends_at ?? null,
   }
 }
 

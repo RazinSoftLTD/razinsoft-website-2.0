@@ -81,6 +81,57 @@ watch(() => route.fullPath, () => { open.value = false; mobileSub.value = null; 
 // in reactively instead.
 const { data: allProducts } = useProducts()
 
+/**
+ * The offer rail, from real data only.
+ *
+ * The headline percentage is the deepest discount actually running, and the countdown is the
+ * soonest of those offers' own end dates. When nothing is on offer the whole rail is hidden rather
+ * than showing an invented sale.
+ */
+const offer = computed(() => {
+  const discounted = (allProducts.value ?? []).filter((p) => p.percentOff)
+  if (!discounted.length) return null
+
+  const ends = discounted
+    .map((p) => p.offerEndsAt)
+    .filter(Boolean)
+    .map((d) => new Date(d as string).getTime())
+    .filter((t) => Number.isFinite(t) && t > Date.now())
+    .sort((a, b) => a - b)[0]
+
+  return {
+    percent: Math.max(...discounted.map((p) => p.percentOff ?? 0)),
+    count: discounted.length,
+    endsAt: ends ?? null,
+  }
+})
+
+// Ticks only while an offer with a deadline is running, and only in the browser.
+const now = ref(Date.now())
+let tick: ReturnType<typeof setInterval> | null = null
+onMounted(() => { tick = setInterval(() => (now.value = Date.now()), 1000) })
+onBeforeUnmount(() => { if (tick) clearInterval(tick) })
+
+const countdown = computed(() => {
+  const end = offer.value?.endsAt
+  if (!end) return null
+  const left = Math.max(0, end - now.value)
+  const pad = (n: number) => String(n).padStart(2, '0')
+  return [
+    { value: pad(Math.floor(left / 86400000)), label: 'Days' },
+    { value: pad(Math.floor(left / 3600000) % 24), label: 'Hours' },
+    { value: pad(Math.floor(left / 60000) % 60), label: 'Mins' },
+    { value: pad(Math.floor(left / 1000) % 60), label: 'Secs' },
+  ]
+})
+
+/** Claims the product pages already make — not new marketing written for this menu. */
+const offerPoints = [
+  { title: 'Lifetime License', desc: 'One-time payment', tone: 'bg-blue-50 text-blue-600', icon: ['M12 2.5 4 6v6c0 5 3.4 8.6 8 9.5 4.6-.9 8-4.5 8-9.5V6l-8-3.5Z', 'm9 12 2 2 4-4'] },
+  { title: 'Free Updates', desc: 'Included with every licence', tone: 'bg-emerald-50 text-emerald-600', icon: ['M20 11a8 8 0 1 0-2.3 5.7', 'M20 5v6h-6'] },
+  { title: 'Source Code Included', desc: 'Extend it the day you buy', tone: 'bg-violet-50 text-violet-600', icon: ['m9 8-4 4 4 4', 'm15 8 4 4-4 4', 'm13 5-2 14'] },
+]
+
 /** Rows in the panel, in the order they are read. Upcoming goes last — it is the only one you
  *  cannot buy yet, so it belongs after everything that is for sale. */
 const productRows = computed(() => {
@@ -98,7 +149,7 @@ const productRows = computed(() => {
       items: [
         ...sellable.filter((p) => p.badgeKey === 'best_seller'),
         ...sellable.filter((p) => p.badgeKey !== 'best_seller').sort((a, b) => b.sales - a.sales),
-      ].slice(0, 4),
+      ].slice(0, 6),
     },
     {
       key: 'new',
@@ -165,83 +216,134 @@ onMounted(() => {
                 openDropdown === item.label ? 'is-open' : '',
               ]"
             >
-              <!-- Products: the same shell as Services, but the rows come from the live catalogue -->
+              <!-- Products: the Services shell, but a two-column layout — catalogue on the left,
+                   what is on offer on the right. -->
               <div v-if="item.products" class="relative max-h-[calc(100vh-5rem)] overflow-y-auto rounded-2xl border border-gray-100 bg-white shadow-xl shadow-gray-200/60">
-                <!-- Intro band. Instead of Services' illustration, the right side carries the real
-                     thumbnails of the top products and a live count — the one thing this menu can
-                     say that a drawn graphic cannot. -->
-                <div v-if="item.intro" class="relative overflow-hidden border-b border-gray-100 bg-gradient-to-r from-brand-50/70 via-white to-white px-6 pb-5 pt-6">
-                  <div class="flex items-end justify-between gap-6">
-                    <div>
+                <div class="grid lg:grid-cols-[1fr_19rem]">
+                  <div class="min-w-0">
+                    <!-- Intro band -->
+                    <div v-if="item.intro" class="relative overflow-hidden bg-gradient-to-r from-brand-50/70 via-white to-white px-6 pb-5 pt-6">
                       <p class="text-[11px] font-bold uppercase tracking-[0.15em] text-brand-600">{{ item.intro.eyebrow }}</p>
                       <span class="mt-1.5 block h-0.5 w-7 rounded bg-brand-600" aria-hidden="true" />
                       <h3 class="mt-2.5 text-xl font-extrabold leading-tight text-ink-900">
                         {{ item.intro.title }}<br><span class="text-brand-600">{{ item.intro.accent }}</span>
                       </h3>
+                      <p class="mt-2 max-w-xs text-xs leading-relaxed text-gray-500">
+                        {{ (allProducts ?? []).length }} enterprise-ready platforms — pay once, own forever.
+                      </p>
+
+                      <!-- Real thumbnails rather than a drawing: the one thing this menu can show
+                           that an illustration cannot. -->
+                      <div class="pointer-events-none absolute right-6 top-1/2 hidden -translate-y-1/2 items-center gap-2 md:flex">
+                        <div class="flex -space-x-4">
+                          <NuxtImg
+                            v-for="p in (allProducts ?? []).slice(0, 4)"
+                            :key="p.slug"
+                            :src="p.image" :alt="p.name" width="192" height="128" format="webp" loading="lazy"
+                            class="h-12 w-16 rounded-lg border-2 border-white bg-gray-100 object-cover shadow-sm"
+                          />
+                        </div>
+                      </div>
                     </div>
 
-                    <div class="hidden shrink-0 items-center gap-4 sm:flex">
-                      <div class="flex -space-x-3">
-                        <NuxtImg
-                          v-for="p in (allProducts ?? []).slice(0, 4)"
-                          :key="p.slug"
-                          :src="p.image"
-                          :alt="p.name"
-                          width="192"
-                          height="128"
-                          format="webp"
-                          loading="lazy"
-                          class="h-10 w-14 rounded-lg border-2 border-white bg-gray-100 object-cover shadow-sm"
-                        />
-                      </div>
-                      <NuxtLink
-                        to="/products"
-                        class="inline-flex items-center gap-1.5 rounded-xl bg-ink-900 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-ink-800"
-                        @click="openDropdown = null"
-                      >
-                        All {{ (allProducts ?? []).length }} products
-                        <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6" /></svg>
-                      </NuxtLink>
+                    <!-- Groups -->
+                    <div class="space-y-5 px-6 pb-6 pt-1">
+                      <section v-for="row in productRows" :key="row.key">
+                        <div class="mb-2.5 flex items-center gap-2">
+                          <span class="h-1.5 w-1.5 rounded-full" :class="row.dot" aria-hidden="true" />
+                          <h4 class="text-[11px] font-bold uppercase tracking-[0.15em]" :class="row.tone">{{ row.label }}</h4>
+                          <span class="h-px flex-1 bg-gray-100" aria-hidden="true" />
+                        </div>
+
+                        <div class="grid auto-rows-fr gap-2.5 sm:grid-cols-2 xl:grid-cols-3">
+                          <component
+                            :is="row.key === 'upcoming' ? 'div' : resolveComponent('NuxtLink')"
+                            v-for="(p, idx) in row.items"
+                            :key="p.slug"
+                            v-bind="row.key === 'upcoming' ? {} : { to: `/products/${p.slug}` }"
+                            class="menu-card group/card flex h-full items-stretch gap-3 rounded-xl border border-gray-100 p-2.5"
+                            :class="row.key === 'upcoming' ? 'cursor-default opacity-70' : ''"
+                            :style="{ '--i': idx, '--accent': '#3b66f5' }"
+                            @click="row.key === 'upcoming' ? null : (openDropdown = null)"
+                          >
+                            <span class="relative shrink-0">
+                              <NuxtImg :src="p.image" :alt="p.name" width="192" height="128" format="webp" loading="lazy" class="h-12 w-16 rounded-lg bg-gray-100 object-cover" />
+                              <span v-if="p.badge && row.key !== 'best'" class="absolute -left-1 -top-1 rounded bg-ink-900 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-white">{{ p.badge }}</span>
+                            </span>
+                            <span class="flex min-w-0 flex-1 flex-col">
+                              <!-- No `block` alongside line-clamp: both set display, and which one
+                                   wins depends on CSS order, not the order they are written here. -->
+                              <span class="menu-title line-clamp-2 text-sm font-bold leading-snug text-ink-900">{{ p.name }}</span>
+                              <span class="mt-0.5 line-clamp-2 text-[11px] leading-snug text-gray-500">{{ p.tagline }}</span>
+                              <span class="mt-auto flex items-center justify-between gap-2 pt-1.5">
+                                <span class="text-[11px] font-bold" :class="row.key === 'upcoming' ? 'text-gray-400' : 'text-brand-600'">
+                                  <template v-if="row.key === 'upcoming'">Coming soon</template>
+                                  <template v-else>From ${{ p.salePrice ?? p.price }}</template>
+                                </span>
+                                <svg v-if="row.key !== 'upcoming'" class="menu-arrow h-3.5 w-3.5 text-brand-500" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6" /></svg>
+                              </span>
+                            </span>
+                          </component>
+                        </div>
+                      </section>
                     </div>
                   </div>
-                </div>
 
-                <!-- One column per group, side by side: the groups are alternatives to each other,
-                     and reading them as columns makes that obvious in a way stacked rows do not.
-                     The column count follows the number of groups, so a hidden Coming Soon does not
-                     leave a gap. -->
-                <div class="grid gap-x-6 gap-y-5 px-6 py-5 sm:grid-cols-2"
-                     :class="{ 1: 'lg:grid-cols-1', 2: 'lg:grid-cols-2', 3: 'lg:grid-cols-3' }[productRows.length]">
-                  <section v-for="(row, ri) in productRows" :key="row.key"
-                           class="lg:border-gray-100" :class="ri > 0 ? 'lg:border-l lg:pl-6' : ''">
-                    <div class="mb-2.5 flex items-center gap-2">
-                      <span class="h-1.5 w-1.5 rounded-full" :class="row.dot" aria-hidden="true" />
-                      <h4 class="text-[11px] font-bold uppercase tracking-[0.15em]" :class="row.tone">{{ row.label }}</h4>
-                      <span class="h-px flex-1 bg-gray-100" aria-hidden="true" />
-                    </div>
+                  <!-- Offer rail. Shown only when something is genuinely discounted. -->
+                  <aside class="hidden flex-col gap-3 border-l border-gray-100 bg-gray-50/60 p-5 lg:flex">
+                    <div v-if="offer" class="rounded-2xl border border-orange-100 bg-gradient-to-b from-orange-50 to-white p-4">
+                      <span class="inline-flex items-center gap-1.5 rounded-full bg-orange-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-orange-700">
+                        <svg class="h-3 w-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20 12v9H4v-9M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7ZM12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7Z" /></svg>
+                        Limited time offer
+                      </span>
+                      <p class="mt-3 text-sm font-semibold text-ink-900">Save up to</p>
+                      <p class="text-4xl font-extrabold leading-none text-orange-600">{{ offer.percent }}% OFF</p>
+                      <p class="mt-2 text-xs text-gray-500">On {{ offer.count }} {{ offer.count === 1 ? 'product' : 'products' }} right now.</p>
 
-                    <div class="grid gap-2.5">
-                      <component
-                        :is="row.key === 'upcoming' ? 'div' : resolveComponent('NuxtLink')"
-                        v-for="(p, idx) in row.items"
-                        :key="p.slug"
-                        v-bind="row.key === 'upcoming' ? {} : { to: `/products/${p.slug}` }"
-                        class="menu-card group/card flex items-center gap-3 rounded-xl border border-gray-100 p-2.5"
-                        :class="row.key === 'upcoming' ? 'cursor-default opacity-70' : ''"
-                        :style="{ '--i': idx, '--accent': '#3b66f5' }"
-                        @click="row.key === 'upcoming' ? null : (openDropdown = null)"
-                      >
-                        <NuxtImg :src="p.image" :alt="p.name" width="192" height="128" format="webp" loading="lazy" class="h-11 w-16 shrink-0 rounded-lg bg-gray-100 object-cover" />
-                        <span class="min-w-0">
-                          <span class="menu-title block truncate text-sm font-bold text-ink-900">{{ p.name }}</span>
-                          <span class="mt-0.5 block truncate text-[11px] text-gray-500">
-                            <template v-if="row.key === 'upcoming'">Coming soon</template>
-                            <template v-else>From ${{ p.salePrice ?? p.price }}</template>
+                      <ul class="mt-4 space-y-2.5">
+                        <li v-for="pt in offerPoints" :key="pt.title" class="flex items-center gap-2.5">
+                          <span class="grid h-7 w-7 shrink-0 place-items-center rounded-lg" :class="pt.tone" aria-hidden="true">
+                            <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24"><path v-for="d in pt.icon" :key="d" stroke-linecap="round" stroke-linejoin="round" :d="d" /></svg>
                           </span>
-                        </span>
-                      </component>
+                          <span class="min-w-0">
+                            <span class="block truncate text-xs font-bold text-ink-900">{{ pt.title }}</span>
+                            <span class="block truncate text-[10px] text-gray-500">{{ pt.desc }}</span>
+                          </span>
+                        </li>
+                      </ul>
+
+                      <ClientOnly>
+                        <div v-if="countdown" class="mt-4">
+                          <p class="mb-1.5 text-[10px] font-bold uppercase tracking-wide text-gray-500">Offer ends in</p>
+                          <div class="grid grid-cols-4 gap-1.5">
+                            <div v-for="c in countdown" :key="c.label" class="rounded-lg bg-white px-1 py-1.5 text-center ring-1 ring-orange-100">
+                              <p class="text-sm font-extrabold leading-none text-ink-900">{{ c.value }}</p>
+                              <p class="mt-0.5 text-[9px] text-gray-400">{{ c.label }}</p>
+                            </div>
+                          </div>
+                        </div>
+                      </ClientOnly>
+
+                      <NuxtLink to="/products" class="mt-4 flex items-center justify-center gap-1.5 rounded-xl bg-orange-500 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-orange-600" @click="openDropdown = null">
+                        View all offers
+                        <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6" /></svg>
+                      </NuxtLink>
                     </div>
-                  </section>
+
+                    <div class="rounded-2xl border border-gray-100 bg-white p-4">
+                      <h4 class="text-sm font-bold text-ink-900">Need a custom solution?</h4>
+                      <p class="mt-1 text-xs leading-relaxed text-gray-500">Our team can build something that fits your business exactly.</p>
+                      <NuxtLink to="/contact-us" class="mt-3 flex items-center justify-center gap-1.5 rounded-xl border border-brand-200 bg-brand-50 px-4 py-2.5 text-xs font-bold text-brand-700 transition hover:bg-brand-100" @click="openDropdown = null">
+                        Request a quote
+                        <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6" /></svg>
+                      </NuxtLink>
+                    </div>
+
+                    <NuxtLink to="/products" class="mt-auto flex items-center justify-between rounded-xl bg-ink-900 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-ink-800" @click="openDropdown = null">
+                      All {{ (allProducts ?? []).length }} products
+                      <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6" /></svg>
+                    </NuxtLink>
+                  </aside>
                 </div>
               </div>
 
