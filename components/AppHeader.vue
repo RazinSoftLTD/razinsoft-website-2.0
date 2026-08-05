@@ -236,9 +236,11 @@ onMounted(() => {
                         <!-- Real thumbnails rather than a drawing: the one thing this menu can show
                              that an illustration cannot. They fan apart when the panel opens, then
                              spread and lift under the cursor. -->
+                        <div class="hidden shrink-0 flex-col items-center gap-3 sm:flex">
                         <NuxtLink
                           to="/products"
-                          class="product-fan group/fan hidden shrink-0 items-center sm:flex"
+                          class="product-fan group/fan flex items-center"
+                          :class="openDropdown === item.label ? 'is-dealt' : ''"
                           :aria-label="`Browse all ${(allProducts ?? []).length} products`"
                           @click="openDropdown = null"
                         >
@@ -247,12 +249,26 @@ onMounted(() => {
                             :key="p.slug"
                             :src="p.image" :alt="p.name" width="192" height="128" format="webp" loading="lazy"
                             class="product-fan-item h-14 w-20 rounded-lg border-2 border-white bg-gray-100 object-cover shadow-md"
-                            :style="{ '--i': i }"
+                            :style="{
+                              '--i': i,
+                              opacity: openDropdown === item.label ? 1 : 0,
+                              transform: openDropdown === item.label
+                                ? `translateY(0) rotate(${(i - 1.5) * 3}deg)`
+                                : `translateY(6px) rotate(${(i - 1.5) * 3}deg) scale(.94)`,
+                              transitionDelay: `${i * 60 + 80}ms`,
+                            }"
                           />
-                          <span class="product-fan-more ml-3 grid h-14 w-14 shrink-0 place-items-center rounded-lg border-2 border-white bg-ink-900 text-xs font-bold text-white shadow-md">
-                            +{{ Math.max(0, (allProducts ?? []).length - 4) }}
-                          </span>
                         </NuxtLink>
+
+                        <NuxtLink
+                          to="/products"
+                          class="inline-flex items-center gap-1.5 rounded-xl bg-brand-600 px-5 py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-brand-700"
+                          @click="openDropdown = null"
+                        >
+                          View Products
+                          <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6" /></svg>
+                        </NuxtLink>
+                        </div>
                       </div>
                     </div>
 
@@ -271,26 +287,25 @@ onMounted(() => {
                             v-for="(p, idx) in row.items"
                             :key="p.slug"
                             v-bind="row.key === 'upcoming' ? {} : { to: `/products/${p.slug}` }"
-                            class="menu-card group/card flex h-full items-stretch gap-3 rounded-xl border border-gray-100 p-2.5"
+                            class="menu-card group/card flex h-full items-center gap-3 rounded-xl border border-gray-100 bg-white p-2.5"
                             :class="row.key === 'upcoming' ? 'cursor-default opacity-70' : ''"
                             :style="{ '--i': idx, '--accent': '#3b66f5' }"
                             @click="row.key === 'upcoming' ? null : (openDropdown = null)"
                           >
-                            <span class="relative shrink-0">
-                              <NuxtImg :src="p.image" :alt="p.name" width="192" height="128" format="webp" loading="lazy" class="h-12 w-16 rounded-lg bg-gray-100 object-cover" />
-                              <span v-if="p.badge && row.key !== 'best'" class="absolute -left-1 -top-1 rounded px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-white" :class="row.key === 'new' ? 'bg-red-500' : 'bg-ink-900'">{{ p.badge }}</span>
+                            <span class="relative shrink-0 overflow-hidden rounded-lg">
+                              <NuxtImg :src="p.image" :alt="p.name" width="192" height="128" format="webp" loading="lazy" class="h-14 w-[4.5rem] bg-gray-100 object-cover" />
+                              <span v-if="row.key === 'new'" class="absolute left-1 top-1 rounded bg-red-500 px-1.5 py-0.5 text-[9px] font-bold uppercase leading-none tracking-wide text-white">New</span>
                             </span>
-                            <span class="flex min-w-0 flex-1 flex-col">
-                              <!-- No `block` alongside line-clamp: both set display, and which one
-                                   wins depends on CSS order, not the order they are written here. -->
-                              <span class="menu-title line-clamp-2 text-sm font-bold leading-snug text-ink-900">{{ p.name }}</span>
-                              <span class="mt-0.5 line-clamp-2 text-[11px] leading-snug text-gray-500">{{ p.tagline }}</span>
-                              <span class="mt-auto flex items-center justify-between gap-2 pt-1.5">
-                                <span class="text-[11px] font-bold" :class="row.key === 'upcoming' ? 'text-gray-400' : 'text-brand-600'">
+
+                            <span class="flex min-w-0 flex-1 flex-col justify-center">
+                              <span class="menu-title truncate text-[13px] font-bold leading-tight text-ink-900">{{ p.name }}</span>
+                              <span class="mt-1 truncate text-[11px] leading-snug text-gray-400">{{ p.tagline }}</span>
+                              <span class="mt-1.5 flex items-center gap-1.5">
+                                <span class="text-[12px] font-extrabold" :class="row.key === 'upcoming' ? 'text-gray-400' : 'text-brand-600'">
                                   <template v-if="row.key === 'upcoming'">Coming soon</template>
-                                  <template v-else>From ${{ p.salePrice ?? p.price }}</template>
+                                  <template v-else>${{ p.salePrice ?? p.price }}</template>
                                 </span>
-                                <svg v-if="row.key !== 'upcoming'" class="menu-arrow h-3.5 w-3.5 text-brand-500" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6" /></svg>
+                                <svg v-if="row.key !== 'upcoming'" class="menu-arrow h-3 w-3 text-brand-400" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6" /></svg>
                               </span>
                             </span>
                           </component>
@@ -349,10 +364,6 @@ onMounted(() => {
                       </NuxtLink>
                     </div>
 
-                    <NuxtLink to="/products" class="mt-auto flex items-center justify-between rounded-xl bg-ink-900 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-ink-800" @click="openDropdown = null">
-                      All {{ (allProducts ?? []).length }} products
-                      <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6" /></svg>
-                    </NuxtLink>
                   </aside>
                 </div>
               </div>
@@ -738,47 +749,34 @@ onMounted(() => {
   }
 }
 
-/* ---- Product fan -------------------------------------------------------------------------
-   The thumbnails start stacked and deal themselves out when the panel opens, then each one
-   lifts as the cursor crosses it. Transforms only, so nothing reflows the row it sits in. */
-.product-fan-item {
-  margin-left: -1.25rem;
-  transform: translateY(6px) rotate(calc((var(--i) - 1.5) * 3deg)) scale(0.94);
-  opacity: 0;
-  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease, box-shadow 0.25s ease;
-  transition-delay: calc(var(--i) * 60ms + 80ms);
-}
-.product-fan-item:first-child { margin-left: 0; }
-.product-fan-more {
-  transform: translateY(6px) scale(0.9);
-  opacity: 0;
-  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease;
-  transition-delay: 320ms;
-}
-.menu-panel.is-open .product-fan-item,
-.menu-panel.is-open .product-fan-more {
-  transform: translateY(0) rotate(calc((var(--i, 0) - 1.5) * 3deg)) scale(1);
-  opacity: 1;
-}
-.menu-panel.is-open .product-fan-more { transform: translateY(0) scale(1); }
+</style>
 
-/* Spread apart when the group is hovered, and raise whichever one is under the cursor. */
+<style>
+/* ---- Product fan ---------------------------------------------------------------------------
+   The deal-out is bound inline from component state (see AppHeader's template) — only the
+   transition and the hover behaviour live here. Margins and transforms only, so the row the fan
+   sits in never reflows. */
+.product-fan .product-fan-item {
+  margin-left: -1.25rem;
+  transition:
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.3s ease,
+    box-shadow 0.25s ease,
+    margin 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.product-fan .product-fan-item:first-child { margin-left: 0; }
+
 .product-fan:hover .product-fan-item { margin-left: -0.5rem; }
 .product-fan:hover .product-fan-item:first-child { margin-left: 0; }
-.product-fan-item:hover {
-  transform: translateY(-6px) rotate(0deg) scale(1.06) !important;
-  transition-delay: 0ms;
+.product-fan .product-fan-item:hover {
+  transform: translateY(-6px) scale(1.06) !important;
+  transition-delay: 0ms !important;
   box-shadow: 0 12px 24px -8px rgb(15 23 42 / 0.35);
-  z-index: 1;
   position: relative;
+  z-index: 1;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .product-fan-item,
-  .product-fan-more {
-    transform: none !important;
-    opacity: 1;
-    transition: none;
-  }
+  .product-fan .product-fan-item { transition: none; }
 }
 </style>
