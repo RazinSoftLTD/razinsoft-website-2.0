@@ -82,27 +82,24 @@ watch(() => route.fullPath, () => { open.value = false; mobileSub.value = null; 
 const { data: allProducts } = useProducts()
 
 /**
- * The offer rail, from real data only.
+ * The offer rail is whatever Marketing published — Promotion › Products Menu Offer.
  *
- * The headline percentage is the deepest discount actually running. When nothing is on offer the
- * whole rail is hidden rather than showing an invented sale.
+ * Nothing published means no rail, rather than the menu inventing a sale. Fetched client-side by
+ * usePromotion, so a page served from cache still reflects what is live right now.
  */
-const offer = computed(() => {
-  const discounted = (allProducts.value ?? []).filter((p) => p.percentOff)
-  if (!discounted.length) return null
+const { data: promo } = usePromotion()
+const offer = computed(() => promo.value?.menu_offer?.value ? promo.value.menu_offer : null)
 
-  return {
-    percent: Math.max(...discounted.map((p) => p.percentOff ?? 0)),
-    count: discounted.length,
-  }
-})
-
-/** Claims the product pages already make — not new marketing written for this menu. */
-const offerPoints = [
-  { title: 'Lifetime License', desc: 'One-time payment', tone: 'bg-blue-50 text-blue-600', icon: ['M12 2.5 4 6v6c0 5 3.4 8.6 8 9.5 4.6-.9 8-4.5 8-9.5V6l-8-3.5Z', 'm9 12 2 2 4-4'] },
-  { title: 'Free Updates', desc: 'Included with every licence', tone: 'bg-emerald-50 text-emerald-600', icon: ['M20 11a8 8 0 1 0-2.3 5.7', 'M20 5v6h-6'] },
-  { title: 'Source Code Included', desc: 'Extend it the day you buy', tone: 'bg-violet-50 text-violet-600', icon: ['m9 8-4 4 4 4', 'm15 8 4 4-4 4', 'm13 5-2 14'] },
+/** A tone per point, cycled, so the rail keeps its colour without the admin picking one. */
+const POINT_TONES = [
+  { tone: 'bg-blue-50 text-blue-600', icon: ['M12 2.5 4 6v6c0 5 3.4 8.6 8 9.5 4.6-.9 8-4.5 8-9.5V6l-8-3.5Z', 'm9 12 2 2 4-4'] },
+  { tone: 'bg-emerald-50 text-emerald-600', icon: ['M20 11a8 8 0 1 0-2.3 5.7', 'M20 5v6h-6'] },
+  { tone: 'bg-violet-50 text-violet-600', icon: ['m9 8-4 4 4 4', 'm15 8 4 4-4 4', 'm13 5-2 14'] },
+  { tone: 'bg-amber-50 text-amber-600', icon: ['m12 4 1.6 4.4L18 10l-4.4 1.6L12 16l-1.6-4.4L6 10l4.4-1.6L12 4Z'] },
 ]
+const offerPoints = computed(() =>
+  (offer.value?.points ?? []).map((p, i) => ({ ...p, ...POINT_TONES[i % POINT_TONES.length] })))
+
 
 /** Rows in the panel, in the order they are read. Upcoming goes last — it is the only one you
  *  cannot buy yet, so it belongs after everything that is for sale. */
@@ -213,7 +210,7 @@ onMounted(() => {
                         <!-- Real thumbnails rather than a drawing: the one thing this menu can show
                              that an illustration cannot. They fan apart when the panel opens, then
                              spread and lift under the cursor. -->
-                        <div class="hidden shrink-0 flex-col items-center gap-3 sm:flex">
+                        <div class="hidden shrink-0 flex-col items-center gap-5 sm:flex">
                         <NuxtLink
                           to="/products"
                           class="product-fan group/fan flex items-center"
@@ -239,7 +236,7 @@ onMounted(() => {
 
                         <NuxtLink
                           to="/products"
-                          class="inline-flex items-center gap-1.5 rounded-xl bg-brand-600 px-5 py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-brand-700"
+                          class="inline-flex w-full min-w-[13rem] items-center justify-center gap-1.5 rounded-xl bg-brand-600 px-6 py-3 text-xs font-bold text-white shadow-sm transition hover:bg-brand-700"
                           @click="openDropdown = null"
                         >
                           View Products
@@ -280,9 +277,9 @@ onMounted(() => {
                               <!-- Price left, arrow hard right on the same line, so the arrows form
                                    one column down the grid instead of drifting with the price. -->
                               <span class="mt-1.5 flex items-center justify-between gap-2">
-                                <span class="text-[12px] font-extrabold" :class="row.key === 'upcoming' ? 'text-gray-400' : 'text-brand-600'">
+                                <span class="truncate text-[11px] font-bold" :class="row.key === 'upcoming' ? 'text-gray-400' : 'text-gray-400'">
                                   <template v-if="row.key === 'upcoming'">Coming soon</template>
-                                  <template v-else>${{ p.salePrice ?? p.price }}</template>
+                                  <template v-else>Start From <span class="text-[12px] font-extrabold text-brand-600">${{ p.salePrice ?? p.price }}</span></template>
                                 </span>
                                 <svg v-if="row.key !== 'upcoming'" class="menu-arrow h-3.5 w-3.5 shrink-0 text-brand-400" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6" /></svg>
                               </span>
@@ -296,29 +293,29 @@ onMounted(() => {
                   <!-- Offer rail. Shown only when something is genuinely discounted. -->
                   <aside class="hidden flex-col gap-3 border-l border-gray-100 bg-gray-50/60 p-5 lg:flex">
                     <div v-if="offer" class="rounded-2xl border border-orange-100 bg-gradient-to-b from-orange-50 to-white p-4">
-                      <span class="inline-flex items-center gap-1.5 rounded-full bg-orange-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-orange-700">
+                      <span v-if="offer.eyebrow" class="inline-flex items-center gap-1.5 rounded-full bg-orange-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-orange-700">
                         <svg class="h-3 w-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20 12v9H4v-9M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7ZM12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7Z" /></svg>
-                        Limited time offer
+                        {{ offer.eyebrow }}
                       </span>
-                      <p class="mt-3 text-sm font-semibold text-ink-900">Save up to</p>
-                      <p class="text-4xl font-extrabold leading-none text-orange-600">{{ offer.percent }}% OFF</p>
-                      <p class="mt-2 text-xs text-gray-500">On {{ offer.count }} {{ offer.count === 1 ? 'product' : 'products' }} right now.</p>
+                      <p v-if="offer.headline" class="mt-3 text-sm font-semibold text-ink-900">{{ offer.headline }}</p>
+                      <p class="text-4xl font-extrabold leading-none text-orange-600">{{ offer.value }}</p>
+                      <p v-if="offer.subtext" class="mt-2 text-xs text-gray-500">{{ offer.subtext }}</p>
 
-                      <ul class="mt-4 space-y-2.5">
+                      <ul v-if="offerPoints.length" class="mt-4 space-y-2.5">
                         <li v-for="pt in offerPoints" :key="pt.title" class="flex items-center gap-2.5">
                           <span class="grid h-7 w-7 shrink-0 place-items-center rounded-lg" :class="pt.tone" aria-hidden="true">
                             <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24"><path v-for="d in pt.icon" :key="d" stroke-linecap="round" stroke-linejoin="round" :d="d" /></svg>
                           </span>
                           <span class="min-w-0">
                             <span class="block truncate text-xs font-bold text-ink-900">{{ pt.title }}</span>
-                            <span class="block truncate text-[10px] text-gray-500">{{ pt.desc }}</span>
+                            <span v-if="pt.desc" class="block truncate text-[10px] text-gray-500">{{ pt.desc }}</span>
                           </span>
                         </li>
                       </ul>
 
 
-                      <NuxtLink to="/products" class="mt-4 flex items-center justify-center gap-1.5 rounded-xl bg-orange-500 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-orange-600" @click="openDropdown = null">
-                        View all offers
+                      <NuxtLink v-if="offer.cta_label" :to="offer.cta_url || '/products'" class="mt-4 flex items-center justify-center gap-1.5 rounded-xl bg-orange-500 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-orange-600" @click="openDropdown = null">
+                        {{ offer.cta_label }}
                         <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6" /></svg>
                       </NuxtLink>
                     </div>

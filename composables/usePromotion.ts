@@ -15,9 +15,20 @@ export interface TopBanner {
 export interface PromoPopup {
   image: string
 }
+/** The offer panel inside the Products menu — written in Marketing › Promotion. */
+export interface MenuOffer {
+  eyebrow: string | null
+  headline: string | null
+  value: string | null
+  subtext: string | null
+  cta_label: string | null
+  cta_url: string | null
+  points: { title: string; desc: string | null }[]
+}
 export interface PromotionData {
   top_banner: TopBanner | null
   popup: PromoPopup | null
+  menu_offer: MenuOffer | null
 }
 
 /**
@@ -34,8 +45,8 @@ export function usePromotion() {
     () => $api<{ data: PromotionData }>('/promotion/active'),
     {
       server: false,
-      transform: (res) => res.data ?? { top_banner: null, popup: null },
-      default: () => ({ top_banner: null, popup: null }) as PromotionData,
+      transform: (res) => res.data ?? { top_banner: null, popup: null, menu_offer: null },
+      default: () => ({ top_banner: null, popup: null, menu_offer: null }) as PromotionData,
     },
   )
 }
