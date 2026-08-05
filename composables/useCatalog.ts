@@ -36,16 +36,31 @@ export interface CardProduct {
   rating: number
   reviews: number
   sales: number
-  badge?: 'Best Seller' | 'New' | 'Free'
+  badge?: 'Best Seller' | 'New' | 'Free' | 'Upcoming'
+  /** Raw API value, for grouping (the label above is for display). */
+  badgeKey?: 'best_seller' | 'new' | 'free' | 'upcoming'
   image: string
   imageWidth: number
   imageHeight: number
   category?: string
 }
 
+/**
+ * Badge as the API stores it, mapped to what a customer should read.
+ *
+ * The API sends the raw column ("best_seller"), and this used to compare it against the display
+ * labels — so nothing ever matched and no card has been showing a badge at all.
+ */
+const BADGE_LABELS = {
+  best_seller: 'Best Seller',
+  new: 'New',
+  free: 'Free',
+  upcoming: 'Upcoming',
+} as const
+
 /** Map a lean API product into the card shape. */
 export function toCardProduct(p: ApiProduct): CardProduct {
-  const allowed = ['Best Seller', 'New', 'Free']
+  const badgeKey = (p.badge ?? '') as keyof typeof BADGE_LABELS
   return {
     slug: p.slug,
     name: p.name,
@@ -59,7 +74,8 @@ export function toCardProduct(p: ApiProduct): CardProduct {
     rating: Number(p.rating),
     reviews: p.reviews_count ?? 0,
     sales: p.sales_count ?? 0,
-    badge: (p.badge && allowed.includes(p.badge) ? p.badge : undefined) as CardProduct['badge'],
+    badge: BADGE_LABELS[badgeKey],
+    badgeKey: BADGE_LABELS[badgeKey] ? badgeKey : undefined,
     // API thumbnail (Laravel /storage) is the source of truth; fall back to the self-hosted asset.
     image: p.thumbnail || `/images/products/${p.slug}.jpg`,
     imageWidth: 900,
