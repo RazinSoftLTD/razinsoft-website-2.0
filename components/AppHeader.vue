@@ -206,15 +206,21 @@ onMounted(() => {
                   </div>
                 </div>
 
-                <div class="space-y-5 px-6 py-5">
-                  <section v-for="row in productRows" :key="row.key">
+                <!-- One column per group, side by side: the groups are alternatives to each other,
+                     and reading them as columns makes that obvious in a way stacked rows do not.
+                     The column count follows the number of groups, so a hidden Coming Soon does not
+                     leave a gap. -->
+                <div class="grid gap-x-6 gap-y-5 px-6 py-5 sm:grid-cols-2"
+                     :class="{ 1: 'lg:grid-cols-1', 2: 'lg:grid-cols-2', 3: 'lg:grid-cols-3' }[productRows.length]">
+                  <section v-for="(row, ri) in productRows" :key="row.key"
+                           class="lg:border-gray-100" :class="ri > 0 ? 'lg:border-l lg:pl-6' : ''">
                     <div class="mb-2.5 flex items-center gap-2">
                       <span class="h-1.5 w-1.5 rounded-full" :class="row.dot" aria-hidden="true" />
                       <h4 class="text-[11px] font-bold uppercase tracking-[0.15em]" :class="row.tone">{{ row.label }}</h4>
                       <span class="h-px flex-1 bg-gray-100" aria-hidden="true" />
                     </div>
 
-                    <div class="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
+                    <div class="grid gap-2.5">
                       <component
                         :is="row.key === 'upcoming' ? 'div' : resolveComponent('NuxtLink')"
                         v-for="(p, idx) in row.items"
