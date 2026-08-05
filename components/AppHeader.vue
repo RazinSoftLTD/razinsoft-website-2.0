@@ -84,45 +84,17 @@ const { data: allProducts } = useProducts()
 /**
  * The offer rail, from real data only.
  *
- * The headline percentage is the deepest discount actually running, and the countdown is the
- * soonest of those offers' own end dates. When nothing is on offer the whole rail is hidden rather
- * than showing an invented sale.
+ * The headline percentage is the deepest discount actually running. When nothing is on offer the
+ * whole rail is hidden rather than showing an invented sale.
  */
 const offer = computed(() => {
   const discounted = (allProducts.value ?? []).filter((p) => p.percentOff)
   if (!discounted.length) return null
 
-  const ends = discounted
-    .map((p) => p.offerEndsAt)
-    .filter(Boolean)
-    .map((d) => new Date(d as string).getTime())
-    .filter((t) => Number.isFinite(t) && t > Date.now())
-    .sort((a, b) => a - b)[0]
-
   return {
     percent: Math.max(...discounted.map((p) => p.percentOff ?? 0)),
     count: discounted.length,
-    endsAt: ends ?? null,
   }
-})
-
-// Ticks only while an offer with a deadline is running, and only in the browser.
-const now = ref(Date.now())
-let tick: ReturnType<typeof setInterval> | null = null
-onMounted(() => { tick = setInterval(() => (now.value = Date.now()), 1000) })
-onBeforeUnmount(() => { if (tick) clearInterval(tick) })
-
-const countdown = computed(() => {
-  const end = offer.value?.endsAt
-  if (!end) return null
-  const left = Math.max(0, end - now.value)
-  const pad = (n: number) => String(n).padStart(2, '0')
-  return [
-    { value: pad(Math.floor(left / 86400000)), label: 'Days' },
-    { value: pad(Math.floor(left / 3600000) % 24), label: 'Hours' },
-    { value: pad(Math.floor(left / 60000) % 60), label: 'Mins' },
-    { value: pad(Math.floor(left / 1000) % 60), label: 'Secs' },
-  ]
 })
 
 /** Claims the product pages already make — not new marketing written for this menu. */
@@ -167,6 +139,11 @@ const productRows = computed(() => {
     },
   ].filter((row) => row.items.length)
 })
+
+// Resolved here, not inside the template: called from a render expression it resolves on the
+// server and fails on the client, and the card then hydrates as a literal <nuxtlink> with no
+// href — which is to say, clicking a product did nothing.
+const NuxtLinkComponent = resolveComponent('NuxtLink')
 
 const { count } = useCart()
 const { user, isLoggedIn, fetchMe } = useAuth()
@@ -283,7 +260,7 @@ onMounted(() => {
 
                         <div class="grid auto-rows-fr gap-2.5 sm:grid-cols-2 xl:grid-cols-3">
                           <component
-                            :is="row.key === 'upcoming' ? 'div' : resolveComponent('NuxtLink')"
+                            :is="row.key === 'upcoming' ? 'div' : NuxtLinkComponent"
                             v-for="(p, idx) in row.items"
                             :key="p.slug"
                             v-bind="row.key === 'upcoming' ? {} : { to: `/products/${p.slug}` }"
@@ -300,12 +277,14 @@ onMounted(() => {
                             <span class="flex min-w-0 flex-1 flex-col justify-center">
                               <span class="menu-title truncate text-[13px] font-bold leading-tight text-ink-900">{{ p.name }}</span>
                               <span class="mt-1 truncate text-[11px] leading-snug text-gray-400">{{ p.tagline }}</span>
-                              <span class="mt-1.5 flex items-center gap-1.5">
+                              <!-- Price left, arrow hard right on the same line, so the arrows form
+                                   one column down the grid instead of drifting with the price. -->
+                              <span class="mt-1.5 flex items-center justify-between gap-2">
                                 <span class="text-[12px] font-extrabold" :class="row.key === 'upcoming' ? 'text-gray-400' : 'text-brand-600'">
                                   <template v-if="row.key === 'upcoming'">Coming soon</template>
                                   <template v-else>${{ p.salePrice ?? p.price }}</template>
                                 </span>
-                                <svg v-if="row.key !== 'upcoming'" class="menu-arrow h-3 w-3 text-brand-400" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6" /></svg>
+                                <svg v-if="row.key !== 'upcoming'" class="menu-arrow h-3.5 w-3.5 shrink-0 text-brand-400" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6" /></svg>
                               </span>
                             </span>
                           </component>
@@ -337,17 +316,6 @@ onMounted(() => {
                         </li>
                       </ul>
 
-                      <ClientOnly>
-                        <div v-if="countdown" class="mt-4">
-                          <p class="mb-1.5 text-[10px] font-bold uppercase tracking-wide text-gray-500">Offer ends in</p>
-                          <div class="grid grid-cols-4 gap-1.5">
-                            <div v-for="c in countdown" :key="c.label" class="rounded-lg bg-white px-1 py-1.5 text-center ring-1 ring-orange-100">
-                              <p class="text-sm font-extrabold leading-none text-ink-900">{{ c.value }}</p>
-                              <p class="mt-0.5 text-[9px] text-gray-400">{{ c.label }}</p>
-                            </div>
-                          </div>
-                        </div>
-                      </ClientOnly>
 
                       <NuxtLink to="/products" class="mt-4 flex items-center justify-center gap-1.5 rounded-xl bg-orange-500 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-orange-600" @click="openDropdown = null">
                         View all offers
@@ -565,7 +533,7 @@ onMounted(() => {
                     <ul class="space-y-0.5">
                       <li v-for="p in row.items" :key="p.slug">
                         <component
-                          :is="row.key === 'upcoming' ? 'div' : resolveComponent('NuxtLink')"
+                          :is="row.key === 'upcoming' ? 'div' : NuxtLinkComponent"
                           v-bind="row.key === 'upcoming' ? {} : { to: `/products/${p.slug}` }"
                           class="flex items-center gap-3 rounded-lg px-3 py-2.5"
                           :class="row.key === 'upcoming' ? 'opacity-70' : 'hover:bg-gray-50'"
