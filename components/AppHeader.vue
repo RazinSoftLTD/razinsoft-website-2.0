@@ -279,7 +279,7 @@ onMounted(() => {
                               <span class="mt-1.5 flex items-center justify-between gap-2">
                                 <span class="truncate text-[11px] font-bold" :class="row.key === 'upcoming' ? 'text-gray-400' : 'text-gray-400'">
                                   <template v-if="row.key === 'upcoming'">Coming soon</template>
-                                  <template v-else>Start From <span class="text-[12px] font-extrabold text-brand-600">${{ p.salePrice ?? p.price }}</span></template>
+                                  <template v-else>Starting <span class="text-[12px] font-extrabold text-brand-600">${{ p.salePrice ?? p.price }}</span></template>
                                 </span>
                                 <svg v-if="row.key !== 'upcoming'" class="menu-arrow h-3.5 w-3.5 shrink-0 text-brand-400" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6" /></svg>
                               </span>
