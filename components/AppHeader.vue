@@ -154,8 +154,8 @@ const productRows = computed(() => {
     {
       key: 'new',
       label: 'New',
-      tone: 'text-emerald-600',
-      dot: 'bg-emerald-400',
+      tone: 'text-red-600',
+      dot: 'bg-red-500',
       items: sellable.filter((p) => p.badgeKey === 'new').slice(0, 4),
     },
     {
@@ -228,21 +228,33 @@ onMounted(() => {
                       <h3 class="mt-2.5 text-xl font-extrabold leading-tight text-ink-900">
                         {{ item.intro.title }}<br><span class="text-brand-600">{{ item.intro.accent }}</span>
                       </h3>
-                      <p class="mt-2 max-w-xs text-xs leading-relaxed text-gray-500">
-                        {{ (allProducts ?? []).length }} enterprise-ready platforms — pay once, own forever.
-                      </p>
+                      <!-- The line and the stack read as one statement, so they sit on one row:
+                           the sentence says how many, the thumbnails show which. -->
+                      <div class="mt-2 flex flex-wrap items-center gap-x-5 gap-y-3">
+                        <p class="max-w-xs text-xs leading-relaxed text-gray-500">
+                          {{ (allProducts ?? []).length }} enterprise-ready platforms — pay once, own forever.
+                        </p>
 
-                      <!-- Real thumbnails rather than a drawing: the one thing this menu can show
-                           that an illustration cannot. -->
-                      <div class="pointer-events-none absolute right-6 top-1/2 hidden -translate-y-1/2 items-center gap-2 md:flex">
-                        <div class="flex -space-x-4">
+                        <!-- Real thumbnails rather than a drawing: the one thing this menu can show
+                             that an illustration cannot. They fan apart when the panel opens, then
+                             lift one by one on hover. -->
+                        <NuxtLink
+                          to="/products"
+                          class="product-fan group/fan hidden shrink-0 items-center sm:flex"
+                          :aria-label="`Browse all ${(allProducts ?? []).length} products`"
+                          @click="openDropdown = null"
+                        >
                           <NuxtImg
-                            v-for="p in (allProducts ?? []).slice(0, 4)"
+                            v-for="(p, i) in (allProducts ?? []).slice(0, 4)"
                             :key="p.slug"
                             :src="p.image" :alt="p.name" width="192" height="128" format="webp" loading="lazy"
-                            class="h-12 w-16 rounded-lg border-2 border-white bg-gray-100 object-cover shadow-sm"
+                            class="product-fan-item h-12 w-16 rounded-lg border-2 border-white bg-gray-100 object-cover shadow-md"
+                            :style="{ '--i': i }"
                           />
-                        </div>
+                          <span class="product-fan-more ml-3 grid h-12 w-12 shrink-0 place-items-center rounded-lg border-2 border-white bg-ink-900 text-[11px] font-bold text-white shadow-md">
+                            +{{ Math.max(0, (allProducts ?? []).length - 4) }}
+                          </span>
+                        </NuxtLink>
                       </div>
                     </div>
 
@@ -268,7 +280,7 @@ onMounted(() => {
                           >
                             <span class="relative shrink-0">
                               <NuxtImg :src="p.image" :alt="p.name" width="192" height="128" format="webp" loading="lazy" class="h-12 w-16 rounded-lg bg-gray-100 object-cover" />
-                              <span v-if="p.badge && row.key !== 'best'" class="absolute -left-1 -top-1 rounded bg-ink-900 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-white">{{ p.badge }}</span>
+                              <span v-if="p.badge && row.key !== 'best'" class="absolute -left-1 -top-1 rounded px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-white" :class="row.key === 'new' ? 'bg-red-500' : 'bg-ink-900'">{{ p.badge }}</span>
                             </span>
                             <span class="flex min-w-0 flex-1 flex-col">
                               <!-- No `block` alongside line-clamp: both set display, and which one
@@ -725,6 +737,50 @@ onMounted(() => {
   .menu-card:hover .menu-arrow {
     transform: none;
     transition-duration: .01ms;
+  }
+}
+
+/* ---- Product fan -------------------------------------------------------------------------
+   The thumbnails start stacked and deal themselves out when the panel opens, then each one
+   lifts as the cursor crosses it. Transforms only, so nothing reflows the row it sits in. */
+.product-fan-item {
+  margin-left: -1.25rem;
+  transform: translateY(6px) rotate(calc((var(--i) - 1.5) * 3deg)) scale(0.94);
+  opacity: 0;
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease, box-shadow 0.25s ease;
+  transition-delay: calc(var(--i) * 60ms + 80ms);
+}
+.product-fan-item:first-child { margin-left: 0; }
+.product-fan-more {
+  transform: translateY(6px) scale(0.9);
+  opacity: 0;
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease;
+  transition-delay: 320ms;
+}
+.menu-panel.is-open .product-fan-item,
+.menu-panel.is-open .product-fan-more {
+  transform: translateY(0) rotate(calc((var(--i, 0) - 1.5) * 3deg)) scale(1);
+  opacity: 1;
+}
+.menu-panel.is-open .product-fan-more { transform: translateY(0) scale(1); }
+
+/* Spread apart when the group is hovered, and raise whichever one is under the cursor. */
+.product-fan:hover .product-fan-item { margin-left: -0.5rem; }
+.product-fan:hover .product-fan-item:first-child { margin-left: 0; }
+.product-fan-item:hover {
+  transform: translateY(-6px) rotate(0deg) scale(1.06) !important;
+  transition-delay: 0ms;
+  box-shadow: 0 12px 24px -8px rgb(15 23 42 / 0.35);
+  z-index: 1;
+  position: relative;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product-fan-item,
+  .product-fan-more {
+    transform: none !important;
+    opacity: 1;
+    transition: none;
   }
 }
 </style>
