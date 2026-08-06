@@ -105,8 +105,11 @@ useHead({ title: () => (inv.value ? `Pay ${inv.value.invoice_number} — RazinSo
           <div><p class="font-semibold text-emerald-800">Payment received</p><p class="text-sm text-emerald-700">Thank you! This invoice is fully paid.</p></div>
         </div>
 
-        <!-- Pay action — front and centre, at the very top -->
-        <div v-if="inv.amount_due > 0" class="mb-5 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:p-7">
+        <!-- One card: the amount is the invoice's headline, not a separate document, and two
+             stacked panels made the page read as two unrelated things. -->
+        <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+
+        <div v-if="inv.amount_due > 0" class="border-b border-gray-100 bg-gray-50/70 p-6 sm:p-8">
           <div class="flex flex-wrap items-center justify-between gap-4">
             <div>
               <p class="text-xs font-semibold uppercase tracking-wider text-gray-400">{{ inv.partial_requested ? 'Partial payment requested' : 'Amount to pay now' }}</p>
@@ -143,7 +146,7 @@ useHead({ title: () => (inv.value ? `Pay ${inv.value.invoice_number} — RazinSo
         </div>
 
         <!-- Invoice document — mirrors the PDF layout -->
-        <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:p-8">
+        <div class="p-6 sm:p-8">
           <!-- Big title + logo/meta row -->
           <p class="text-right text-3xl font-extrabold text-gray-700">Invoice</p>
           <div class="mt-2 flex flex-wrap items-start justify-between gap-5">
@@ -299,16 +302,23 @@ useHead({ title: () => (inv.value ? `Pay ${inv.value.invoice_number} — RazinSo
 
           <!-- Notes / Terms -->
           <div v-if="inv.notes || inv.terms" class="mt-6 grid gap-6 border-t border-gray-100 pt-5 text-xs leading-relaxed text-gray-600 sm:grid-cols-2">
+            <!-- v-html on purpose: the API runs these through the invoice formatter, which keeps
+                 only b/i/u/br. Interpolated instead, the line breaks arrived as literal <br> text
+                 and the whole block ran together. -->
             <div>
               <p class="mb-1 text-[11px] font-bold uppercase tracking-wider text-gray-400">Notes</p>
-              <p>{{ inv.notes || '—' }}</p>
+              <div v-if="inv.notes" v-html="inv.notes" />
+              <p v-else>—</p>
             </div>
             <div>
               <p class="mb-1 text-[11px] font-bold uppercase tracking-wider text-gray-400">Terms</p>
-              <p>{{ inv.terms || '—' }}</p>
+              <div v-if="inv.terms" v-html="inv.terms" />
+              <p v-else>—</p>
             </div>
           </div>
         </div>
+
+        </div><!-- /one card -->
       </template>
     </div>
   </div>
