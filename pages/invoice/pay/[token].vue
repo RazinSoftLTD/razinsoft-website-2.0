@@ -140,10 +140,6 @@ useHead({ title: () => (inv.value ? `Pay ${inv.value.invoice_number} — RazinSo
               </template>
             </div>
           </div>
-          <p class="mt-4 border-t border-gray-100 pt-3 text-center text-xs text-gray-400">
-            <svg class="mr-1 inline h-3.5 w-3.5 -translate-y-px" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="4.5" y="10.5" width="15" height="10" rx="2"/><path d="M8 10.5V7.8a4 4 0 0 1 8 0v2.7"/></svg>
-            Secured payment · powered by {{ methods.map((m: string) => m === 'stripe' ? 'Stripe' : 'PayPal').join(' & ') }}
-          </p>
         </div>
 
         <!-- Invoice document — mirrors the PDF layout -->
@@ -171,7 +167,9 @@ useHead({ title: () => (inv.value ? `Pay ${inv.value.invoice_number} — RazinSo
           </div>
 
           <!-- Billed From / Billed To -->
-          <div class="mt-6 flex flex-wrap justify-between gap-6 text-sm">
+          <!-- Two columns rather than a wrapping flex row: the sender's address is long enough to
+               push the recipient onto its own line, which read as one column, not two. -->
+          <div class="mt-6 grid gap-6 text-sm sm:grid-cols-2">
             <div>
               <p class="text-gray-400">Billed From</p>
               <p class="mt-0.5 font-bold text-ink-900">RazinSoft</p>
