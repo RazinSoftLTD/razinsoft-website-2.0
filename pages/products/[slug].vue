@@ -40,7 +40,6 @@ const product = computed(() => {
     price: Number(p.from_price ?? p.plans?.[0]?.price ?? 0),
     salePrice: p.sale_from_price != null ? Number(p.sale_from_price) : null,
     percentOff: p.percent_off != null ? Number(p.percent_off) : null,
-    offerEndsAt: p.offer_ends_at ?? null,
     rating: Number(p.rating),
     reviews: p.reviews_count ?? 0,
     sales: p.sales_count ?? 0,
@@ -290,28 +289,6 @@ function scrollToDemos() {
   demoHlTimer = setTimeout(() => { demoHighlight.value = false }, 2200)
 }
 
-/**
- * The offer band in the hero — shown only while a discount is actually running.
- *
- * Every figure comes from the product's own plan: the percentage, both prices and the date it
- * runs out. Nothing here is written by hand, so it cannot outlive the offer it describes.
- */
-const heroOffer = computed(() => {
-  const p = product.value
-  if (!p.percentOff || p.salePrice == null) return null
-
-  const ends = p.offerEndsAt ? new Date(p.offerEndsAt) : null
-  return {
-    percent: p.percentOff,
-    was: p.price,
-    now: p.salePrice,
-    saved: Math.max(0, Math.round(p.price - p.salePrice)),
-    endsLabel: ends && ends.getTime() > Date.now()
-      ? ends.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
-      : null,
-  }
-})
-
 // "Add to Cart" hero button → jump to the Lifetime License Plans and flash them so the visitor picks a plan.
 const plansEl = ref<HTMLElement | null>(null)
 const plansHighlight = ref(false)
@@ -462,20 +439,6 @@ const { addItem } = useCart()
             <span>{{ product.sales.toLocaleString() }} sales</span>
             <span aria-hidden="true">·</span>
             <span class="rounded bg-brand-600/30 px-2 py-0.5 font-semibold text-brand-200">V {{ product.version }}</span>
-          </div>
-
-          <!-- Offer band. Straight from the plan's own figures, so it disappears with the offer. -->
-          <div v-if="heroOffer" class="mt-6 inline-flex flex-wrap items-center gap-x-4 gap-y-2 rounded-2xl border border-amber-400/30 bg-amber-400/10 px-4 py-3">
-            <span class="rounded-lg bg-amber-400 px-2.5 py-1 text-sm font-extrabold text-ink-900">{{ heroOffer.percent }}% OFF</span>
-            <span class="flex items-baseline gap-2">
-              <span class="text-2xl font-extrabold text-white">${{ heroOffer.now }}</span>
-              <span class="text-base font-semibold text-gray-400 line-through">${{ heroOffer.was }}</span>
-              <span class="text-sm font-semibold text-amber-300">save ${{ heroOffer.saved }}</span>
-            </span>
-            <span v-if="heroOffer.endsLabel" class="flex items-center gap-1.5 text-xs font-medium text-amber-200/90">
-              <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path stroke-linecap="round" d="M12 7v5l3 2" /></svg>
-              Ends {{ heroOffer.endsLabel }}
-            </span>
           </div>
 
           <div class="mt-7 flex flex-wrap gap-3">
