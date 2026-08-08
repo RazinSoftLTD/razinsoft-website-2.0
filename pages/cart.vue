@@ -13,6 +13,91 @@ const couponError = ref('')
 function onApply() {
   couponError.value = applyCoupon(couponInput.value) ? '' : 'Invalid coupon code.'
 }
+
+// ── Shareable cart links ───────────────────────────────────────────────────────
+// A salesperson sends one link and the customer lands here with the product already
+// in the cart, one click from checkout.
+//
+// The link carries WHAT to add, never the price: the price is read from the API on
+// arrival, so an old link shared months ago can never sell at last season's price.
+const { $api } = useNuxtApp()
+const addItemToCart = useCart().addItem
+const siteBase = (useRuntimeConfig().public.siteUrl as string || '').replace(/\/$/, '')
+
+function shareLinkFor(it: CartItem): string {
+  const q = new URLSearchParams({ add: it.slug })
+  if (it.planId) q.set('plan', String(it.planId))
+  else if (it.installationPlanId) q.set('install', String(it.installationPlanId))
+  else if (it.license) q.set('license', it.license)
+  if (it.qty > 1) q.set('qty', String(it.qty))
+
+  return `${siteBase || (import.meta.client ? location.origin : '')}/cart?${q.toString()}`
+}
+
+const copied = ref<string | null>(null)
+async function copyShareLink(it: CartItem) {
+  const url = shareLinkFor(it)
+  try {
+    await navigator.clipboard.writeText(url)
+  } catch {
+    // Clipboard is blocked outside https and in some in-app browsers — fall back to a
+    // hidden field, which works everywhere and still ends in a real copy.
+    const box = document.createElement('textarea')
+    box.value = url
+    box.style.position = 'fixed'
+    box.style.opacity = '0'
+    document.body.appendChild(box)
+    box.select()
+    document.execCommand('copy')
+    box.remove()
+  }
+  copied.value = lineKey(it)
+  useToast().success('Link copied', 'Send it and the product is already in their cart.')
+  setTimeout(() => { if (copied.value === lineKey(it)) copied.value = null }, 2500)
+}
+
+// Arriving on a shared link: add what it names, at today's price, then clean the URL so
+// a refresh (or a back-and-forward) does not quietly add the same thing twice.
+const route = useRoute()
+const router = useRouter()
+onMounted(async () => {
+  const slug = String(route.query.add ?? '').trim()
+  if (!slug) return
+
+  const planId = Number(route.query.plan) || undefined
+  const installId = Number(route.query.install) || undefined
+  const license = route.query.license === 'extended' ? 'extended' : 'regular'
+  const qty = Math.min(99, Math.max(1, Number(route.query.qty) || 1))
+
+  try {
+    const res = await $api<any>(`/products/${slug}`)
+    const p = res?.data ?? res
+    if (!p?.slug) throw new Error('unknown product')
+
+    const plan = planId ? (p.plans ?? []).find((x: any) => Number(x.id) === planId) : null
+    const install = installId ? (p.installation_plans ?? []).find((x: any) => Number(x.id) === installId) : null
+    const listed = Number(p.sale_from_price ?? p.from_price ?? p.plans?.[0]?.price ?? 0)
+
+    for (let i = 0; i < qty; i++) {
+      addItemToCart({
+        slug: p.slug,
+        name: p.name,
+        unitPrice: Number(install?.price ?? plan?.sale_price ?? plan?.price ?? listed),
+        image: p.thumbnail || p.hero_image || undefined,
+        version: p.version,
+        planId: plan?.id,
+        planName: plan?.name,
+        installationPlanId: install?.id,
+        installationPlanName: install?.name,
+        license: plan || install ? undefined : (license as License),
+      })
+    }
+  } catch {
+    useToast().error('That link did not work', 'The product may have been renamed or removed.')
+  } finally {
+    router.replace({ query: {} })
+  }
+})
 </script>
 
 <template>
@@ -60,6 +145,20 @@ function onApply() {
                 <span class="rounded-full bg-brand-50 px-2.5 py-1 font-semibold text-brand-700">{{ it.label }}</span>
                 <span v-if="it.version" class="text-gray-400">V {{ it.version }}</span>
               </div>
+
+              <!-- Share this exact line: the receiver opens the cart with it already inside. -->
+              <button
+                type="button"
+                class="mt-2.5 inline-flex items-center gap-1.5 rounded-lg border border-gray-200 px-2.5 py-1.5 text-xs font-semibold transition"
+                :class="copied === lineKey(it) ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'text-gray-500 hover:bg-gray-50 hover:text-brand-700'"
+                :aria-label="`Copy a share link for ${it.name}`"
+                :title="shareLinkFor(it)"
+                @click="copyShareLink(it)"
+              >
+                <svg v-if="copied !== lineKey(it)" class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1" /></svg>
+                <svg v-else class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m5 13 4 4L19 7" /></svg>
+                {{ copied === lineKey(it) ? 'Link copied' : 'Copy share link' }}
+              </button>
             </div>
 
             <div class="flex items-center justify-between gap-5 sm:flex-col sm:items-end sm:justify-center">
